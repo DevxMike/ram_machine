@@ -1,5 +1,6 @@
 #ifndef stack_h_
 #define stack_h_
+#include <stdio.h>
 #include <stdbool.h>
 
 typedef struct {
@@ -18,5 +19,5 @@ bool push(call_stack_t* stack, const stack_data_t* data);
 stack_data_t* pop(call_stack_t* stack);
 bool call_stack_full(const call_stack_t* stack);
 bool call_stack_empty(const call_stack_t* stack);
-void clear_stack_data(stack_data_t* data);
+void copy_data_struct(stack_data_t* destination, const stack_data_t* source);
 #endif
