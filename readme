@@ -2,3 +2,14 @@ Whole project is about creating a simple RAM machine simulator.
 Me and Mark are making this just for fun, and after this we will create a simple operating system.
 
 Documentation of app will appear soon below:
+
+-stack lib
+Simple data structure which consists of two structs:
+data struct and call stack struct with availability to 
+carry out operations on this abstract data structure.
+Data struct holds pseudo assembly code command and operands of a single call.
+Call stack struct hold informations such as size of call stack, 
+quantity of elements being holded on a call stack and data struct 
+pointer to an array with data.
+Data should be allocated dynamically in main function 
+(size of call stack must be defined by developer using this code).
