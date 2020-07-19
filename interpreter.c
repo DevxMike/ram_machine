@@ -2,17 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct
-{
-char* data;
-int type;
-}AnalyzedData;
+void Interpreter(char* str){
 
-void Interpreter(char* str)
-{}
+}
 
-AnalyzedData DataTypeAnalyzer(char* str)
-{
+AnalyzedData DataTypeAnalyzer(char* str){
 AnalyzedData data;
 int i = 0;
 int flag0 = 0; //if >= 1 str contains numbers
@@ -105,8 +99,7 @@ data.data = NULL;
 return data;	
 }
 
-char* UserInputToString()
-{
+char* UserInputToString(){
 char* uits;
 char input;
 int i = 0;
@@ -134,8 +127,7 @@ return uits;
 
 //-------------------------MISC-----------------------------------
 //----------------------FUNCTIONS---------------------------------
-void PrintString(char* str)
-{
+void PrintString(char* str){
 int i = 0;
 
 		while(str[i] != '\0')
@@ -146,25 +138,9 @@ int i = 0;
 		}
 }
 
-void DEBUG_end()
-{
-	printf("\n End Of DEBUG - input whatever to exit\n");
+void DEBUG_end(){
+	printf("\nEnd Of DEBUG - input whatever to exit\n");
 	getchar();
 }
 
-int main() 	//------------------------------------------------main S
-{
-char* m_str;
-AnalyzedData data0;
-	
-	
-	m_str = UserInputToString();
-	printf("\n0\n");
-	PrintString(m_str);
-	printf("\n1\n");
-	data0 = DataTypeAnalyzer(m_str);
-	printf("\n2\n");
 
-DEBUG_end();
-return 0;
-}			//------------------------------------------------main E
