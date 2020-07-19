@@ -7,7 +7,6 @@ char* data;
 int type;
 }AnalyzedData;
 
-
 void DEBUG_end(void);
 void PrintString(char*);
 char* UserInputToString(void);

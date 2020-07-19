@@ -9,11 +9,11 @@ int main() 	//------------------------------------------------main S
         
         
         m_str = UserInputToString();
-        printf("\n0\n");
+        printf("\n\nYOUR INPUT: ");
         PrintString(m_str);
-        printf("\n1\n");
+        printf("\n\nDATA TYPE:\n");
         data0 = DataTypeAnalyzer(m_str);
-        printf("\n2\n");
+        printf("\n\nEND\n");
 
     DEBUG_end();
     return 0;
