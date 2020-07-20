@@ -1,9 +1,9 @@
 Whole project is about creating a simple RAM machine simulator.
 Me and Mark are making this just for fun, and after this we will create a simple operating system.
 
-Documentation of app will appear soon below:
+Documentation of app will appear below:
 
--stack lib
+-stack file
 Simple data structure which consists of two structs:
 data struct and call stack struct with availability to 
 carry out operations on this abstract data structure.
@@ -13,3 +13,22 @@ quantity of elements being holded on a call stack and data struct
 pointer to an array with data.
 Data should be allocated dynamically in main function 
 (size of call stack must be defined by developer using this code).
+
+-errors file
+Definition of errors that may occur during the program runtime
+
+0x0001: failed to allocate memory for call stack, try to run the program again or 
+decrease stack size
+rest of errors will appear below
+
+-interpreter file
+Two structures defined inside this file:
+    - flags: holds some information about user input after it`s analysis
+    - AnalyzedData: holds information such as flags, user input address and input type
+
+void DEBUG_end(void); - prints information about end of debugging
+void PrintString(char*); - prints a string 
+char* UserInputToString(void); - gets user input from stdin and allocs enough memory to store it and return it`s address
+bool DataTypeAnalyzer(AnalyzedData*, char*); - analyzes user`s input, returns either true if it`s valid or false in other case
+                                             function sets AnalyzedData struct fields according to analysis
+void Interpreter(const AnalyzedData*) - interprets the data passed to stdin and prints it`s result, more functionality avaliable soon
