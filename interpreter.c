@@ -1,5 +1,4 @@
 #include "interpreter.h"
-#include "stack.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -16,8 +15,7 @@ const char DEBUG_STRING[][70] = {
     "input = string of numbers and dots",
 	"input = string of letters, '*' char and int (indirect addressing)"
 };
-void Interpreter(char* str){
-
+void Interpreter(call_stack_t* stack, char* str){
 }
 
 AnalyzedData DataTypeAnalyzer(char* str){
@@ -111,9 +109,9 @@ char* UserInputToString(){
 //-------------------------MISC-----------------------------------
 //----------------------FUNCTIONS---------------------------------
 void PrintString(char* str){
-		while(*str){
-			printf("%c", *str++);
-		}
+	while(*str){
+		printf("%c", *str++);
+	}
 }
 
 void DEBUG_end(){

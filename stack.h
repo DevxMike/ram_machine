@@ -18,8 +18,10 @@ typedef struct{
 }call_stack_t;
 
 bool push(call_stack_t* stack, const stack_data_t* data);
+void print_stack_status(call_stack_t* call_stack);
 stack_data_t* pop(call_stack_t* stack);
 bool call_stack_full(const call_stack_t* stack);
 bool call_stack_empty(const call_stack_t* stack);
 void copy_data_struct(stack_data_t* destination, const stack_data_t* source);
+call_stack_t* init_stack(size_t size);
 #endif
