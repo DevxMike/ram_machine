@@ -3,7 +3,8 @@
 #include "stack.h"
 
 typedef struct{
-    int flag0, flag1, flag2, flag3;
+    int flag0, flag1, flag2;
+    unsigned short flag3;
 }flags;
 
 
