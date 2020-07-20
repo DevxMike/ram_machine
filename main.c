@@ -17,8 +17,9 @@ int main() 	//------------------------------------------------main S
         printf("\n\nDATA TYPE:\n");
         data0 = DataTypeAnalyzer(m_str);
         printf("\n\nEND\n");
-
         DEBUG_end();
+        free(call_stack->data);
+        free(call_stack);
     }
     else{
         printf("failed to initialize call stack!\n");
