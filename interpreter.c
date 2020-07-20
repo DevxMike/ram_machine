@@ -1,9 +1,11 @@
 #include "interpreter.h"
+#include "stack.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <stdbool.h>
 
-const char DEBUG_STRING[][50] = {
+const char DEBUG_STRING[][70] = {
     "CANNOT ANALYZE DATA",
     "input = int",
     "input = double",
@@ -11,9 +13,9 @@ const char DEBUG_STRING[][50] = {
     "input = string of letters",
     "input = string of letters numbers and dots",
     "input = string of letters and numbers",
-    "input = string of numbers and dots"
+    "input = string of numbers and dots",
+	"input = string of letters, '*' char and int (indirect addressing)"
 };
-
 void Interpreter(char* str){
 
 }
@@ -33,6 +35,7 @@ AnalyzedData DataTypeAnalyzer(char* str){
 	while(*pt){
 		if((isalnum(*pt) && !isalpha(*pt)) && *pt != ';') ++flag0;
 		if(*pt == '.' || *pt == ',') ++flag1;
+		if(*pt == '*') ++flag3;
 		if(isalpha(*pt++)) ++flag2;
 		++i;
 	}
@@ -47,10 +50,12 @@ AnalyzedData DataTypeAnalyzer(char* str){
 		state = 4; //string of letters
 	if(flag0 >= 1 && flag1 > 1 && flag2 >= 1)
 		state = 5; //string of letters numbers and "." or ","
-	if(flag0 >= 1 && flag1 == 0 && flag2 >= 1)
+	if(flag0 >= 1 && flag1 == 0 && flag2 >= 1 && flag3 == 0)
 		state = 6; //string of letters and numbers
 	if(flag0 >= 1 && flag1 > 1 && flag2 == 0)
 		state = 7; //string of numbers and dots
+	if(flag0 >= 1 && flag1 == 0 && flag2 > 1 && flag3 == 1)
+		state = 8; //contains letters, numbers and '*' char
 	
 	switch(state)
 	{
@@ -62,6 +67,7 @@ AnalyzedData DataTypeAnalyzer(char* str){
 		case 5: 
 		case 6:
 		case 7:
+		case 8:
 			printf("\n%s\n", DEBUG_STRING[state]);
 			data.type = state;
 			data.data = str;
@@ -70,8 +76,10 @@ AnalyzedData DataTypeAnalyzer(char* str){
 			printf("\n a rare bug just happened, good luck will be upon you \n");
 		break;
 	}
-	printf("DEBUG:DataTypeAnalyzer - state = %d | flag0 = %d | flag1 = %d | flag2 = %d\n",state ,flag0, flag1, flag2);
-return data;	
+	printf("DEBUG:DataTypeAnalyzer - state = %d | flag0 = %d | flag1 = %d | flag2 = %d | flag3 = ",state ,flag0, flag1, flag2);
+	printf("%d\n", flag3);
+
+	return data;	
 }
 
 char* UserInputToString(){
