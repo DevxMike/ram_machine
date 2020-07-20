@@ -15,8 +15,12 @@ int main() 	//------------------------------------------------main S
         printf("\n\nYOUR INPUT: ");
         PrintString(m_str);
         printf("\n\nDATA TYPE:\n");
-        data0 = DataTypeAnalyzer(m_str);
-        printf("\n\nEND\n");
+        if(DataTypeAnalyzer(&data0, m_str)){
+            Interpreter(&data0);
+        }
+        else{
+            printf("rare bug has just occured, good luck with that!\n");
+        }
         DEBUG_end();
         free(call_stack->data);
         free(call_stack);

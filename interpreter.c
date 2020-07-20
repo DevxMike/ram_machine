@@ -15,19 +15,24 @@ const char DEBUG_STRING[][70] = {
     "input = string of numbers and dots",
 	"input = string of letters, '*' char and int (indirect addressing)"
 };
-void Interpreter(call_stack_t* stack, char* str){
+
+void Interpreter(const AnalyzedData* data){
+	if(data->type >= 0){
+		printf("%s\n", DEBUG_STRING[data->type]);
+	}
+	printf("DEBUG:DataTypeAnalyzer - state = %d | flag0 = %d | flag1 ", data->type ,data->information.flag0);
+	printf("= %d | flag2 = %d | flag3 = %d\n", data->information.flag1, data->information.flag2, data->information.flag3);
 }
 
-AnalyzedData DataTypeAnalyzer(char* str){
-	AnalyzedData data;
+bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 	int i = 0;
 	int flag0 = 0; //if >= 1 str contains numbers
 	int flag1 = 0; //if >= 1 str contains "." or ","
 	int flag2 = 0; //if >= 1 str contains letters
 	unsigned short flag3 = 0; //quantity of '*' chars (indirect addressing)
 	int state = 0; //value depends on the flag states
-	data.type = 0;
-	data.data = NULL;
+	data->type = 0;
+	data->data = NULL;
 	char* pt = str;
 
 	while(*pt){
@@ -54,30 +59,20 @@ AnalyzedData DataTypeAnalyzer(char* str){
 		state = 7; //string of numbers and dots
 	if(flag0 >= 1 && flag1 == 0 && flag2 > 1 && flag3 == 1)
 		state = 8; //contains letters, numbers and '*' char
+	data->type = state;
 	
-	switch(state)
-	{
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-		case 5: 
-		case 6:
-		case 7:
-		case 8:
-			printf("\n%s\n", DEBUG_STRING[state]);
-			data.type = state;
-			data.data = str;
-		break;
-		default:
-			printf("\n a rare bug just happened, good luck will be upon you \n");
-		break;
+	data->information.flag0 = flag0;
+	data->information.flag1 = flag1;
+	data->information.flag2 = flag2;
+	data->information.flag3 = flag3;
+	if(state >= 0 && state <= 8){
+		data->data = str;
+		return true;
 	}
-	printf("DEBUG:DataTypeAnalyzer - state = %d | flag0 = %d | flag1 = %d | flag2 = %d | flag3 = ",state ,flag0, flag1, flag2);
-	printf("%d\n", flag3);
-
-	return data;	
+	else{
+		data->data = NULL;
+		return false;
+	}	
 }
 
 char* UserInputToString(){
