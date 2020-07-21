@@ -14,11 +14,18 @@ pointer to an array with data.
 Data should be allocated dynamically in main function 
 (size of call stack must be defined by developer using this code).
 
+- task queue file
+Simple data structure which consists of three structs:
+task queue element: element that holds the data (same as call stack) and pointer to the next element in queue
+task queue: holds info about queue and stuff
+
 -errors file
 Definition of errors that may occur during the program runtime
 
 0x0001: failed to allocate memory for call stack, try to run the program again or 
 decrease stack size
+0x0002: failed to allocate memory for task queue, do the same as above
+
 rest of errors will appear below
 
 -interpreter file
@@ -32,3 +39,4 @@ char* UserInputToString(void); - gets user input from stdin and allocs enough me
 bool DataTypeAnalyzer(AnalyzedData*, char*); - analyzes user`s input, returns either true if it`s valid or false in other case
                                              function sets AnalyzedData struct fields according to analysis
 void Interpreter(const AnalyzedData*) - interprets the data passed to stdin and prints it`s result, more functionality avaliable soon
+
