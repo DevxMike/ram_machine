@@ -11,7 +11,7 @@ void exit_w_code(unsigned exit_code){
     exit(exit_code);
 }
 
-unsigned STACK_INIT_ERR = 0x01;
-unsigned TASK_QUEUE_INIT_ERR = 0x02;
-
+const unsigned STACK_INIT_ERR = 0x01;
+const unsigned TASK_QUEUE_INIT_ERR = 0x02;
+const unsigned NO_FILE_NAME_ERR = 0x03;
 #endif
