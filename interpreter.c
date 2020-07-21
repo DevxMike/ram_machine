@@ -23,6 +23,10 @@ void Interpreter(const AnalyzedData* data){
 	printf("DEBUG:DataTypeAnalyzer - state = %d | flag0 = %d | flag1 ", data->type ,data->information.flag0);
 	printf("= %d | flag2 = %d | flag3 = %d\n", data->information.flag1, data->information.flag2, data->information.flag3);
 }
+void task_exec(stack_data_t* task, int* task_counter){
+
+}
+
 
 bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 	int i = 0;
