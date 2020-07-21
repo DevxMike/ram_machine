@@ -19,5 +19,4 @@ void PrintString(char*);
 char* UserInputToString(void);
 bool DataTypeAnalyzer(AnalyzedData*, char*);
 void Interpreter(const AnalyzedData*);
-void task_exec(stack_data_t*, int*);
 #endif
