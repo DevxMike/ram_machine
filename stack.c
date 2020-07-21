@@ -27,7 +27,7 @@ void print_stack_status(call_stack_t* call_stack){
         printf("stack is not empty\n\n");
     }
 }
-bool push(call_stack_t* stack, const stack_data_t* data){
+bool s_push(call_stack_t* stack, const stack_data_t* data){
     stack_data_t* temp;
     if(call_stack_full(stack)){
         return false;
@@ -38,7 +38,7 @@ bool push(call_stack_t* stack, const stack_data_t* data){
         return true;
     }
 }
-stack_data_t* pop(call_stack_t* stack){
+stack_data_t* s_pop(call_stack_t* stack){
     stack_data_t* temp, *result;
     if(call_stack_empty(stack)){
         return NULL;
