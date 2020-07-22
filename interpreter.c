@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-const char DEBUG_STRING[][70] = {
+const char DEBUG_STRING[][70] = { //debug string array
     "CANNOT ANALYZE DATA",
     "input = int",
     "input = double",
@@ -16,11 +16,11 @@ const char DEBUG_STRING[][70] = {
 	"input = string of letters, '*' char and int (indirect addressing)"
 };
 
-void Interpreter(const AnalyzedData* data){
-	if(data->type >= 0){
-		printf("%s\n", DEBUG_STRING[data->type]);
+void Interpreter(const AnalyzedData* data){ //interprets tasks
+	if(data->type >= 0){ //if a rare bug has not occured
+		printf("%s\n", DEBUG_STRING[data->type]); //print debug string
 	}
-	printf("DEBUG:DataTypeAnalyzer - state = %d | flag0 = %d | flag1 ", data->type ,data->information.flag0);
+	printf("DEBUG:DataTypeAnalyzer - state = %d | flag0 = %d | flag1 ", data->type ,data->information.flag0); //print flags states
 	printf("= %d | flag2 = %d | flag3 = %d\n", data->information.flag1, data->information.flag2, data->information.flag3);
 }
 
@@ -61,11 +61,11 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 		state = 8; //contains letters, numbers and '*' char
 	data->type = state;
 	
-	data->information.flag0 = flag0;
+	data->information.flag0 = flag0; //copy flag info
 	data->information.flag1 = flag1;
 	data->information.flag2 = flag2;
 	data->information.flag3 = flag3;
-	if(state >= 0 && state <= 8){
+	if(state >= 0 && state <= 8){ //if state is as expected
 		data->data = str;
 		return true;
 	}
@@ -75,7 +75,7 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 	}	
 }
 
-char* UserInputToString(){
+char* UserInputToString(){ //get user input by scanning every single char from stdin and allocating just enough memory 
 	char* uits;
 	char input;
 	int i = 0;
@@ -103,7 +103,7 @@ char* UserInputToString(){
 
 //-------------------------MISC-----------------------------------
 //----------------------FUNCTIONS---------------------------------
-void PrintString(char* str){
+void PrintString(char* str){ //prints a string
 	while(*str){
 		printf("%c", *str++);
 	}

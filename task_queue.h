@@ -4,14 +4,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef stack_data_t task_queue_data_t;
+typedef stack_data_t task_queue_data_t; //for calls stack_data_t struct can be reused
 
-typedef struct t{
+typedef struct t{ //holds data and pointer to the next element
     task_queue_data_t data;
     struct t* next;
 }task_queue_element_t;
 
-typedef struct{
+typedef struct{ //holds general info about queue and pointer to head and it`s tail
     size_t max;
     size_t quantity;
     task_queue_element_t* head, * tail;

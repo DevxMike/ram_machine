@@ -2,13 +2,13 @@
 #define interpreter_h_
 #include "stack.h"
 
-typedef struct{
+typedef struct{ //data structure that holds flags states
     int flag0, flag1, flag2;
     unsigned short flag3;
 }flags;
 
 
-typedef struct{
+typedef struct{ //data structure that holds info about every single user input
 char* data;
 int type;
 flags information;

@@ -5,13 +5,13 @@
 
 //git test
 
-typedef struct {
+typedef struct { //struct used to hold commands and operands
     char command[5];
     char operand_st[11];
     char operand_nd[11]; 
 }stack_data_t;
 
-typedef struct{
+typedef struct{ //struct used to hold pointer to stack elements and general info about stack
     size_t max;
     size_t quantity;
     stack_data_t* data;    
