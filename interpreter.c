@@ -6,19 +6,19 @@
 
 const char DEBUG_STRING[][70] = { //debug string array
     "CANNOT ANALYZE DATA",
-    "input = int",
-    "input = double",
-    "input = single letter",
-    "input = string of letters",
-    "input = string of letters numbers and dots",
-    "input = string of letters and numbers",
-    "input = string of numbers and dots",
-	"input = string of letters, '*' char and int (indirect addressing)"
+    "int",
+    "double",
+    "single letter",
+    "string of letters",
+    "string of letters numbers and dots",
+    "string of letters and numbers",
+    "string of numbers and dots",
+	"string of letters, '*' char and int (indirect addressing)"
 };
 
 void Interpreter(const AnalyzedData* data){ //interprets tasks
 	if(data->type >= 0){ //if a rare bug has not occured
-		printf("%s\n", DEBUG_STRING[data->type]); //print debug string
+		printf("input = \"%s\" -> %s\n", data->data, DEBUG_STRING[data->type]); //print debug string
 	}
 	printf("DEBUG:DataTypeAnalyzer - state = %d | flag0 = %d | flag1 ", data->type ,data->information.flag0); //print flags states
 	printf("= %d | flag2 = %d | flag3 = %d\n", data->information.flag1, data->information.flag2, data->information.flag3);

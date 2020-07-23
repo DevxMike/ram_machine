@@ -14,6 +14,8 @@ int main(int argc, char** argv){
     call_stack_t* call_stack = NULL;
     task_queue_t* task_queue = NULL;
     AnalyzedData data;
+    size_t task_arr_size = 0;
+    char** task_arr;
 
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name> or %s -h for help\n", argv[0], argv[0]);
@@ -33,6 +35,8 @@ int main(int argc, char** argv){
         }    
         EXIT_CODE = (task_queue = task_queue_init(50)) == NULL? TASK_QUEUE_INIT_ERR : 0; //init task queue
         if(EXIT_CODE){ //if task queue init fails
+            free(call_stack);
+            free(call_stack);
             exit_w_code(EXIT_CODE);
         }
         //print general info
@@ -41,20 +45,23 @@ int main(int argc, char** argv){
         printf("task queue initialized\n\n");
         print_queue_status(task_queue);
         printf("file to be read: %s\n\n", argv[1]);
-        m_str = UserInputToString(); //get input string from user
-        printf("\n\nYOUR INPUT: ");
-        PrintString(m_str);
-        printf("\n\nDATA TYPE:\n");
-        if(DataTypeAnalyzer(&data, m_str)){ //analyze data
-            Interpreter(&data); //print debug info
-        }
-        else{
-            printf("rare bug has just occured, good luck with that!\n");
+        
+        if((task_arr = read_file(argv[1], &task_arr_size)) != NULL && task_arr_size > 0){
+            for(size_t i = 0; i < task_arr_size; ++i){
+                if(DataTypeAnalyzer(&data, task_arr[i])){
+                    Interpreter(&data);
+                    printf("\n");
+                }
+                else{
+                    free(call_stack->data);//free memory
+                    free(call_stack);
+                    exit_w_code(WRONG_SYNTAX_ERR);
+                }
+            }
         }
         DEBUG_end();
         free(call_stack->data);//free memory
         free(call_stack);
-
         exit_w_code(EXIT_CODE);  
     }    
 }
