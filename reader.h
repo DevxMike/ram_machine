@@ -5,5 +5,5 @@
 //test Grzegorza
 //test
 bool has_invalid_chars(char* pt); //checks if file_name has valid chars
-
+char** read_file(char* f_name); //read task list from file
 #endif
