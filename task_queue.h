@@ -20,7 +20,7 @@ typedef struct{ //holds general info about queue and pointer to head and it`s ta
 task_queue_t* task_queue_init(size_t size);
 bool task_queue_full(const task_queue_t* queue);
 bool task_queue_empty(const task_queue_t* queue);
-
+void free_task_queue(task_queue_t* queue);
 bool q_push(task_queue_t* queue, const task_queue_data_t* data);
 void print_queue_status(task_queue_t* queue);
 task_queue_data_t* q_pop(task_queue_t* queue);

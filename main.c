@@ -55,6 +55,7 @@ int main(int argc, char** argv){
                 else{
                     free(call_stack->data);//free memory
                     free(call_stack);
+                    free_task_queue(task_queue);
                     exit_w_code(WRONG_SYNTAX_ERR);
                 }
             }
@@ -62,6 +63,7 @@ int main(int argc, char** argv){
         DEBUG_end();
         free(call_stack->data);//free memory
         free(call_stack);
+        free_task_queue(task_queue);
         exit_w_code(EXIT_CODE);  
     }    
 }
