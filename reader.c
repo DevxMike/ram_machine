@@ -5,9 +5,9 @@
 #include <stdio.h>
 
 int peek(FILE* stream){ //check what char is next in the stream
-    char c = getc(stream);
-    ungetc(c, stream);
-    return c;
+    char c = getc(stream); //get char from stream
+    ungetc(c, stream); //pass char back to stream
+    return c; //return char
 }
 
 bool has_invalid_chars(char* pt){
@@ -24,8 +24,6 @@ bool has_invalid_chars(char* pt){
         return false; //else return false
     }
 }
-
-
 
 //for tests
 const size_t size = 9;
