@@ -2,6 +2,13 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+
+int peek(FILE* stream){ //check what char is next in the stream
+    char c = getc(stream);
+    ungetc(c, stream);
+    return c;
+}
 
 bool has_invalid_chars(char* pt){
     char* temp = pt;
