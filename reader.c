@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include "errors.h"
 
 int peek(FILE* stream){ //check what char is next in the stream
     char c = getc(stream); //get char from stream
@@ -39,16 +40,27 @@ const char temp[][30] = {
         "LOAD *5"
 };
 
-char** read_file(char* f_name, size_t* sizeof_arr){
+char** read_file(char* f_name, size_t* sizeof_arr, unsigned* errno){
     char** tasks = NULL;
+    FILE* file_in = NULL;
+    if((tasks = (char**)malloc(sizeof(char*))) == NULL){
+        *errno = TASK_ARR_ALLOC_ERR;
+        return NULL;
+    }
+    if((file_in = fopen(f_name, "rt")) == NULL){
+        *errno = NO_FILE_ERR;
+        return NULL;
+    }
     //change the body of this function
     //test cases
+    /*
     tasks = (char**)malloc(sizeof(char*) * size);
     for(size_t i = 0; i < size; ++i){
         tasks[i] = (char*)malloc(sizeof(char) * strlen(temp[i]) + 1);
         strcpy(tasks[i], temp[i]);
     }
     *sizeof_arr = size;
+    */
     //end of test cases
     return tasks;
 }

@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include "interpreter.h"
 #include "stack.h"
-#include "errors.h"
 #include "task_queue.h"
 #include <string.h>
 #include "reader.h"
 #include <stdbool.h>
+#include "errors.h"
 
 int main(int argc, char** argv){
     unsigned EXIT_CODE = 0;
@@ -27,7 +27,7 @@ int main(int argc, char** argv){
             exit_w_code(EXIT_CODE);
         } 
         else if(has_invalid_chars(argv[1])){ //if <file_name> string has forbidden chars
-            exit_w_code(BAD_FILE_NAME_ERR);
+            exit_w_code(FILE_NAME_ERR);
         }
         EXIT_CODE = (call_stack = init_stack(50)) == NULL? STACK_INIT_ERR : 0; //init call stack
         if(EXIT_CODE){ //if call stack init fails
@@ -46,7 +46,7 @@ int main(int argc, char** argv){
         print_queue_status(task_queue);
         printf("file to be read: %s\n\n", argv[1]);
         
-        if((task_arr = read_file(argv[1], &task_arr_size)) != NULL && task_arr_size > 0){
+        if((task_arr = read_file(argv[1], &task_arr_size, &EXIT_CODE)) != NULL && task_arr_size > 0){
             for(size_t i = 0; i < task_arr_size; ++i){
                 if(DataTypeAnalyzer(&data, task_arr[i])){
                     Interpreter(&data);
@@ -59,6 +59,12 @@ int main(int argc, char** argv){
                     exit_w_code(WRONG_SYNTAX_ERR);
                 }
             }
+        }
+        else{
+            free(call_stack->data);//free memory
+            free(call_stack);
+            free_task_queue(task_queue);
+            exit_w_code(EXIT_CODE);
         }
         DEBUG_end();
         free(call_stack->data);//free memory
