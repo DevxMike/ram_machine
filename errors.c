@@ -6,7 +6,9 @@ const char ERROR_DESC[][70] = { //error descriptions
     "Wrong file name. Try <file_name>.txt .",
     "Wrong syntax. <program_name> -h for help.",
     "Mem alloc for tasks array failed",
-    "Such file doesn`t exist."
+    "Such file doesn`t exist.",
+    "File is empty.",
+    "Mem alloc for string in stream failed."
 };
 
 void exit_w_code(unsigned exit_code){ //function that prints exit code
@@ -28,3 +30,5 @@ const unsigned FILE_NAME_ERR = 0x04; //string <file_name> contains forbidden cha
 const unsigned WRONG_SYNTAX_ERR = 0x05; //if analysis failed
 const unsigned TASK_ARR_ALLOC_ERR = 0x06; //if alloc for task arr failed
 const unsigned NO_FILE_ERR = 0x07; //if file doesnt exist
+const unsigned EMPTY_FILE_ERR = 0x08; //if file is empty
+const unsigned STRING_MEM_ALLOC_ERR = 0x09; //if alloc for string failed

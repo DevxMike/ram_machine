@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include "reader.h"
+#include "errors.h"
 
 const char DEBUG_STRING[][70] = { //debug string array
     "CANNOT ANALYZE DATA",
@@ -75,29 +77,28 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 	}	
 }
 
-char* UserInputToString(){ //get user input by scanning every single char from stdin and allocating just enough memory 
-	char* uits;
+char* UserInputToString(FILE* stream, unsigned* errno){ //get user input by scanning every single char from stdin and allocating just enough memory 
+	char* uits, *uits_pt, *temp;
 	char input;
-	int i = 0;
+	size_t i = 1;
 
-	uits = (char*)calloc(1, sizeof(char));
-
-		do{
-			input = getchar();
-			if(input == '\n' || input == ';')
-			{
-				uits[i] = '\0';
-				//printf("DEBUG:UserInputToString - input exeption 'newline' ';'\n");
-			}
-			else
-			{
-				uits[i] = input;
-				i = i + 1;
-				uits = (char*)realloc(uits, (i + 1) * sizeof(char));
-				//printf("DEBUG:UserInputToString - input insertion\n");		
-			}
-			//printf("DEBUG:UserInputToString - input[%d] = %c\n", i, uits[i]);
-		}while(input != '\n' && input != ';');
+	if((uits = (char*)calloc(i, sizeof(char))) == NULL){
+		*errno = STRING_MEM_ALLOC_ERR;
+		return NULL;
+	}
+	uits_pt = uits;
+	while((input = peek(stream)) && (input != ';' && input != '\n')){
+		*uits_pt = getc(stream);
+		if((temp = realloc(uits, ++i)) == NULL){
+			*errno = STRING_MEM_ALLOC_ERR;
+			return NULL;
+		}
+		uits = temp;
+		++uits_pt;
+	}
+	*uits_pt = '\0';
+	clear_stream(stream);
+	*errno = 0;
 	return uits;
 }
 

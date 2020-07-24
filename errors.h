@@ -15,4 +15,6 @@ extern const unsigned FILE_NAME_ERR; //string <file_name> contains forbidden cha
 extern const unsigned WRONG_SYNTAX_ERR; //if analysis failed
 extern const unsigned TASK_ARR_ALLOC_ERR; //if alloc for task arr failed
 extern const unsigned NO_FILE_ERR; //if file doesnt exist
+extern const unsigned EMPTY_FILE_ERR;
+extern const unsigned STRING_MEM_ALLOC_ERR;
 #endif

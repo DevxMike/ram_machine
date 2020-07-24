@@ -17,7 +17,6 @@ int main(int argc, char** argv){
     AnalyzedData data;
     size_t task_arr_size = 0;
     char** task_arr;
-    char word[] = "test.txt";
 
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);

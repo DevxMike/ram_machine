@@ -6,6 +6,13 @@
 #include "errors.h"
 
 
+void clear_stream(FILE* stream){
+    char c;
+    while((c = getc(stream)) && c != '\n'){
+        continue;
+    }
+}
+
 int peek(FILE* stream){ //check what char is next in the stream
     char c = getc(stream); //get char from stream
     ungetc(c, stream); //pass char back to stream
@@ -61,6 +68,12 @@ char** read_file(char* f_name, size_t* sizeof_arr, unsigned* errno){
     }
     if((file_in = fopen(f_name, "rt")) == NULL){
         *errno = NO_FILE_ERR;
+        return NULL;
+    }
+    if(peek(file_in) == EOF){
+        *errno = EMPTY_FILE_ERR;
+        fclose(file_in);
+        free(tasks);
         return NULL;
     }
     //change the body of this function

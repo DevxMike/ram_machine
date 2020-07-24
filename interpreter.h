@@ -16,7 +16,7 @@ flags information;
 
 void DEBUG_end(void);
 void PrintString(char*);
-char* UserInputToString(void);
+char* UserInputToString(FILE* stream, unsigned* errno);
 bool DataTypeAnalyzer(AnalyzedData*, char*);
 void Interpreter(const AnalyzedData*);
 #endif
