@@ -7,6 +7,7 @@
 #include "reader.h"
 #include <stdbool.h>
 #include "errors.h"
+#include <regex.h>
 
 int main(int argc, char** argv){
     unsigned EXIT_CODE = 0;
@@ -16,9 +17,10 @@ int main(int argc, char** argv){
     AnalyzedData data;
     size_t task_arr_size = 0;
     char** task_arr;
+    char word[] = "test.txt";
 
     if(argc == 1){ //if argv contains program name only
-        printf("Wrong usage. Try %s <file_name> or %s -h for help\n", argv[0], argv[0]);
+        printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
         exit_w_code(NO_FILE_NAME_ERR);
     }
     else{
@@ -26,7 +28,7 @@ int main(int argc, char** argv){
             printf("Some help message\n");
             exit_w_code(EXIT_CODE);
         } 
-        else if(has_invalid_chars(argv[1])){ //if <file_name> string has forbidden chars
+        else if(has_invalid_chars(argv[1], "txt")){ //if <file_name> string has forbidden chars
             exit_w_code(FILE_NAME_ERR);
         }
         EXIT_CODE = (call_stack = init_stack(50)) == NULL? STACK_INIT_ERR : 0; //init call stack
