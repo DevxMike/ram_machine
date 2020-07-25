@@ -82,12 +82,12 @@ char* UserInputToString(FILE* stream, unsigned* errno){ //get user input by scan
 	char input;
 	size_t i = 1;
 
-	if((uits = (char*)calloc(i, sizeof(char))) == NULL){
+	if((uits = (char*)malloc(i * sizeof(char))) == NULL){
 		*errno = STRING_MEM_ALLOC_ERR;
 		return NULL;
 	}
 	uits_pt = uits;
-	while((input = peek(stream)) && (input != ';' && input != '\n')){
+	while((input = peek(stream)) != EOF && (input != ';' && input != '\n')){
 		*uits_pt = getc(stream);
 		if((temp = realloc(uits, ++i)) == NULL){
 			*errno = STRING_MEM_ALLOC_ERR;
@@ -96,8 +96,8 @@ char* UserInputToString(FILE* stream, unsigned* errno){ //get user input by scan
 		uits = temp;
 		++uits_pt;
 	}
-	*uits_pt = '\0';
 	clear_stream(stream);
+	*uits_pt = '\0';
 	*errno = 0;
 	return uits;
 }

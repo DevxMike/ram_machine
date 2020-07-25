@@ -4,11 +4,11 @@
 #include <string.h>
 #include <stdio.h>
 #include "errors.h"
-
+#include "interpreter.h"
 
 void clear_stream(FILE* stream){
     char c;
-    while((c = getc(stream)) && c != '\n'){
+    while((c = getc(stream)) && (c != '\n' && c != ';' && c != EOF)){
         continue;
     }
 }
@@ -23,7 +23,7 @@ bool has_invalid_chars(char* pt, char* ex){
     char* temp = pt;
     char* ex_pt;
     while(*temp){ //while *temp is a non NULL char
-        if(!isalpha(*temp++)){
+        if(!isalnum(*temp++)){
             break;
         }
     }
@@ -59,14 +59,11 @@ const char temp[][30] = {
 };
 
 char** read_file(char* f_name, size_t* sizeof_arr, unsigned* errno){
-    char** tasks = NULL;
+    char** tasks = NULL, **temp, *str;
     FILE* file_in = NULL;
-
-    if((tasks = (char**)malloc(sizeof(char*))) == NULL){
-        *errno = TASK_ARR_ALLOC_ERR;
-        return NULL;
-    }
-    if((file_in = fopen(f_name, "rt")) == NULL){
+    size_t lines = 1;
+    
+    if((file_in = fopen(f_name, "r")) == NULL){
         *errno = NO_FILE_ERR;
         return NULL;
     }
@@ -76,16 +73,30 @@ char** read_file(char* f_name, size_t* sizeof_arr, unsigned* errno){
         free(tasks);
         return NULL;
     }
-    //change the body of this function
-    //test cases
-    /*
-    tasks = (char**)malloc(sizeof(char*) * size);
-    for(size_t i = 0; i < size; ++i){
-        tasks[i] = (char*)malloc(sizeof(char) * strlen(temp[i]) + 1);
-        strcpy(tasks[i], temp[i]);
+    if((tasks = (char**)malloc(sizeof(char*))) == NULL){
+        *errno = TASK_ARR_ALLOC_ERR;
+        return NULL;
     }
-    *sizeof_arr = size;
-    */
-    //end of test cases
-    return NULL;
+
+    while(peek(file_in) != EOF){
+        while(!isalnum(peek(file_in))){
+            getc(file_in);
+            continue;
+        }
+        str = UserInputToString(file_in, errno);
+        if((tasks[lines - 1] = (char*)malloc(sizeof(char) * (strlen(str) + 1))) == NULL){
+            *errno = TASK_ARR_ALLOC_ERR;
+            return NULL;
+        }
+        strcpy(tasks[lines - 1], str);
+        if((temp = realloc(tasks, ++lines * sizeof(char*))) == NULL){
+            *errno = TASK_ARR_ALLOC_ERR;
+            return NULL;
+        }
+        tasks = temp;
+    }
+    fclose(file_in);
+    *errno = 0;
+    *sizeof_arr = --lines;
+    return tasks;
 }
