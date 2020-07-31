@@ -25,7 +25,7 @@ int main(int argc, char** argv){
     else{
         if(strcmp(argv[1], "-h") == 0){ //if argv contains program name and "-h" string 
             //printf("Some help message\n");
-            print_help(argv[0], COMMAND_ROW, COMMAND_COL, commands);
+            print_help(argv[0], COMMAND_ROW, commands, COMMAND_ROW, ex_operands);
             exit_w_code(EXIT_CODE);
         } 
         else if(has_invalid_chars(argv[1], "txt")){ //if <file_name> string has forbidden chars
