@@ -3,7 +3,7 @@
 #include "stack.h"
 
 typedef struct{ //data structure that holds flags states
-    int flag0, flag1, flag2;
+  int flag0, flag1, flag2, flag4;
     unsigned short flag3;
 }flags;
 
@@ -18,5 +18,6 @@ void DEBUG_end(void);
 void PrintString(char*);
 char* UserInputToString(FILE* stream, unsigned* errno);
 bool DataTypeAnalyzer(AnalyzedData*, char*);
-void Interpreter(const AnalyzedData*);
+void Interpreter(AnalyzedData*);
+bool CheckCommand(char*, const char*, int);
 #endif
