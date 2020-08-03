@@ -61,6 +61,7 @@ int main(int argc, char** argv){
                     exit_w_code(WRONG_SYNTAX_ERR);
                 }
             }
+            
         }
         else{
             free(call_stack->data);//free memory

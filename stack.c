@@ -65,5 +65,4 @@ bool call_stack_empty(const call_stack_t* stack){ //returns bool val if stack is
 void copy_data_struct(stack_data_t* destination, const stack_data_t* source){ //copies stack/queue data
     strcpy(destination->command, source->command);
     strcpy(destination->operand_st, source->operand_st);
-    strcpy(destination->operand_nd, source->operand_nd);
 }
