@@ -73,15 +73,3 @@ task_queue_data_t* q_pop(task_queue_t* queue){ //pops first element from queue
         return temp;
     }
 }
-void free_task_queue(task_queue_t* queue){
-    task_queue_element_t* temp;
-
-    if(!task_queue_empty(queue)){
-        while(queue->head != NULL){
-            temp = queue->head;
-            queue->head = queue->head->next;
-            free(temp);
-        }
-    }  
-    free(queue); 
-}

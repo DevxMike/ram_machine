@@ -17,6 +17,7 @@ int main(int argc, char** argv){
     char* m_str;
     call_stack_t* call_stack = NULL;
     task_queue_t* task_queue = NULL;
+    task_queue_element_t* temp;
     AnalyzedData data;
     size_t task_arr_size = 0;
     char** task_arr;
@@ -60,7 +61,16 @@ int main(int argc, char** argv){
                 else{
                     free(call_stack->data);//free memory
                     free(call_stack);
-                    free_task_queue(task_queue);
+                    //free task queue
+                    if(!task_queue_empty(task_queue)){
+                        while(task_queue->head != NULL){
+                            temp = task_queue->head;
+                            task_queue->head = task_queue->head->next;
+                            free(temp);
+                        }
+                    }  
+                    free(task_queue); 
+                    //end
                     exit_w_code(WRONG_SYNTAX_ERR);
                 }
             }
@@ -68,13 +78,35 @@ int main(int argc, char** argv){
         else{
             free(call_stack->data);//free memory
             free(call_stack);
-            free_task_queue(task_queue);
+            //free task queue
+            if(!task_queue_empty(task_queue)){
+                while(task_queue->head != NULL){
+                    temp = task_queue->head;
+                    task_queue->head = task_queue->head->next;
+                    free(temp);
+                }
+            }  
+            free(task_queue); 
+        //end
             exit_w_code(EXIT_CODE);
         }
-        DEBUG_end();
+
+
+        //FREE MEMORY
+        
         free(call_stack->data);//free memory
         free(call_stack);
-        free_task_queue(task_queue);
+        //free task queue
+        if(!task_queue_empty(task_queue)){
+            while(task_queue->head != NULL){
+                temp = task_queue->head;
+                task_queue->head = task_queue->head->next;
+                free(temp);
+            }
+        }  
+        free(task_queue); 
+        //end
+
         exit_w_code(EXIT_CODE);  
     }    
 }
