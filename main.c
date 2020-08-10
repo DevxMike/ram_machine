@@ -28,6 +28,7 @@ int main(int argc, char** argv){
         exit_w_code(NO_FILE_NAME_ERR);
     }
     else{
+        
         if(strcmp(argv[1], "-h") == 0){ //if argv contains program name and "-h" string 
             //printf("Some help message\n");
             print_help(argv[0], COMMAND_ROW, commands, COMMAND_ROW, ex_operands);
@@ -36,21 +37,15 @@ int main(int argc, char** argv){
         else if(has_invalid_chars(argv[1], "txt")){ //if <file_name> string has forbidden chars
             exit_w_code(FILE_NAME_ERR);
         }
-        EXIT_CODE = (call_stack = init_stack(50)) == NULL? STACK_INIT_ERR : 0; //init call stack
-        if(EXIT_CODE){ //if call stack init fails
-            exit_w_code(EXIT_CODE);
-        }    
-        EXIT_CODE = (task_queue = task_queue_init(50)) == NULL? TASK_QUEUE_INIT_ERR : 0; //init task queue
-        if(EXIT_CODE){ //if task queue init fails
-            free(call_stack);
-            free(call_stack);
-            exit_w_code(EXIT_CODE);
+
+        if((call_stack = init_stack(50)) == NULL){
+            exit_w_code(STACK_INIT_ERR);
         }
-        //print general info
-        printf("stack initialized\n\n");
-        print_stack_status(call_stack); 
-        printf("task queue initialized\n\n");
-        print_queue_status(task_queue);
+        if((task_queue = task_queue_init(50)) == NULL){
+            free(call_stack); //if init failed, free allocated memory
+            exit_w_code(TASK_QUEUE_INIT_ERR);
+        }
+
         printf("file to be read: %s\n\n", argv[1]);
         
         if((task_arr = read_file(argv[1], &task_arr_size, &EXIT_CODE)) != NULL && task_arr_size > 0){
@@ -65,6 +60,7 @@ int main(int argc, char** argv){
                     for(size_t i = 0; i < task_arr_size; ++i){
                         free(task_arr[i]);
                     }
+                    /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                     free(task_arr);
                     //free task queue
                     if(!task_queue_empty(task_queue)){
@@ -74,20 +70,21 @@ int main(int argc, char** argv){
                             free(temp);
                         }
                     }  
+                    for(size_t i = 0; i < task_arr_size; ++i){
+                        free(task_arr[i]);
+                    }
+                    free(task_arr);
                     free(task_queue); 
-                    //end
-
+                    /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                     exit_w_code(WRONG_SYNTAX_ERR);
                 }
             }
         }
         else{
+            /*----------------------------------------------if failed free memory section -----------------------------------------------*/
+
             free(call_stack->data);//free memory
             free(call_stack);
-            for(size_t i = 0; i < task_arr_size; ++i){
-            free(task_arr[i]);
-            }
-            free(task_arr);
             //free task queue
             if(!task_queue_empty(task_queue)){
                 while(task_queue->head != NULL){
@@ -97,20 +94,19 @@ int main(int argc, char** argv){
                 }
             }  
             free(task_queue); 
-        //end
+            /*----------------------------------------------if failed free memory section -----------------------------------------------*/
             exit_w_code(EXIT_CODE);
         }
 
 
-        //FREE MEMORY
-        
+        /*----------------------------------------------------free memory section----------------------------------------------------------*/
         free(call_stack->data);//free memory
         free(call_stack);
         for(size_t i = 0; i < task_arr_size; ++i){
             free(task_arr[i]);
         }
         free(task_arr);
-        //free task queue
+            //free task queue
         if(!task_queue_empty(task_queue)){
             while(task_queue->head != NULL){
                 temp = task_queue->head;
@@ -119,8 +115,7 @@ int main(int argc, char** argv){
             }
         }  
         free(task_queue); 
-        //end
-
+        /*----------------------------------------------------free memory section----------------------------------------------------------*/
         exit_w_code(EXIT_CODE);  
     }    
 }
