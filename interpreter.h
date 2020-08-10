@@ -21,4 +21,5 @@ bool DataTypeAnalyzer(AnalyzedData*, char*);
 void Interpreter(AnalyzedData*);
 bool CheckCommand(char*, const char*, int);
 int search_command(const char*, int, int, int);
+int* input_data(char*, unsigned*, size_t*);
 #endif

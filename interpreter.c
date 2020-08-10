@@ -192,6 +192,45 @@ char* UserInputToString(FILE* stream, unsigned* errno){ //get user input by scan
 	return uits;
 }
 
+int is_num(char number){
+	return (isalnum(number) && !isalpha(number));
+}
+int to_number(char number){
+	return number - '0';
+}
+
+int* input_data(char* string, unsigned* errno, size_t* size){
+	int* temp_tab = NULL, *tab_pt = NULL, temp_int = 0;
+	char* str_pt = string;
+	size_t len = 0;
+	if(*string == '\0'){
+		return NULL;
+	}
+	if((temp_tab = (int*)malloc(1*sizeof(int))) == NULL){
+		*errno = INPUT_MEM_ALLOC_ERR;
+		return NULL;
+	}
+	do{
+		if((tab_pt = (int*)realloc(temp_tab, ++len * sizeof(int))) == NULL){
+			*errno = INPUT_MEM_ALLOC_ERR;
+			return NULL;
+		}
+		temp_tab = tab_pt;
+		while(is_num(*str_pt) && *str_pt != '\0'){
+			temp_int += to_number(*str_pt++);
+			if(is_num(*str_pt)){
+				temp_int *= 10;
+			}
+		}
+		temp_tab[len - 1] = temp_int;
+		temp_int = 0;
+	}while((++str_pt, *str_pt != '\0'));
+
+	*size = len;
+	*errno = 0;
+
+	return temp_tab;
+}
 //-------------------------MISC-----------------------------------
 //----------------------FUNCTIONS---------------------------------
 void PrintString(char* str){ //prints a string

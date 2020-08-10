@@ -10,18 +10,35 @@
 #include "syntax.h"
 
 int main(int argc, char** argv){
-    for(int i = 0; i < COMMAND_ROW; ++i){ //just for debug
-        	    printf("command: %s, index: %d\n", commands[i], search_command(commands[i], 0, COMMAND_ROW, COMMAND_ROW/2));
-            }
     unsigned EXIT_CODE = 0;
     char* m_str;
     call_stack_t* call_stack = NULL;
     task_queue_t* task_queue = NULL;
     task_queue_element_t* temp;
     AnalyzedData data;
-    size_t task_arr_size = 0;
-    char** task_arr;
-    char* free_str_ptr;
+    size_t task_arr_size = 0, input_data_size = 0;
+    char** task_arr = NULL;
+    int* input_tab = NULL;
+    bool empty_input = true;
+    
+    
+    
+    /*--------------------------------------it`s just debug---------------------------------------*/
+    char test[] = "21 33 1 23 32";
+
+    if((input_tab = input_data(test, &EXIT_CODE, &input_data_size)) == NULL){
+        if(EXIT_CODE){
+            exit_w_code(EXIT_CODE);
+        }
+        //else input is empty and there is no need to abort program
+    }
+    
+    for(size_t i = 0; i < input_data_size; ++i){
+        printf("Input integer: %d\n", input_tab[i]);
+    }
+    printf("\n\n");
+    /*--------------------------------------it`s just debug---------------------------------------*/
+
 
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);

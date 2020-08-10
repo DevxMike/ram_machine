@@ -32,3 +32,4 @@ const unsigned TASK_ARR_ALLOC_ERR = 0x06; //if alloc for task arr failed
 const unsigned NO_FILE_ERR = 0x07; //if file doesnt exist
 const unsigned EMPTY_FILE_ERR = 0x08; //if file is empty
 const unsigned STRING_MEM_ALLOC_ERR = 0x09; //if alloc for string failed
+const unsigned INPUT_MEM_ALLOC_ERR = 0x0A;
