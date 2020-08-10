@@ -6,6 +6,7 @@
 #include "reader.h"
 #include "errors.h"
 #include "syntax.h"
+#include <string.h>
 
 const char DEBUG_STRING[][70] = { //debug string array
     "CANNOT ANALYZE DATA",
@@ -218,4 +219,18 @@ bool CheckCommand(char* str1, const char* str2, int sl)
     return true;
   else
     return false;
+}
+int search_command(const char* cmd, int left, int right, int middle){
+	if(strcmp(cmd, commands[middle]) == 0){
+		return middle;
+	}
+	else if(strcmp(cmd, commands[middle]) < 0){
+		return search_command(cmd, left, middle, (left + middle)/2);
+	}
+	else if(strcmp(cmd, commands[middle]) > 0){
+		return search_command(cmd, middle, right, (right + middle)/2);
+	}
+	else{
+		return -1; 
+	}
 }

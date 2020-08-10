@@ -10,6 +10,9 @@
 #include "syntax.h"
 
 int main(int argc, char** argv){
+    for(int i = 0; i < COMMAND_ROW; ++i){ //just for debug
+        	    printf("command: %s, index: %d\n", commands[i], search_command(commands[i], 0, COMMAND_ROW, COMMAND_ROW/2));
+            }
     unsigned EXIT_CODE = 0;
     char* m_str;
     call_stack_t* call_stack = NULL;
@@ -61,7 +64,6 @@ int main(int argc, char** argv){
                     exit_w_code(WRONG_SYNTAX_ERR);
                 }
             }
-            
         }
         else{
             free(call_stack->data);//free memory
