@@ -21,6 +21,7 @@ int main(int argc, char** argv){
     AnalyzedData data;
     size_t task_arr_size = 0;
     char** task_arr;
+    char* free_str_ptr;
 
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
@@ -61,6 +62,10 @@ int main(int argc, char** argv){
                 else{
                     free(call_stack->data);//free memory
                     free(call_stack);
+                    for(size_t i = 0; i < task_arr_size; ++i){
+                        free(task_arr[i]);
+                    }
+                    free(task_arr);
                     //free task queue
                     if(!task_queue_empty(task_queue)){
                         while(task_queue->head != NULL){
@@ -71,6 +76,7 @@ int main(int argc, char** argv){
                     }  
                     free(task_queue); 
                     //end
+
                     exit_w_code(WRONG_SYNTAX_ERR);
                 }
             }
@@ -78,6 +84,10 @@ int main(int argc, char** argv){
         else{
             free(call_stack->data);//free memory
             free(call_stack);
+            for(size_t i = 0; i < task_arr_size; ++i){
+            free(task_arr[i]);
+            }
+            free(task_arr);
             //free task queue
             if(!task_queue_empty(task_queue)){
                 while(task_queue->head != NULL){
@@ -96,6 +106,10 @@ int main(int argc, char** argv){
         
         free(call_stack->data);//free memory
         free(call_stack);
+        for(size_t i = 0; i < task_arr_size; ++i){
+            free(task_arr[i]);
+        }
+        free(task_arr);
         //free task queue
         if(!task_queue_empty(task_queue)){
             while(task_queue->head != NULL){
