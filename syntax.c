@@ -1,38 +1,38 @@
 #include "syntax.h"
 
 const char* commands[COMMAND_ROW] = { //could be used as compare val to the input from file, so exemplary operands are in other array
-    "START",
-    "LOAD",
-    "STORE",
-    "STORE *",
     "ADD",
-    "SUB",
-    "MULT",
     "DIV",
+    "HALT",
+    "JGTZ",
+    "JUMP",
+    "JZERO",
+    "LOAD",
+    "MULT",
     "READ",
     "READ *",
-    "WRITE",
-    "JUMP",
-    "JGTZ",
-    "JZERO",
-    "HALT"
+    "START",
+    "STORE",
+    "STORE *",
+    "SUB",
+    "WRITE"
 };
 const char* ex_operands[COMMAND_ROW] = {
-    "<none> //indicates start of algorithm",
-    "x //stores x in R0 (special register)",
-    "x //copies value from R0 in Rx",
-    "x //get value from Rx that equals to y and copy R0 val to Ry",
     "x //add x to R0 value",
-    "x //sub x from R0 value",
-    "x //multiply R0 val by x",
     "x //divide R0 val by x",
+    "<none> //end the algorithm",
+    "<name_of_loop> //if R0 contains a positive integer jump to loop",
+    "<name_of_loop> //jumps to <name_of_loop>",
+    "<name_of_loop> //if R0 val equals to 0 jump to loop",
+    "x //stores x in R0 (special register)",
+    "x //multiply R0 val by x",
     "x //read from input to Rx",
     "x //get Rx val that equals y and read from input to Ry",
-    "x //write Rx to output",
-    "<name_of_loop> //jumps to <name_of_loop>",
-    "<name_of_loop> //if R0 contains a positive integer jump to loop",
-    "<name_of_loop> //if R0 val equals to 0 jump to loop",
-    "<none> //end the algorithm"
+    "<none> //indicates start of algorithm",
+    "x //copies value from R0 in Rx",
+    "x //get value from Rx that equals to y and copy R0 val to Ry",
+    "x //sub x from R0 value",
+    "x //write Rx to output"
 };
 
 

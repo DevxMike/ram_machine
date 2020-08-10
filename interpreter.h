@@ -20,4 +20,5 @@ char* UserInputToString(FILE* stream, unsigned* errno);
 bool DataTypeAnalyzer(AnalyzedData*, char*);
 void Interpreter(AnalyzedData*);
 bool CheckCommand(char*, const char*, int);
+//unsigned search_command(const char*, unsigned, unsigned);
 #endif
