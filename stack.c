@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 call_stack_t* init_stack(size_t size){
     call_stack_t* temp = NULL;
     if((temp = (call_stack_t*)malloc(sizeof(call_stack_t))) != NULL){ //if alloc didnt fail

@@ -41,6 +41,7 @@ void print_help(const char* program_str, size_t rows_com, const char* com[], siz
         "This program needs an existing file to work properly.\n"
         "i.e. \"%s <file_name>\"\n\n"
         "Syntax:\n"
+        "1 2 3 4 5 6 7 8 9 10 //integer input, not obligatory\n"
         "START - entry point\n"
         "<COMMANDS> <OPERANDS> - operations\n"
         "HALT - end of algorithm\n\n"

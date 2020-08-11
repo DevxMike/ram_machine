@@ -2,12 +2,13 @@
 #define stack_h_
 #include <stdio.h>
 #include <stdbool.h>
-
+#define CMD_SIZE 5
+#define OP_SIZE 11
 //git test
 
 typedef struct { //struct used to hold commands and operands
-    char command[5];
-    char operand_st[11];
+    char command[CMD_SIZE];
+    char operand_st[OP_SIZE];
 }stack_data_t;
 
 typedef struct{ //struct used to hold pointer to stack elements and general info about stack

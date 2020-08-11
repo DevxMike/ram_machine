@@ -231,17 +231,10 @@ int* input_data(char* string, unsigned* errno, size_t* size){
 
 	return temp_tab;
 }
-//-------------------------MISC-----------------------------------
-//----------------------FUNCTIONS---------------------------------
 void PrintString(char* str){ //prints a string
 	while(*str){
 		printf("%c", *str++);
 	}
-}
-
-void DEBUG_end(){
-	printf("\nEnd Of DEBUG - input whatever to exit\n");
-	getchar();
 }
  
 bool CheckCommand(char* str1, const char* str2, int sl)
@@ -271,5 +264,30 @@ int search_command(const char* cmd, int left, int right, int middle){
 	}
 	else{
 		return -1; 
+	}
+}
+void split_string(AnalyzedData* data, task_queue_data_t* temp_src){
+	bool has_operand = true;
+	char delim, *str_pt;
+
+	switch(data->type){
+		case 4: //START, HALT, some kind of loop etc
+		strcpy(temp_src->command, data->data);
+		has_operand = false;
+		break;
+
+		case 6: //ADD 5, DIV 2 etc
+		delim = ' ';
+		break;
+
+		case 8: //indirect addressing
+		delim = '*';
+		break;
+	}
+	if(has_operand){
+		//to do
+	}
+	else{
+		//to do 
 	}
 }
