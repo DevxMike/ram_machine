@@ -2,7 +2,7 @@
 #define stack_h_
 #include <stdio.h>
 #include <stdbool.h>
-#define CMD_SIZE 5
+#define CMD_SIZE 10
 #define OP_SIZE 11
 //git test
 

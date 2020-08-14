@@ -21,9 +21,11 @@ int main(int argc, char** argv){
     int* input_tab = NULL;
     bool empty_input = true;
     
+    char file[] = "test.txt";
     
     
     /*--------------------------------------it`s just debug---------------------------------------*/
+    printf("\n\n--------------------debug functionality--------------------\n\n");
     char test[] = "21 33 1 23 32";
 
     if((input_tab = input_data(test, &EXIT_CODE, &input_data_size)) == NULL){
@@ -36,7 +38,7 @@ int main(int argc, char** argv){
     for(size_t i = 0; i < input_data_size; ++i){
         printf("Input integer: %d\n", input_tab[i]);
     }
-    printf("\n\n");
+    printf("\n----------------------------end----------------------------\n\n");
     /*--------------------------------------it`s just debug---------------------------------------*/
 
 
@@ -47,7 +49,7 @@ int main(int argc, char** argv){
     else{
         
         if(strcmp(argv[1], "-h") == 0){ //if argv contains program name and "-h" string 
-            //printf("Some help message\n");
+            printf("Some help message\n");
             print_help(argv[0], COMMAND_ROW, commands, COMMAND_ROW, ex_operands);
             exit_w_code(EXIT_CODE);
         } 

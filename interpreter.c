@@ -27,6 +27,9 @@ void Interpreter(AnalyzedData* data){ //interprets tasks
 	}
 	printf("DEBUG:DataTypeAnalyzer - type = %d | flag0 = %d | flag1 ", data->type ,data->information.flag0); //print flags states
 	printf("= %d | flag2 = %d | flag3 = %d | flag4 \"command_id\" = %d\n", data->information.flag1, data->information.flag2, data->information.flag3, data->information.flag4);
+	task_queue_data_t temp;
+
+	split_string(data, &temp);
 }
 
 bool DataTypeAnalyzer(AnalyzedData* data, char* str){
@@ -198,7 +201,15 @@ int is_num(char number){
 int to_number(char number){
 	return number - '0';
 }
-
+void to_upper_case(char* string){
+	if(*string)
+		do{
+			if(!isalpha(*string)){
+				continue;
+			}
+			*string = toupper(*string);
+	}while(++string, *string);
+}
 int* input_data(char* string, unsigned* errno, size_t* size){
 	int* temp_tab = NULL, *tab_pt = NULL, temp_int = 0;
 	char* str_pt = string;
@@ -266,28 +277,56 @@ int search_command(const char* cmd, int left, int right, int middle){
 		return -1; 
 	}
 }
-void split_string(AnalyzedData* data, task_queue_data_t* temp_src){
+void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){
+	char* str_pt = string;
+	char* src_pt = temp_src->command;
+	while(isalpha(*str_pt)){
+		*src_pt++ = *str_pt++; 
+	}
+	*src_pt = '\0';
+	to_upper_case(temp_src->command);
+	if(has_op){
+		src_pt = temp_src->operand_st;
+		while(*str_pt){
+			if(is_num(*str_pt)){ 
+				(*src_pt++ = *str_pt++);
+			} 
+			else{ 
+				(++str_pt);
+			} 
+		}
+		*src_pt = '\0';
+	}
+}
+int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits string "ADD* 5" into two strings <cmd>"ADD" <operand>"5";
+	char delim[2];
+	int index;
 	bool has_operand = true;
-	char delim, *str_pt;
 
 	switch(data->type){
 		case 4: //START, HALT, some kind of loop etc
-		strcpy(temp_src->command, data->data);
 		has_operand = false;
 		break;
 
 		case 6: //ADD 5, DIV 2 etc
-		delim = ' ';
+		*delim = ' ';
 		break;
 
 		case 8: //indirect addressing
-		delim = '*';
+		*delim = '*';
 		break;
+		
+		default: //syntax error
+		return -1;
 	}
-	if(has_operand){
-		//to do
+	cut_string(data->data, temp_src, has_operand);
+	if((index = search_command(temp_src->command, 0, COMMAND_ROW, COMMAND_ROW/2)) >= 0){
+			strcpy(temp_src->command, commands[*delim == '*'? ++index : index]); 
 	}
 	else{
-		//to do 
+		return -1;
 	}
+	printf("\ncommand: %s, typeof data: %d, delim: \"%c\", index of command: %d\n", temp_src->command, data->type, *delim, index);
+
+	return has_operand? 1 : 0;
 }
