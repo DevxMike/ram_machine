@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void exit_w_code(unsigned exit_code);
+void exit_w_code(unsigned exit_code); //exit with specified exit code
 
 //exit code definitions
 extern const unsigned STACK_INIT_ERR; //if stack init fails (bad alloc)

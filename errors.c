@@ -8,7 +8,8 @@ const char ERROR_DESC[][70] = { //error descriptions
     "Mem alloc for tasks array failed",
     "Such file doesn`t exist.",
     "File is empty.",
-    "Mem alloc for string in stream failed."
+    "Mem alloc for string in stream failed.",
+    "Mem alloc for input data failed"
 };
 
 void exit_w_code(unsigned exit_code){ //function that prints exit code
@@ -32,4 +33,4 @@ const unsigned TASK_ARR_ALLOC_ERR = 0x06; //if alloc for task arr failed
 const unsigned NO_FILE_ERR = 0x07; //if file doesnt exist
 const unsigned EMPTY_FILE_ERR = 0x08; //if file is empty
 const unsigned STRING_MEM_ALLOC_ERR = 0x09; //if alloc for string failed
-const unsigned INPUT_MEM_ALLOC_ERR = 0x0A;
+const unsigned INPUT_MEM_ALLOC_ERR = 0x0A; //if alloc for input integers failed

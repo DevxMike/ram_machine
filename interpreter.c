@@ -44,7 +44,7 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 	data->data = NULL;
 	char* pt = str;
 
-	while(*pt){
+	while(*pt){ //check string to analyze it
 		if((isalnum(*pt) && !isalpha(*pt)) && *pt != ';') ++flag0;
 		if(*pt == '.' || *pt == ',') ++flag1;
 		if(*pt == '*') ++flag3;
@@ -151,7 +151,7 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 	      }
 	  }
 	
-	data->type = state;
+	data->type = state; //set type of input 
 	
 	data->information.flag0 = flag0; //copy flag info
 	data->information.flag1 = flag1;
@@ -175,33 +175,33 @@ char* UserInputToString(FILE* stream, unsigned* errno){ //get user input by scan
 	char input;
 	size_t i = 1;
 
-	if((uits = (char*)malloc(i * sizeof(char))) == NULL){
+	if((uits = (char*)malloc(i * sizeof(char))) == NULL){ //if alloc for string failed
 		*errno = STRING_MEM_ALLOC_ERR;
 		return NULL;
 	}
 	uits_pt = uits;
-	while((input = peek(stream)) != EOF && (input != ';' && input != '\n')){
-		*uits_pt = getc(stream);
-		if((temp = realloc(uits, ++i)) == NULL){
+	while((input = peek(stream)) != EOF && (input != ';' && input != '\n')){ //while char in stream is not a ';' or newline char
+		*uits_pt = getc(stream); //get char from stream and copy into memory on heap
+		if((temp = realloc(uits, ++i)) == NULL){ //if realloc failed
 			*errno = STRING_MEM_ALLOC_ERR;
 			return NULL;
 		}
 		uits = temp;
 		++uits_pt;
 	}
-	clear_stream(stream);
-	*uits_pt = '\0';
+	clear_stream(stream); //clear stream from chars 
+	*uits_pt = '\0'; //end the string with '\0' char
 	*errno = 0;
 	return uits;
 }
 
-int is_num(char number){
+int is_num(char number){ //determines if char is a number
 	return (isalnum(number) && !isalpha(number));
 }
-int to_number(char number){
+int to_number(char number){ //converts char into a number
 	return number - '0';
 }
-void to_upper_case(char* string){
+void to_upper_case(char* string){ //converts string into upper case 
 	if(*string)
 		do{
 			if(!isalpha(*string)){
@@ -214,21 +214,22 @@ int* input_data(char* string, unsigned* errno, size_t* size){
 	int* temp_tab = NULL, *tab_pt = NULL, temp_int = 0;
 	char* str_pt = string;
 	size_t len = 0;
-	if(*string == '\0'){
+
+	if(*string == '\0'){ //if string is empty
 		return NULL;
 	}
-	if((temp_tab = (int*)malloc(1*sizeof(int))) == NULL){
+	if((temp_tab = (int*)malloc(1*sizeof(int))) == NULL){ //if memory alloc failed
 		*errno = INPUT_MEM_ALLOC_ERR;
 		return NULL;
 	}
 	do{
-		if((tab_pt = (int*)realloc(temp_tab, ++len * sizeof(int))) == NULL){
+		if((tab_pt = (int*)realloc(temp_tab, ++len * sizeof(int))) == NULL){ //if memory realloc failed
 			*errno = INPUT_MEM_ALLOC_ERR;
 			return NULL;
 		}
-		temp_tab = tab_pt;
-		while(is_num(*str_pt) && *str_pt != '\0'){
-			temp_int += to_number(*str_pt++);
+		temp_tab = tab_pt; //if realloc didn`t fail
+		while(is_num(*str_pt) && *str_pt != '\0'){ //while part of a string is an integer
+			temp_int += to_number(*str_pt++); //simple conversion from string to int
 			if(is_num(*str_pt)){
 				temp_int *= 10;
 			}
@@ -263,7 +264,8 @@ bool CheckCommand(char* str1, const char* str2, int sl)
   else
     return false;
 }
-int search_command(const char* cmd, int left, int right, int middle){
+
+int search_command(const char* cmd, int left, int right, int middle){ //binary search, seeks for a string passed as a parameter
 	if(strcmp(cmd, commands[middle]) == 0){
 		return middle;
 	}
@@ -277,17 +279,18 @@ int search_command(const char* cmd, int left, int right, int middle){
 		return -1; 
 	}
 }
-void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){
+void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){ //slices string into two parts
 	char* str_pt = string;
 	char* src_pt = temp_src->command;
+
 	while(isalpha(*str_pt)){
-		*src_pt++ = *str_pt++; 
+		*src_pt++ = *str_pt++; //while command, copy to the memory where commands are hold
 	}
-	*src_pt = '\0';
-	to_upper_case(temp_src->command);
-	if(has_op){
-		src_pt = temp_src->operand_st;
-		while(*str_pt){
+	*src_pt = '\0'; //end string with '\0' char
+	to_upper_case(temp_src->command); //transform string to upper case 
+	if(has_op){ //if has operand (command is neither a loop nor START nor HALT command)
+		src_pt = temp_src->operand_st;  
+		while(*str_pt){ //while *str_pt is not a '\0' char
 			if(is_num(*str_pt)){ 
 				(*src_pt++ = *str_pt++);
 			} 
@@ -295,7 +298,7 @@ void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){
 				(++str_pt);
 			} 
 		}
-		*src_pt = '\0';
+		*src_pt = '\0';//end string with '\0' char
 	}
 }
 int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits string "ADD* 5" into two strings <cmd>"ADD" <operand>"5";
@@ -303,7 +306,7 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 	int index;
 	bool has_operand = true;
 
-	switch(data->type){
+	switch(data->type){ 
 		case 4: //START, HALT, some kind of loop etc
 		has_operand = false;
 		break;
@@ -319,14 +322,16 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 		default: //syntax error
 		return -1;
 	}
-	cut_string(data->data, temp_src, has_operand);
-	if((index = search_command(temp_src->command, 0, COMMAND_ROW, COMMAND_ROW/2)) >= 0){
-			strcpy(temp_src->command, commands[*delim == '*'? ++index : index]); 
+	
+	cut_string(data->data, temp_src, has_operand); //slice string
+
+	if((index = search_command(temp_src->command, 0, COMMAND_ROW, COMMAND_ROW/2)) >= 0){ //check if command exists
+		strcpy(temp_src->command, commands[*delim == '*'? ++index : index]); //copy the right command from syntax.c file (either direct or indirect addressing) 
 	}
 	else{
 		return -1;
 	}
-	printf("\ncommand: %s, typeof data: %d, delim: \"%c\", index of command: %d\n", temp_src->command, data->type, *delim, index);
+	printf("\ncommand: %s, typeof data: %d, delim: \"%c\", index of command: %d\n", temp_src->command, data->type, *delim, index); //print debug info
 
 	return has_operand? 1 : 0;
 }
