@@ -7,6 +7,7 @@
 //git test
 
 typedef struct { //struct used to hold commands and operands
+    int cmd_id;
     char command[CMD_SIZE];
     char operand_st[OP_SIZE];
 }stack_data_t;
