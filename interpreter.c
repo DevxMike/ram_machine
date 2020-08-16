@@ -234,7 +234,6 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 	}
 	
 	cut_string(data->data, temp_src, has_operand); //slice string
-	printf("%s\n", temp_src->command);
 	if((index = search_command(temp_src->command, 0, COMMAND_ROW, COMMAND_ROW/2)) >= 0){ //check if command exists
 		index = data->type == 8? index + 1 : index;
 		strcpy(temp_src->command, commands[index]); //copy the right command from syntax.c file (either direct or indirect addressing) 
