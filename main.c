@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include "errors.h"
 #include "syntax.h"
+#include "ram.h"
 
 int main(int argc, char** argv){
     unsigned EXIT_CODE = 0;
