@@ -2,7 +2,7 @@
 #define interpreter_h_
 #include "stack.h"
 #include "task_queue.h"
-
+#include <stdbool.h>
 typedef struct{ //data structure that holds flags states
   int flag0, flag1, flag2, flag4;
     unsigned short flag3;
@@ -15,10 +15,12 @@ int type;
 flags information;
 }AnalyzedData;
 
+extern bool has_loops;
+
 void PrintString(char*);
 char* UserInputToString(FILE*, unsigned*);
 bool DataTypeAnalyzer(AnalyzedData*, char*);
-void Interpreter(AnalyzedData*);
+void Interpreter(AnalyzedData*, task_queue_t*);
 bool CheckCommand(char*, const char*, int);
 int search_command(const char*, int, int, int);
 int* input_data(char*, unsigned*, size_t*);

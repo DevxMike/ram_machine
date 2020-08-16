@@ -29,7 +29,7 @@ const char* ex_operands[COMMAND_ROW] = {
     "x //read from input to Rx",
     "x //get Rx val that equals y and read from input to Ry",
     "<none> //indicates start of algorithm",
-    "x //copies value from R0 in Rx",
+    "x //copies R0 value into Rx",
     "x //get value from Rx that equals to y and copy R0 val to Ry",
     "x //sub x from R0 value",
     "x //write Rx to output"

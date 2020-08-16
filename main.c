@@ -15,6 +15,7 @@ int main(int argc, char** argv){
     call_stack_t* call_stack = NULL;
     task_queue_t* task_queue = NULL;
     task_queue_element_t* temp;
+    task_queue_data_t* t_data = NULL;
     AnalyzedData data;
     size_t task_arr_size = 0, input_data_size = 0;
     char** task_arr = NULL;
@@ -23,8 +24,8 @@ int main(int argc, char** argv){
     
     char file[] = "test.txt";
     
-    
-    /*--------------------------------------it`s just debug---------------------------------------*/
+    /*
+    //--------------------------------------it`s just debug---------------------------------------
     printf("\n\n--------------------debug functionality--------------------\n\n");
     char test[] = "21 33 1 23 32";
 
@@ -39,7 +40,8 @@ int main(int argc, char** argv){
         printf("Input integer: %d\n", input_tab[i]);
     }
     printf("\n----------------------------end----------------------------\n\n");
-    /*--------------------------------------it`s just debug---------------------------------------*/
+    //--------------------------------------it`s just debug---------------------------------------
+    */
 
 
     if(argc == 1){ //if argv contains program name only
@@ -57,29 +59,32 @@ int main(int argc, char** argv){
             exit_w_code(FILE_NAME_ERR);
         }
 
-        if((call_stack = init_stack(50)) == NULL){
-            exit_w_code(STACK_INIT_ERR);
+        if(has_loops){ 
+            if((call_stack = init_stack(50)) == NULL){
+                exit_w_code(STACK_INIT_ERR);
+            }
         }
-        if((task_queue = task_queue_init(50)) == NULL){
-            free(call_stack); //if init failed, free allocated memory
-            exit_w_code(TASK_QUEUE_INIT_ERR);
-        }
-
         printf("file to be read: %s\n\n", argv[1]);
         
         if((task_arr = read_file(argv[1], &task_arr_size, &EXIT_CODE)) != NULL && task_arr_size > 0){
+            if((task_queue = task_queue_init(task_arr_size)) == NULL){ //safety, it`s better to have more "place", can be easilly changed 
+                free(call_stack); //if init failed, free allocated memory
+                exit_w_code(TASK_QUEUE_INIT_ERR);
+            }
+
             for(size_t i = 0; i < task_arr_size; ++i){
                 if(DataTypeAnalyzer(&data, task_arr[i])){
-                    Interpreter(&data);
-                    printf("\n");
+                    Interpreter(&data, task_queue); 
                 }
                 else{
-                    free(call_stack->data);//free memory
-                    free(call_stack);
+                    /*----------------------------------------------if failed free memory section -----------------------------------------------*/
+                    if(call_stack != NULL){
+                        free(call_stack->data);//free memory
+                        free(call_stack);
+                    }
                     for(size_t i = 0; i < task_arr_size; ++i){
                         free(task_arr[i]);
                     }
-                    /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                     free(task_arr);
                     //free task queue
                     if(!task_queue_empty(task_queue)){
@@ -94,16 +99,22 @@ int main(int argc, char** argv){
                     }
                     free(task_arr);
                     free(task_queue); 
-                    /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                     exit_w_code(WRONG_SYNTAX_ERR);
+                    /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                 }
+            }
+            while(!task_queue_empty(task_queue)){
+                t_data = q_pop(task_queue);
+                printf("CMD: %s, OPERAND: %s, CMD_ID: %d\n", t_data->command, t_data->operand_st, t_data->cmd_id);
+                free(t_data);
             }
         }
         else{
             /*----------------------------------------------if failed free memory section -----------------------------------------------*/
-
-            free(call_stack->data);//free memory
-            free(call_stack);
+            if(call_stack != NULL){
+                free(call_stack->data);//free memory
+                free(call_stack);
+            }
             //free task queue
             if(!task_queue_empty(task_queue)){
                 while(task_queue->head != NULL){
@@ -119,8 +130,10 @@ int main(int argc, char** argv){
 
 
         /*----------------------------------------------------free memory section----------------------------------------------------------*/
-        free(call_stack->data);//free memory
-        free(call_stack);
+        if(call_stack != NULL){
+                free(call_stack->data);//free memory
+                free(call_stack);
+        }
         for(size_t i = 0; i < task_arr_size; ++i){
             free(task_arr[i]);
         }
