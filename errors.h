@@ -18,4 +18,5 @@ extern const unsigned NO_FILE_ERR; //if file doesnt exist
 extern const unsigned EMPTY_FILE_ERR;
 extern const unsigned STRING_MEM_ALLOC_ERR;
 extern const unsigned INPUT_MEM_ALLOC_ERR;
+extern const unsigned SYNTAX_ERR;
 #endif

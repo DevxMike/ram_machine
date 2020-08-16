@@ -22,17 +22,15 @@ const char DEBUG_STRING[][70] = { //debug string array
     "COMMAND"
 };
 
-void Interpreter(AnalyzedData* data, task_queue_t* queue){ //interprets tasks
+void Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status){ //interprets tasks
 	task_queue_data_t temp;
-
-	//if(data->type >= 0){ //if a rare bug has not occured
-	//	printf("input = \"%s\" -> %s\n", data->data, DEBUG_STRING[data->type]); //print debug string
-	//}
-	//printf("DEBUG:DataTypeAnalyzer - type = %d | flag0 = %d | flag1 ", data->type ,data->information.flag0); //print flags states
-	//printf("= %d | flag2 = %d | flag3 = %d | flag4 \"command_id\" = %d\n", data->information.flag1, data->information.flag2, data->information.flag3, data->information.flag4);
 	split_string(data, &temp);
 	if(temp.cmd_id != -1){
 		q_push(queue, &temp);
+		*status = 0;
+	}
+	else{
+		*status = WRONG_SYNTAX_ERR;
 	}
 }
 
@@ -79,8 +77,7 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 		state = 8; //contains letters, numbers and '*' char
 	if(flag0 == 0 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 1)
 		state = 9; //contains letter/letters and ':' char
-	//here is section 1 placed under all code 
-	
+
 	data->type = state; //set type of input 
 	
 	data->information.flag0 = flag0; //copy flag info
@@ -171,10 +168,6 @@ int* input_data(char* string, unsigned* errno, size_t* size){
 
 	return temp_tab;
 }
-/*
-	section 2
-*/
-
 int search_command(const char* cmd, int left, int right, int middle){ //binary search, seeks for a string passed as a parameter
 	if(strcmp(cmd, commands[middle]) == 0){
 		return middle;
@@ -241,113 +234,6 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 	else{
 		return temp_src->cmd_id = index;
 	}
-	//printf("\ncommand: %s, typeof data: %d, delim: \"%c\", index of command: %d\n", temp_src->command, data->type, *delim, index); //print debug info
 	temp_src->cmd_id = index;
 	return has_operand? 1 : 0;
 }
-
-/* section 1
-
-if(state == 4)
-	  {
-	    switch(flag2)
-	      {
-		
-	      case 3:
-		if(CheckCommand(str, commands[4], flag2))
-		  {
-		    state = 9;
-		    flag4 = 5;
-		  }
-		if(CheckCommand(str, commands[5], flag2))
-		  {
-		    state = 9;
-		    flag4 = 6;
-		  }
-		if(CheckCommand(str, commands[7], flag2))
-		  {
-		    state = 9;
-		    flag4 = 8;
-		  }
-		break;
-		
-	      case 4:
-		if(CheckCommand(str, commands[1], flag2))
-		  {
-		    state = 9;
-		    flag4 = 2;
-		  }
-		if(CheckCommand(str, commands[6], flag2))
-		  {
-		    state = 9;
-		    flag4 = 7;
-		  }
-		if(CheckCommand(str, commands[8], flag2))
-		  {
-		    state = 9;
-		    flag4 = 9;
-		  }
-		if(CheckCommand(str, commands[11], flag2))
-		  {
-		    state = 9;
-		    flag4 = 12;
-		  }
-		if(CheckCommand(str, commands[12], flag2))
-		  {
-		    state = 9;
-		    flag4 = 13;
-		  }
-		if(CheckCommand(str, commands[14], flag2))
-		  {
-		    state = 9;
-		    flag4 = 15;
-		  }
-		break;
-		
-	      case 5:
-		if(CheckCommand(str, commands[0], flag2))
-		  {
-		    state = 9;
-		    flag4 = 1;
-		  }
-		if(CheckCommand(str, commands[2], flag2))
-		  {
-		    state = 9;
-		    flag4 = 3;
-		  }
-		if(CheckCommand(str, commands[10], flag2))
-		  {
-		    state = 9;
-		    flag4 = 11;
-		  }
-		if(CheckCommand(str, commands[13], flag2))
-		  {
-		    state = 9;
-		    flag4 = 14;
-		  }
-		break;
-		
-	      }
-	  }*/
-	  /* section 2
-		void PrintString(char* str){ //prints a string
-			while(*str){
-				printf("%c", *str++);
-			}
-		}
-		
-		bool CheckCommand(char* str1, const char* str2, int sl)
-		{
-		int j = 0;
-		int i = 0;
-		for(i=0 ; i<sl ; i++)
-			{
-			if(str1[i] == str2[i])
-			j++;
-			}
-		
-		if(i == j)
-			return true;
-		else
-			return false;
-		}*/

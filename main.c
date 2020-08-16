@@ -73,7 +73,31 @@ int main(int argc, char** argv){
 
             for(size_t i = 0; i < task_arr_size; ++i){
                 if(DataTypeAnalyzer(&data, task_arr[i])){
-                    Interpreter(&data, task_queue); 
+                    Interpreter(&data, task_queue, &EXIT_CODE); 
+                    if(EXIT_CODE){
+                        exit_w_code(EXIT_CODE); //syntax err
+                        if(call_stack != NULL){
+                        free(call_stack->data);//free memory
+                        free(call_stack);
+                        }
+                        for(size_t i = 0; i < task_arr_size; ++i){
+                            free(task_arr[i]);
+                        }
+                        free(task_arr);
+                        //free task queue
+                        if(!task_queue_empty(task_queue)){
+                            while(task_queue->head != NULL){
+                                temp = task_queue->head;
+                                task_queue->head = task_queue->head->next;
+                                free(temp);
+                            }
+                        }  
+                        for(size_t i = 0; i < task_arr_size; ++i){
+                            free(task_arr[i]);
+                        }
+                        free(task_arr);
+                        free(task_queue); 
+                    }
                 }
                 else{
                     /*----------------------------------------------if failed free memory section -----------------------------------------------*/

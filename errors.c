@@ -3,13 +3,13 @@ const char ERROR_DESC[][70] = { //error descriptions
     "Failed to allocate memory for call stack.",
     "Failed to allocate memory for task queue.",
     "No file name passed to the program.",
-    "Wrong file name. Try <file_name>.txt .",
+    "Wrong file name. Try <file_name>.txt.",
     "Wrong syntax. <program_name> -h for help.",
-    "Mem alloc for tasks array failed",
+    "Mem alloc for tasks array failed.",
     "Such file doesn`t exist.",
     "File is empty.",
     "Mem alloc for string in stream failed.",
-    "Mem alloc for input data failed"
+    "Mem alloc for input data failed."
 };
 
 void exit_w_code(unsigned exit_code){ //function that prints exit code
