@@ -19,4 +19,5 @@ extern const unsigned EMPTY_FILE_ERR;
 extern const unsigned STRING_MEM_ALLOC_ERR;
 extern const unsigned INPUT_MEM_ALLOC_ERR;
 extern const unsigned SYNTAX_ERR;
+extern const unsigned HEAP_EL_ERR;
 #endif

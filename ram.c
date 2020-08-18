@@ -1,14 +1,17 @@
 #include "ram.h"
 #include <stdlib.h>
 
+inline void copy_structs(ram_cell_t* destination, ram_cell_t* source){
+    destination->cell_id = source->cell_id;
+    destination->value = source->value;
+}
+
 void swap_structs(ram_cell_t* r1, ram_cell_t* r2){
     ram_cell_t temp;
-    temp.cell_id = r1->cell_id;
-    temp.value = r1->value;
-    r1->cell_id = r2->cell_id;
-    r1->value = r2->value;
-    r2->cell_id = r2->cell_id;
-    r2->value = r2->value;
+
+    copy_structs(&temp, r1);
+    copy_structs(r1, r2);
+    copy_structs(r2, &temp);
 }
 
 inline int greater(const id_t id1, const id_t id2){
