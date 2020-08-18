@@ -16,9 +16,6 @@ void swap_structs(ram_cell_t* r1, ram_cell_t* r2){
     copy_structs(r2, &temp);
 }
 
-inline int greater(const id_type id1, const id_type id2){
-    return id1 > id2;
-}
 ram_chip_t* init_ram(){
     ram_chip_t* temp = NULL;
     if((temp = (ram_chip_t*) malloc(sizeof(ram_cell_t))) != NULL){
@@ -28,6 +25,7 @@ ram_chip_t* init_ram(){
     return temp;
 }
 void ram_push(ram_chip_t* r_chip, const ram_cell_t* r_cell){
+    printf("%llu\n", r_cell->cell_id);
     //to do
 }
 ram_cell_t* ram_pop(ram_chip_t* chip){

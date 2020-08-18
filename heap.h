@@ -9,9 +9,12 @@ typedef struct{
     heap_data_t* arr;
 }heap_t;
 
-void h_push(heap_t*, const heap_data_t*, unsigned*);
-heap_data_t* h_pop(heap_t*);
+int h_push(heap_t*, const heap_data_t*, unsigned*);
+void h_pop(heap_t*, ram_chip_t*);
 heap_t* init_heap(void);
 int heap_empty(const heap_t*);
 int heap_full(const heap_t*);
+void shift_up(heap_t*, size_t);
+void shift_down(heap_t*, size_t, size_t, size_t);
+int greater(const id_type, const id_type);
 #endif

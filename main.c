@@ -9,6 +9,24 @@
 #include "errors.h"
 #include "syntax.h"
 #include "ram.h"
+#include "heap.h"
+
+const size_t arr_size = 13;
+ram_cell_t cells[] = {
+    {1,1},
+    {15,1},
+    {21,1},
+    {3,1},
+    {4,1},
+    {6,1},
+    {8,1},
+    {1000000,1},
+    {12,1},
+    {11,1},
+    {5, 1},
+    {4, 1},
+    {1, 1}
+};
 
 int main(int argc, char** argv){
     unsigned EXIT_CODE = 0;
@@ -23,8 +41,16 @@ int main(int argc, char** argv){
     int* input_tab = NULL;
     bool empty_input = true;
     
-    char file[] = "test.txt";
-    
+    heap_t* heap;
+    heap = init_heap();
+    for(size_t i = 0; i < arr_size; ++i){
+        h_push(heap, &cells[i], &EXIT_CODE);
+    }
+    printf("\n\nDEBUG ONLY\n");
+    while(!heap_empty(heap)){
+        h_pop(heap, NULL);
+    }
+    printf("DEBUG ONLY\n\n");
     /*
     //--------------------------------------it`s just debug---------------------------------------
     printf("\n\n--------------------debug functionality--------------------\n\n");
