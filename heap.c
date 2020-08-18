@@ -2,20 +2,14 @@
 #include <stdlib.h>
 #include "errors.h"
 
-inline void copy_structs(heap_data_t* destination, heap_data_t* source){
-    destination->cell_id = source->cell_id;
-    destination->value = source->value;
+int heap_empty(const heap_t* heap){
+    return heap->elements == 0;
+}
+int heap_full(const heap_t* heap){
+    return heap->elements == heap->heap_size;
 }
 
-void swap_structs(heap_data_t* r1, heap_data_t* r2){
-    heap_data_t temp;
-
-    copy_structs(&temp, r1);
-    copy_structs(r1, r2);
-    copy_structs(r2, &temp);
-}
-
-inline int greater(const id_t id1, const id_t id2){
+inline int greater(const id_type id1, const id_type id2){
     return id1 > id2;
 }
 
