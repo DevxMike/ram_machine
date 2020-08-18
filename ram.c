@@ -25,6 +25,6 @@ ram_chip_t* init_ram(){
 void ram_push(ram_chip_t* r_chip, const ram_cell_t* r_cell){
     //to do
 }
-ram_cell_t* ram_pop(void){
+ram_cell_t* ram_pop(ram_chip_t* chip){
     return NULL; //to do
 }

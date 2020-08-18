@@ -9,14 +9,20 @@ typedef struct{
 }ram_cell_t;
 
 typedef struct{
+    size_t quantity;
     size_t chip_size; //quantity of ram cells used in user`s algorithm
     ram_cell_t* arr; //array of "ram cells"
 }ram_chip_t;
 
 ram_chip_t* init_ram();
 void ram_push(ram_chip_t*, const ram_cell_t*);
-ram_cell_t* ram_pop(void);
-
+ram_cell_t* ram_pop(ram_chip_t*);
+inline int ram_is_empty(ram_chip_t* chip){
+    return chip->quantity == 0;
+}
+inline int ram_is_full(ram_chip_t* chip){
+    return chip->quantity == chip->chip_size;
+}
 
 void swap_structs(ram_cell_t*, ram_cell_t*);
 #endif
