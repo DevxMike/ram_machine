@@ -21,7 +21,44 @@ const char DEBUG_STRING[][70] = { //debug string array
     "string of letters, '*' char and int (indirect addressing)",
     "COMMAND"
 };
+int to_number(char number){ //converts char into a number
+	return number - '0';
+}
+int tasker(ram_chip_t* ram, task_queue_data_t* data){
+	switch(data->cmd_id){
+		case 0: //ADD operation
+		break;
+		
+		case 1: //DIV operation
+		break; 
+		
+		case 3: //JGTZ operation
+		case 4: //JUMP operation
+		case 5: //JZERO operation
+		break;
 
+		case 6: //LOAD operation
+		break;
+		
+		case 7: //MULT operation
+		break;
+		
+		case 8: //READ operation
+		case 9:	//READ * operation
+		break;
+
+		case 11: //STORE operation
+		case 12: //STORE * operation
+		break;
+
+		case 13: //SUB operation
+		break;
+		
+		case 14: //write operation
+		break;
+
+	}
+}
 int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_t line){ //interprets tasks
 	task_queue_data_t temp;
 	int* arr = NULL;
@@ -129,11 +166,6 @@ char* UserInputToString(FILE* stream, unsigned* errno){ //get user input by scan
 	*uits_pt = '\0'; //end the string with '\0' char
 	*errno = 0;
 	return uits;
-}
-
-
-int to_number(char number){ //converts char into a number
-	return number - '0';
 }
 void to_upper_case(char* string){ //converts string into upper case 
 	if(*string)

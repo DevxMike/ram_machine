@@ -157,8 +157,9 @@ int main(int argc, char** argv){
             }
             while(!task_queue_empty(task_queue)){
                 t_data = q_pop(task_queue);
-                printf("CMD: %s, OPERAND: %s, CMD_ID: %d\n", t_data->command, t_data->operand_st, t_data->cmd_id);
+                //printf("CMD: %s, OPERAND: %s, CMD_ID: %d\n", t_data->command, t_data->operand_st, t_data->cmd_id);
                 free(t_data);
+                
             }
         }
         else{

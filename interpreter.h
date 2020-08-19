@@ -3,6 +3,8 @@
 #include "stack.h"
 #include "task_queue.h"
 #include <stdbool.h>
+#include "ram.h"
+
 typedef struct{ //data structure that holds flags states
   int flag0, flag1, flag2, flag4;
     unsigned short flag3;
@@ -15,6 +17,20 @@ int type;
 flags information;
 }AnalyzedData;
 
+typedef enum{
+  direct = 0, indirect
+}addressing;
+
+int ADD(ram_chip_t*, id_type);
+int DIV(ram_chip_t*, id_type);
+int LOAD(ram_chip_t*, int);
+int MULT(ram_chip_t*, id_type);
+int READ(ram_chip_t*, id_type, addressing);
+int STORE(ram_chip_t*, id_type, addressing);
+int SUB(ram_chip_t*, id_type);
+int WRITE(ram_chip_t*, id_type);
+
+
 extern bool has_loops;
 
 void PrintString(char*);
@@ -26,4 +42,5 @@ int search_command(const char*, int, int);
 int* input_data(char*, unsigned*, size_t*);
 int split_string(AnalyzedData*, task_queue_data_t*);
 void to_upper_case(char*);
+int tasker(ram_chip_t*, task_queue_data_t*);
 #endif
