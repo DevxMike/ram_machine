@@ -23,7 +23,7 @@ ram_cell_t cells[] = {
     {11,1},
     {5, 1},
     {4, 1},
-    {1, 1}
+    {2, 1}
 };
 
 int main(int argc, char** argv){
@@ -54,7 +54,7 @@ int main(int argc, char** argv){
     for(size_t i = 0; i < ram_chip->quantity; ++i){
         printf("value: %llu index: %d\n",
             ram_chip->arr[i].cell_id,
-            ram_search(ram_chip->arr[i].cell_id, ram_chip, 0, ram_chip->quantity, ram_chip->quantity/2)
+            ram_search(ram_chip->arr[i].cell_id, ram_chip, 0, ram_chip->quantity)
         );
     }
     /*

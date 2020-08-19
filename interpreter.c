@@ -168,18 +168,19 @@ int* input_data(char* string, unsigned* errno, size_t* size){
 
 	return temp_tab;
 }
-int search_command(const char* cmd, int left, int right, int middle){ //binary search, seeks for a string passed as a parameter
+int search_command(const char* cmd, int left, int right){ //binary search, seeks for a string passed as a parameter
+	int middle = (left + right) / 2;
+	if(left > right || left < 0){
+		return -1;
+	}
 	if(strcmp(cmd, commands[middle]) == 0){
 		return middle;
 	}
 	else if(strcmp(cmd, commands[middle]) < 0){
-		return search_command(cmd, left, middle, (left + middle)/2);
+		return search_command(cmd, left, middle - 1);
 	}
 	else if(strcmp(cmd, commands[middle]) > 0){
-		return search_command(cmd, middle, right, (right + middle)/2);
-	}
-	else{
-		return -1; 
+		return search_command(cmd, middle + 1, right);
 	}
 }
 void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){ //slices string into two parts
@@ -227,7 +228,7 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 	}
 	
 	cut_string(data->data, temp_src, has_operand); //slice string
-	if((index = search_command(temp_src->command, 0, COMMAND_ROW, COMMAND_ROW/2)) >= 0){ //check if command exists
+	if((index = search_command(temp_src->command, 0, COMMAND_ROW)) >= 0){ //check if command exists
 		index = data->type == 8? index + 1 : index;
 		strcpy(temp_src->command, commands[index]); //copy the right command from syntax.c file (either direct or indirect addressing) 
 	}

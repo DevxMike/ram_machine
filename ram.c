@@ -16,18 +16,19 @@ void swap_structs(ram_cell_t* r1, ram_cell_t* r2){
     copy_structs(r2, &temp);
 }
 
-int ram_search(const id_type target, const ram_chip_t* chip, size_t left, size_t right, size_t mid){
+int ram_search(const id_type target, const ram_chip_t* chip, int left, int right){
+    if(left > right || left < 0){
+        return -1;
+    }
+    int mid = (left+right)/2;
     if(chip->arr[mid].cell_id == target){
         return mid;
     }
     else if(chip->arr[mid].cell_id > target){
-        return ram_search(target, chip, mid, right, (mid+right)/2);
+        return ram_search(target, chip, mid+1, right);
     }
     else if(chip->arr[mid].cell_id < target){
-        return ram_search(target, chip, left, mid, (left+mid)/2);
-    }
-    else{
-        return -1;
+        return ram_search(target, chip, left, mid - 1);
     }
 }
 
