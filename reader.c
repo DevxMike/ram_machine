@@ -70,12 +70,12 @@ char** read_file(char* f_name, size_t* sizeof_arr, unsigned* errno){
             continue;
         }
         str = UserInputToString(file_in, errno); //get string from file
+        printf("%s\n", str);
         if((tasks[lines - 1] = (char*)malloc(sizeof(char) * (strlen(str) + 1))) == NULL){ //if memory alloc failed
             *errno = TASK_ARR_ALLOC_ERR;
             return NULL;
         }
         strcpy(tasks[lines - 1], str); //copy input from file to array of strings
-        free(str);
         if((temp = realloc(tasks, ++lines * sizeof(char*))) == NULL){ //if realloc failed
             *errno = TASK_ARR_ALLOC_ERR;
             return NULL;

@@ -44,19 +44,6 @@ int main(int argc, char** argv){
 
     ram_heap = init_ram_heap();
     ram_chip = init_ram();
-    for(size_t i = 0; i < arr_size; ++i){
-        ram_heap_push(ram_heap, &cells[i], &EXIT_CODE);
-    }
-    while(!ram_heap_empty(ram_heap)){
-        ram_heap_pop(ram_heap, ram_chip);
-    }
-    printf("searching...\n");
-    for(size_t i = 0; i < ram_chip->quantity; ++i){
-        printf("value: %llu index: %d\n",
-            ram_chip->arr[i].cell_id,
-            ram_search(ram_chip->arr[i].cell_id, ram_chip, 0, ram_chip->quantity)
-        );
-    }
     /*
     //--------------------------------------it`s just debug---------------------------------------
     printf("\n\n--------------------debug functionality--------------------\n\n");
@@ -106,7 +93,7 @@ int main(int argc, char** argv){
 
             for(size_t i = 0; i < task_arr_size; ++i){
                 if(DataTypeAnalyzer(&data, task_arr[i])){
-                    Interpreter(&data, task_queue, &EXIT_CODE); 
+                    Interpreter(&data, task_queue, &EXIT_CODE, i); 
                     if(EXIT_CODE){
                         exit_w_code(EXIT_CODE); //syntax err
                         if(call_stack != NULL){

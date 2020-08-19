@@ -20,7 +20,7 @@ extern bool has_loops;
 void PrintString(char*);
 char* UserInputToString(FILE*, unsigned*);
 bool DataTypeAnalyzer(AnalyzedData*, char*);
-void Interpreter(AnalyzedData*, task_queue_t*, unsigned*);
+void Interpreter(AnalyzedData*, task_queue_t*, unsigned*, size_t);
 bool CheckCommand(char*, const char*, int);
 int search_command(const char*, int, int);
 int* input_data(char*, unsigned*, size_t*);

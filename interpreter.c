@@ -22,7 +22,7 @@ const char DEBUG_STRING[][70] = { //debug string array
     "COMMAND"
 };
 
-void Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status){ //interprets tasks
+void Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_t line){ //interprets tasks
 	task_queue_data_t temp;
 	split_string(data, &temp);
 	if(temp.cmd_id != -1){
@@ -30,6 +30,7 @@ void Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status){ //i
 		*status = 0;
 	}
 	else{
+		printf("line %ld: %s - not a command.\n", line + 1, temp.command);
 		*status = WRONG_SYNTAX_ERR;
 	}
 }
@@ -102,21 +103,21 @@ char* UserInputToString(FILE* stream, unsigned* errno){ //get user input by scan
 	char input;
 	size_t i = 1;
 
-	if((uits = (char*)malloc(i * sizeof(char))) == NULL){ //if alloc for string failed
+	if((uits = (char*)malloc(sizeof(char))) == NULL){ //if alloc for string failed
 		*errno = STRING_MEM_ALLOC_ERR;
 		return NULL;
 	}
 	uits_pt = uits;
 	while((input = peek(stream)) != EOF && (input != ';' && input != '\n')){ //while char in stream is not a ';' or newline char
 		*uits_pt = getc(stream); //get char from stream and copy into memory on heap
-		if((temp = realloc(uits, ++i)) == NULL){ //if realloc failed
+		if((temp = realloc(uits, ++i * sizeof(char))) == NULL){ //if realloc failed
 			*errno = STRING_MEM_ALLOC_ERR;
 			return NULL;
 		}
 		uits = temp;
 		++uits_pt;
 	}
-	clear_stream(stream); //clear stream from chars 
+	//clear_stream(stream); //clear stream from chars 
 	*uits_pt = '\0'; //end the string with '\0' char
 	*errno = 0;
 	return uits;
@@ -186,15 +187,17 @@ int search_command(const char* cmd, int left, int right){ //binary search, seeks
 void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){ //slices string into two parts
 	char* str_pt = string;
 	char* src_pt = temp_src->command;
+	size_t ctrl = 0;
 
-	while(isalpha(*str_pt)){
+	while(isalpha(*str_pt) && ctrl++ < CMD_SIZE - 1){
 		*src_pt++ = *str_pt++; //while command, copy to the memory where commands are hold
 	}
+	ctrl = 0;
 	*src_pt = '\0'; //end string with '\0' char
 	to_upper_case(temp_src->command); //transform string to upper case 
 	if(has_op){ //if has operand (command is neither a loop nor START nor HALT command)
 		src_pt = temp_src->operand_st;  
-		while(*str_pt){ //while *str_pt is not a '\0' char
+		while(*str_pt && ctrl++ < OP_SIZE - 1){ //while *str_pt is not a '\0' char
 			if(is_num(*str_pt)){ 
 				(*src_pt++ = *str_pt++);
 			} 
