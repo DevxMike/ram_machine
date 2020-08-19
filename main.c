@@ -93,7 +93,9 @@ int main(int argc, char** argv){
 
             for(size_t i = 0; i < task_arr_size; ++i){
                 if(DataTypeAnalyzer(&data, task_arr[i])){
-                    Interpreter(&data, task_queue, &EXIT_CODE, i); 
+                    if(Interpreter(&data, task_queue, &EXIT_CODE, i) == 1){
+                        input_tab = input_data(data.data, &EXIT_CODE, &input_data_size);
+                    } 
                     if(EXIT_CODE){
                         exit_w_code(EXIT_CODE); //syntax err
                         if(call_stack != NULL){
@@ -145,6 +147,13 @@ int main(int argc, char** argv){
                     exit_w_code(WRONG_SYNTAX_ERR);
                     /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                 }
+            }
+            if(input_tab != NULL && input_data_size > 0){
+                printf("Input integers:\n");
+                for(size_t i = 0; i < input_data_size; ++i){
+                    printf("%ld: %d\n", i + 1, input_tab[i]);
+                }
+                printf("\n");
             }
             while(!task_queue_empty(task_queue)){
                 t_data = q_pop(task_queue);

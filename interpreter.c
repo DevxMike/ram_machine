@@ -22,16 +22,24 @@ const char DEBUG_STRING[][70] = { //debug string array
     "COMMAND"
 };
 
-void Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_t line){ //interprets tasks
+int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_t line){ //interprets tasks
 	task_queue_data_t temp;
-	split_string(data, &temp);
-	if(temp.cmd_id != -1){
-		q_push(queue, &temp);
-		*status = 0;
+	int* arr = NULL;
+
+	if(split_string(data, &temp) == 2){
+		return 1;
 	}
 	else{
-		printf("line %ld: %s - not a command.\n", line + 1, temp.command);
-		*status = WRONG_SYNTAX_ERR;
+		if(temp.cmd_id != -1){
+			q_push(queue, &temp);
+			*status = 0;
+			return 0;
+		}
+		else{
+			printf("line %ld: %s - not a command.\n", line + 1, temp.command);
+			*status = WRONG_SYNTAX_ERR;
+			return -1;
+		}
 	}
 }
 
@@ -166,7 +174,6 @@ int* input_data(char* string, unsigned* errno, size_t* size){
 
 	*size = len;
 	*errno = 0;
-
 	return temp_tab;
 }
 int search_command(const char* cmd, int left, int right){ //binary search, seeks for a string passed as a parameter
@@ -214,6 +221,10 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 	bool has_operand = true;
 
 	switch(data->type){ 
+		case 1:
+		return 2; //string of integers
+		break;
+
 		case 4: //START, HALT, some kind of loop etc
 		has_operand = false;
 		break;
