@@ -11,13 +11,11 @@
 #include "ram.h"
 #include "ram_heap.h"
 
-const size_t arr_size = 13;
+const size_t arr_size = 11;
 ram_cell_t cells[] = {
-    {1,1},
     {15,1},
     {21,1},
     {3,1},
-    {4,1},
     {6,1},
     {8,1},
     {1000000,1},
@@ -40,14 +38,24 @@ int main(int argc, char** argv){
     char** task_arr = NULL;
     int* input_tab = NULL;
     bool empty_input = true;
-    
-    ram_heap_t* ram_heap;
+
+    ram_heap_t* ram_heap = NULL;
+    ram_chip_t* ram_chip = NULL;
+
     ram_heap = init_ram_heap();
+    ram_chip = init_ram();
     for(size_t i = 0; i < arr_size; ++i){
         ram_heap_push(ram_heap, &cells[i], &EXIT_CODE);
     }
     while(!ram_heap_empty(ram_heap)){
-        ram_heap_pop(ram_heap, NULL);
+        ram_heap_pop(ram_heap, ram_chip);
+    }
+    printf("searching...\n");
+    for(size_t i = 0; i < ram_chip->quantity; ++i){
+        printf("value: %llu index: %d\n",
+            ram_chip->arr[i].cell_id,
+            ram_search(ram_chip->arr[i].cell_id, ram_chip, 0, ram_chip->quantity, ram_chip->quantity/2)
+        );
     }
     /*
     //--------------------------------------it`s just debug---------------------------------------

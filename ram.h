@@ -16,13 +16,13 @@ typedef struct{
 }ram_chip_t;
 
 ram_chip_t* init_ram();
-void ram_push(ram_chip_t*, const ram_cell_t*);
+int ram_push(ram_chip_t*, const ram_cell_t*);
 ram_cell_t* ram_pop(ram_chip_t*);
 void copy_structs(ram_cell_t*, const ram_cell_t* const);
 void swap_structs(ram_cell_t*, ram_cell_t*);
-int ram_is_empty(ram_chip_t* chip);
-int ram_is_full(ram_chip_t* chip);
-
+int ram_empty(ram_chip_t* chip);
+int ram_full(ram_chip_t* chip);
+int ram_search(const id_type target, const ram_chip_t*, size_t, size_t, size_t);
 
 
 void swap_structs(ram_cell_t*, ram_cell_t*);
