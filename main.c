@@ -9,7 +9,7 @@
 #include "errors.h"
 #include "syntax.h"
 #include "ram.h"
-#include "heap.h"
+#include "ram_heap.h"
 
 const size_t arr_size = 13;
 ram_cell_t cells[] = {
@@ -41,16 +41,14 @@ int main(int argc, char** argv){
     int* input_tab = NULL;
     bool empty_input = true;
     
-    heap_t* heap;
-    heap = init_heap();
+    ram_heap_t* ram_heap;
+    ram_heap = init_ram_heap();
     for(size_t i = 0; i < arr_size; ++i){
-        h_push(heap, &cells[i], &EXIT_CODE);
+        ram_heap_push(ram_heap, &cells[i], &EXIT_CODE);
     }
-    printf("\n\nDEBUG ONLY\n");
-    while(!heap_empty(heap)){
-        h_pop(heap, NULL);
+    while(!ram_heap_empty(ram_heap)){
+        ram_heap_pop(ram_heap, NULL);
     }
-    printf("DEBUG ONLY\n\n");
     /*
     //--------------------------------------it`s just debug---------------------------------------
     printf("\n\n--------------------debug functionality--------------------\n\n");
