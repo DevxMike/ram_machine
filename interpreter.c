@@ -215,7 +215,7 @@ int transform_to_int(char* str, int initial){ //both operations assume that inpu
 		return initial;
 	}
 }
-int transform_to_id_type(char* str, int initial){ //both operations assume that input is correct (string contains a number)
+id_type transform_to_id_type(char* str, id_type initial){ //both operations assume that input is correct (string contains a number)
 	if(*str){
 		initial *= 10;
 		initial += to_number(*str);
