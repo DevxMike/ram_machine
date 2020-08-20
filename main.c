@@ -2,13 +2,13 @@
 
 int main(int argc, char** argv){
     ram_cell_t R0 = {
-    0, 0
+        0, 0
     };
     main_vars_t program_variables;
-    init_main(&program_variables);
     task_queue_element_t* temp;
     task_queue_data_t* t_data = NULL;
 
+    init_main(&program_variables);
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
         exit_w_code(NO_FILE_NAME_ERR);
