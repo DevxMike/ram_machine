@@ -31,4 +31,6 @@ int* input_data(char*, unsigned*, size_t*);
 int split_string(AnalyzedData*, task_queue_data_t*);
 void to_upper_case(char*);
 int tasker(ram_chip_t*, task_queue_data_t*);
+int string_to_int(char*);
+id_type string_to_id_type(char*);
 #endif

@@ -205,11 +205,37 @@ void to_upper_case(char* string){ //converts string into upper case
 			*string = toupper(*string);
 	}while(++string, *string);
 }
-
-int string_to_int(char* str, int n){
-	return 0; //to do
+int transform_to_int(char* str, int initial){ //both operations assume that input is correct (string contains a number)
+	if(*str){
+		initial *= 10;
+		initial += to_number(*str);
+		transform_to_int(++str, initial);
+	}
+	else{
+		return initial;
+	}
 }
-
+int transform_to_id_type(char* str, int initial){ //both operations assume that input is correct (string contains a number)
+	if(*str){
+		initial *= 10;
+		initial += to_number(*str);
+		transform_to_id_type(++str, initial);
+	}
+	else{
+		return initial;
+	}
+}
+int string_to_int(char* str){
+	if(is_num(*str)){
+		return transform_to_int(str, 0);
+	}
+	else if(*str == '-'){
+		return transform_to_int(++str, 0) * -1;
+	}
+}
+id_type string_to_id_type(char* str){
+	return transform_to_id_type(str, 0);
+}
 int* input_data(char* string, unsigned* errno, size_t* size){
 	int* temp_tab = NULL, *tab_pt = NULL, temp_int = 0;
 	char* str_pt = string;
