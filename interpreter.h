@@ -20,19 +20,8 @@ flags information;
 typedef enum{
   direct = 0, indirect
 }addressing;
-
-int ADD(ram_chip_t*, id_type);
-int DIV(ram_chip_t*, id_type);
-int LOAD(ram_chip_t*, int);
-int MULT(ram_chip_t*, id_type);
-int READ(ram_chip_t*, id_type, addressing);
-int STORE(ram_chip_t*, id_type, addressing);
-int SUB(ram_chip_t*, id_type);
-int WRITE(ram_chip_t*, id_type);
-
-
+extern int (*arithmetic[])(ram_chip_t*, id_type);
 extern bool has_loops;
-
 void PrintString(char*);
 char* UserInputToString(FILE*, unsigned*);
 bool DataTypeAnalyzer(AnalyzedData*, char*);

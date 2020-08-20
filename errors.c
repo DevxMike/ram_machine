@@ -10,7 +10,9 @@ const char ERROR_DESC[][70] = { //error descriptions
     "File is empty.",
     "Mem alloc for string in stream failed.",
     "Mem alloc for input data failed.",
-    "Could not allocate/reallocate memory for element"
+    "Could not allocate/reallocate memory for element.",
+    "Could not init heap.",
+    "Could not init ram."
 };
 
 void exit_w_code(unsigned exit_code){ //function that prints exit code
@@ -36,3 +38,5 @@ const unsigned EMPTY_FILE_ERR = 0x08; //if file is empty
 const unsigned STRING_MEM_ALLOC_ERR = 0x09; //if alloc for string failed
 const unsigned INPUT_MEM_ALLOC_ERR = 0x0A; //if alloc for input integers failed
 const unsigned HEAP_EL_ERR = 0x0B; //if memory allocation of reallocation in heap failed
+const unsigned HEAP_INIT_ERR = 0x0C; //if heap init failed
+const unsigned RAM_INIT_ERR = 0x0D; //if ram init failed

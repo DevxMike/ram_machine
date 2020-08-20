@@ -20,4 +20,6 @@ extern const unsigned STRING_MEM_ALLOC_ERR;
 extern const unsigned INPUT_MEM_ALLOC_ERR;
 extern const unsigned SYNTAX_ERR;
 extern const unsigned HEAP_EL_ERR;
+extern const unsigned HEAP_INIT_ERR;
+extern const unsigned RAM_INIT_ERR;
 #endif

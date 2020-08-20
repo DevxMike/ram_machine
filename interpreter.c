@@ -21,12 +21,47 @@ const char DEBUG_STRING[][70] = { //debug string array
     "string of letters, '*' char and int (indirect addressing)",
     "COMMAND"
 };
+int ADD(ram_chip_t* chip, id_type cell_id){
+
+}
+int DIV(ram_chip_t* chip, id_type cell_id){
+
+}
+int LOAD(ram_chip_t* chip, int val){
+
+}
+int MULT(ram_chip_t* chip, id_type cell_id){
+
+}
+int READ(ram_chip_t* chip, id_type cell_id, addressing adr){
+
+}
+int STORE(ram_chip_t* chip, id_type cell_id, addressing adr){
+
+}
+int SUB(ram_chip_t* chip, id_type cell_id){
+
+}
+int WRITE(ram_chip_t* chip, id_type cell_id){
+	
+}
+
+int (*arithmetic[])(ram_chip_t*, id_type) = {
+	ADD, DIV, MULT, SUB
+};
+
+
 int to_number(char number){ //converts char into a number
 	return number - '0';
 }
+
+
+
+
 int tasker(ram_chip_t* ram, task_queue_data_t* data){
 	switch(data->cmd_id){
 		case 0: //ADD operation
+		printf("ADD\n");
 		break;
 		
 		case 1: //DIV operation
@@ -56,9 +91,10 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data){
 		
 		case 14: //write operation
 		break;
-
 	}
 }
+
+
 int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_t line){ //interprets tasks
 	task_queue_data_t temp;
 	int* arr = NULL;

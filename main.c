@@ -12,18 +12,8 @@
 #include "ram_heap.h"
 
 const size_t arr_size = 11;
-ram_cell_t cells[] = {
-    {15,1},
-    {21,1},
-    {3,1},
-    {6,1},
-    {8,1},
-    {1000000,1},
-    {12,1},
-    {11,1},
-    {5, 1},
-    {4, 1},
-    {2, 1}
+ram_cell_t R0 = {
+    0, 0
 };
 
 int main(int argc, char** argv){
@@ -39,29 +29,8 @@ int main(int argc, char** argv){
     int* input_tab = NULL;
     bool empty_input = true;
 
-    ram_heap_t* ram_heap = NULL;
+    ram_heap_t* ram_heap = NULL, *ram_heap_copy = NULL;
     ram_chip_t* ram_chip = NULL;
-
-    ram_heap = init_ram_heap();
-    ram_chip = init_ram();
-    /*
-    //--------------------------------------it`s just debug---------------------------------------
-    printf("\n\n--------------------debug functionality--------------------\n\n");
-    char test[] = "21 33 1 23 32";
-
-    if((input_tab = input_data(test, &EXIT_CODE, &input_data_size)) == NULL){
-        if(EXIT_CODE){
-            exit_w_code(EXIT_CODE);
-        }
-        //else input is empty and there is no need to abort program
-    }
-    
-    for(size_t i = 0; i < input_data_size; ++i){
-        printf("Input integer: %d\n", input_tab[i]);
-    }
-    printf("\n----------------------------end----------------------------\n\n");
-    //--------------------------------------it`s just debug---------------------------------------
-    */
 
 
     if(argc == 1){ //if argv contains program name only
@@ -84,12 +53,20 @@ int main(int argc, char** argv){
             }
         }
         printf("file to be read: %s\n\n", argv[1]);
-        
+
         if((task_arr = read_file(argv[1], &task_arr_size, &EXIT_CODE)) != NULL && task_arr_size > 0){
+            if((ram_heap = init_ram_heap()) == NULL || (ram_heap_copy = init_ram_heap) == NULL){ //init heap used to heap-sort ram chip
+                exit_w_code(HEAP_INIT_ERR);
+            }
+            if((ram_chip = init_ram()) == NULL){ //init ram chip
+                exit_w_code(RAM_INIT_ERR);
+            }
             if((task_queue = task_queue_init(task_arr_size)) == NULL){ //safety, it`s better to have more "place", can be easilly changed 
-                free(call_stack); //if init failed, free allocated memory
                 exit_w_code(TASK_QUEUE_INIT_ERR);
             }
+
+            ram_push(ram_chip, &R0); //add special register to ram chip
+            ram_heap_push(ram_heap_copy, &R0, &EXIT_CODE); //only one register available, no need to sort 
 
             for(size_t i = 0; i < task_arr_size; ++i){
                 if(DataTypeAnalyzer(&data, task_arr[i])){
@@ -157,9 +134,8 @@ int main(int argc, char** argv){
             }
             while(!task_queue_empty(task_queue)){
                 t_data = q_pop(task_queue);
-                //printf("CMD: %s, OPERAND: %s, CMD_ID: %d\n", t_data->command, t_data->operand_st, t_data->cmd_id);
+                tasker(ram_chip, t_data);
                 free(t_data);
-                
             }
         }
         else{
