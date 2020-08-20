@@ -88,3 +88,30 @@ ram_heap_t* init_ram_heap(){
 
     return temp;
 }
+void copy_ram_heap(ram_heap_t* destination, const ram_heap_t* source){
+    static size_t i = 0;
+    ram_heap_data_t* temp = NULL;
+    ram_heap_data_t * end = source->arr + source->elements;
+    if(destination->ram_heap_size < source->ram_heap_size){
+        if((temp = (ram_heap_data_t*)realloc(destination->arr, sizeof(ram_heap_data_t)*source->ram_heap_size)) != NULL){
+            destination->arr = temp;
+        }
+    }
+    if(i < source->elements){
+        copy_structs(&destination->arr[i], &source->arr[i]);
+        ++i;
+        copy_ram_heap(destination, source);
+    }
+    else{
+        i = 0;
+        destination->elements = source->elements;
+        destination->ram_heap_size = source->ram_heap_size;
+    }
+}
+void ram_heap_sort(ram_heap_t* heap, const ram_heap_t* heap_copy, ram_chip_t* destination){
+    copy_ram_heap(heap, heap_copy);
+    destination->quantity = 0;
+    while(!ram_heap_empty(heap)){
+        ram_heap_pop(heap, destination);
+    }
+}

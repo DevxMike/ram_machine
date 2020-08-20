@@ -17,4 +17,6 @@ int ram_heap_full(const ram_heap_t*);
 void ram_shift_up(ram_heap_t*, size_t);
 void ram_shift_down(ram_heap_t*, size_t, size_t, size_t);
 int greater(const id_type, const id_type);
+void copy_ram_heap(ram_heap_t*, const ram_heap_t*);
+void ram_heap_sort(ram_heap_t*, const ram_heap_t*, ram_chip_t*);
 #endif

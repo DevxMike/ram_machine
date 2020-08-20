@@ -15,6 +15,13 @@ const size_t arr_size = 11;
 ram_cell_t R0 = {
     0, 0
 };
+ram_cell_t test[] = {
+    {1, 0},
+    {5, 0},
+    {12, 0},
+    {1000, 0},
+    {6, 1}
+};
 
 int main(int argc, char** argv){
     unsigned EXIT_CODE = 0;
@@ -55,7 +62,7 @@ int main(int argc, char** argv){
         printf("file to be read: %s\n\n", argv[1]);
 
         if((task_arr = read_file(argv[1], &task_arr_size, &EXIT_CODE)) != NULL && task_arr_size > 0){
-            if((ram_heap = init_ram_heap()) == NULL || (ram_heap_copy = init_ram_heap) == NULL){ //init heap used to heap-sort ram chip
+            if(((ram_heap = init_ram_heap()) == NULL) || ((ram_heap_copy = init_ram_heap()) == NULL)){ //init heap used to heap-sort ram chip
                 exit_w_code(HEAP_INIT_ERR);
             }
             if((ram_chip = init_ram()) == NULL){ //init ram chip
@@ -124,13 +131,6 @@ int main(int argc, char** argv){
                     exit_w_code(WRONG_SYNTAX_ERR);
                     /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                 }
-            }
-            if(input_tab != NULL && input_data_size > 0){
-                printf("Input integers:\n");
-                for(size_t i = 0; i < input_data_size; ++i){
-                    printf("%ld: %d\n", i + 1, input_tab[i]);
-                }
-                printf("\n");
             }
             while(!task_queue_empty(task_queue)){
                 t_data = q_pop(task_queue);
