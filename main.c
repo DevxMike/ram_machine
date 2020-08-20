@@ -28,7 +28,7 @@ int main(int argc, char** argv){
                 exit_w_code(STACK_INIT_ERR);
             }
         }
-        printf("file to be read: %s\n\n", argv[1]);
+        printf("file to be read: %s\n", argv[1]);
 
         if((program_variables.task_arr.task_arr = read_file(argv[1], &program_variables.task_arr.arr_size, &program_variables.EXIT_CODE)) != NULL && program_variables.task_arr.arr_size > 0){
             if(((program_variables.ram_heap = init_ram_heap()) == NULL) || ((program_variables.ram_heap_copy = init_ram_heap()) == NULL)){ //init heap used to heap-sort ram chip
@@ -105,6 +105,10 @@ int main(int argc, char** argv){
                     /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                 }
             }
+            for(size_t i = 0; i < program_variables.input.arr_size; ++i){
+                printf("%d ", program_variables.input.data_arr[i]);
+            }
+            printf("\nSyntax correct.\n");
             while(!task_queue_empty(program_variables.queue)){
                 t_data = q_pop(program_variables.queue);
                 tasker(program_variables.ram_chip, t_data);

@@ -21,6 +21,7 @@ const char DEBUG_STRING[][70] = { //debug string array
     "string of letters, '*' char and int (indirect addressing)",
     "COMMAND"
 };
+
 int ADD(ram_chip_t* chip, id_type cell_id){
 
 }
@@ -46,17 +47,9 @@ int WRITE(ram_chip_t* chip, id_type cell_id){
 	
 }
 
-int (*arithmetic[])(ram_chip_t*, id_type) = {
-	ADD, DIV, MULT, SUB
-};
-
-
 int to_number(char number){ //converts char into a number
 	return number - '0';
 }
-
-
-
 
 int tasker(ram_chip_t* ram, task_queue_data_t* data){
 	switch(data->cmd_id){
@@ -212,34 +205,48 @@ void to_upper_case(char* string){ //converts string into upper case
 			*string = toupper(*string);
 	}while(++string, *string);
 }
+
+int string_to_int(char* str, int n){
+	return 0; //to do
+}
+
 int* input_data(char* string, unsigned* errno, size_t* size){
 	int* temp_tab = NULL, *tab_pt = NULL, temp_int = 0;
 	char* str_pt = string;
-	size_t len = 0;
+	bool minus = false;
+	size_t len = 1;
 
 	if(*string == '\0'){ //if string is empty
 		return NULL;
 	}
-	if((temp_tab = (int*)malloc(1*sizeof(int))) == NULL){ //if memory alloc failed
+	if((temp_tab = (int*)malloc(len*sizeof(int))) == NULL){ //if memory alloc failed
 		*errno = INPUT_MEM_ALLOC_ERR;
 		return NULL;
 	}
-	do{
-		if((tab_pt = (int*)realloc(temp_tab, ++len * sizeof(int))) == NULL){ //if memory realloc failed
+	*temp_tab = 0;
+	for(char* pt = string; *pt != '\0'; ++pt){
+		if(*pt == '-'){
+			minus = true;
+			continue;
+		}
+		if(isspace(*pt)){
+			if(minus){
+				temp_tab[len - 1] *= -1;
+				minus = false;
+			}
+			if((tab_pt = (int*)realloc(temp_tab, ++len * sizeof(int))) == NULL){ //if memory realloc failed
 			*errno = INPUT_MEM_ALLOC_ERR;
 			return NULL;
-		}
-		temp_tab = tab_pt; //if realloc didn`t fail
-		while(is_num(*str_pt) && *str_pt != '\0'){ //while part of a string is an integer
-			temp_int += to_number(*str_pt++); //simple conversion from string to int
-			if(is_num(*str_pt)){
-				temp_int *= 10;
+			}else{
+				temp_tab = tab_pt;
+				temp_tab[len - 1] = 0;
 			}
 		}
-		temp_tab[len - 1] = temp_int;
-		temp_int = 0;
-	}while((++str_pt, *str_pt != '\0'));
-
+		if(is_num(*pt)){
+			temp_tab[len - 1] *= 10;
+			temp_tab[len - 1] += to_number(*pt);
+		}
+	}
 	*size = len;
 	*errno = 0;
 	return temp_tab;

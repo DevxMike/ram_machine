@@ -20,7 +20,6 @@ flags information;
 typedef enum{
   direct = 0, indirect
 }addressing;
-extern int (*arithmetic[])(ram_chip_t*, id_type);
 extern bool has_loops;
 void PrintString(char*);
 char* UserInputToString(FILE*, unsigned*);
