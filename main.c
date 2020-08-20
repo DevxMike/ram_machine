@@ -11,16 +11,8 @@
 #include "ram.h"
 #include "ram_heap.h"
 
-const size_t arr_size = 11;
 ram_cell_t R0 = {
     0, 0
-};
-ram_cell_t test[] = {
-    {1, 0},
-    {5, 0},
-    {12, 0},
-    {1000, 0},
-    {6, 1}
 };
 
 int main(int argc, char** argv){
