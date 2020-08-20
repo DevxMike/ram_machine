@@ -88,8 +88,13 @@ ram_heap_t* init_ram_heap(){
 
     return temp;
 }
+void copy_heap_data(ram_heap_data_t* src, ram_heap_data_t* dst, ram_heap_data_t* end){
+    if(dst != end){
+        copy_structs(src++, dst++);
+        copy_heap_data(src, dst, end);
+    }
+}
 void copy_ram_heap(ram_heap_t* destination, const ram_heap_t* source){
-    static size_t i = 0; //helps with recursion calls control
     ram_heap_data_t* temp = NULL;
 
     if(destination->ram_heap_size < source->ram_heap_size){ //if heap used for sort does not have enough space
@@ -98,18 +103,11 @@ void copy_ram_heap(ram_heap_t* destination, const ram_heap_t* source){
         }
     }
     if(destination->arr != NULL){ 
-        if(i < source->elements){
-            copy_structs(&destination->arr[i], &source->arr[i]); //copy structs
-            ++i; //increment control variable
-            copy_ram_heap(destination, source); //copy next element
-        }
-        else{
-            i = 0; //set i to 0
-            destination->elements = source->elements; //copy rest of variables
-            destination->ram_heap_size = source->ram_heap_size;
-        }
+        copy_heap_data(destination->arr, source->arr, source->arr + source->elements);
+        destination->elements = source->elements;
     }
 }
+
 void ram_heap_sort(ram_heap_t* heap, const ram_heap_t* heap_copy, ram_chip_t* destination){
     copy_ram_heap(heap, heap_copy); //copy heap
     destination->quantity = 0; //reset ram

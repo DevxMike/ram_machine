@@ -18,7 +18,7 @@ typedef struct{
 ram_chip_t* init_ram();
 int ram_push(ram_chip_t*, const ram_cell_t*);
 ram_cell_t* ram_pop(ram_chip_t*);
-void copy_structs(ram_cell_t*, const ram_cell_t* const);
+void copy_structs(ram_cell_t*, const ram_cell_t*);
 void swap_structs(ram_cell_t*, ram_cell_t*);
 int ram_empty(ram_chip_t* chip);
 int ram_full(ram_chip_t* chip);
