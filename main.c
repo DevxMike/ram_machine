@@ -81,7 +81,6 @@ int main(int argc, char** argv){
                         input_tab = input_data(data.data, &EXIT_CODE, &input_data_size);
                     } 
                     if(EXIT_CODE){
-                        exit_w_code(EXIT_CODE); //syntax err
                         if(call_stack != NULL){
                         free(call_stack->data);//free memory
                         free(call_stack);
@@ -101,8 +100,15 @@ int main(int argc, char** argv){
                         for(size_t i = 0; i < task_arr_size; ++i){
                             free(task_arr[i]);
                         }
+                        free(ram_chip->arr);
+                        free(ram_chip);
+                        free(ram_heap_copy->arr);
+                        free(ram_heap_copy);
+                        free(ram_heap->arr);
+                        free(ram_heap);
                         free(task_arr);
                         free(task_queue); 
+                        exit_w_code(EXIT_CODE); //syntax err
                     }
                 }
                 else{
@@ -126,6 +132,12 @@ int main(int argc, char** argv){
                     for(size_t i = 0; i < task_arr_size; ++i){
                         free(task_arr[i]);
                     }
+                    free(ram_chip->arr);
+                    free(ram_chip);
+                    free(ram_heap_copy->arr);
+                    free(ram_heap_copy);
+                    free(ram_heap->arr);
+                    free(ram_heap);
                     free(task_arr);
                     free(task_queue); 
                     exit_w_code(WRONG_SYNTAX_ERR);
@@ -152,6 +164,12 @@ int main(int argc, char** argv){
                     free(temp);
                 }
             }  
+            free(ram_chip->arr);
+            free(ram_chip);
+            free(ram_heap_copy->arr);
+            free(ram_heap_copy);
+            free(ram_heap->arr);
+            free(ram_heap);
             free(task_queue); 
             /*----------------------------------------------if failed free memory section -----------------------------------------------*/
             exit_w_code(EXIT_CODE);
@@ -175,6 +193,12 @@ int main(int argc, char** argv){
                 free(temp);
             }
         }  
+        free(ram_chip->arr);
+        free(ram_chip);
+        free(ram_heap_copy->arr);
+        free(ram_heap_copy);
+        free(ram_heap->arr);
+        free(ram_heap); 
         free(task_queue); 
         /*----------------------------------------------------free memory section----------------------------------------------------------*/
         exit_w_code(EXIT_CODE);  
