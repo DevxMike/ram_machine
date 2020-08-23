@@ -16,7 +16,7 @@ const char ERROR_DESC[][70] = { //error descriptions
 };
 
 void exit_w_code(unsigned exit_code){ //function that prints exit code
-    printf("EXIT CODE: 0x%08x\n", exit_code);
+    printf("\nEXIT CODE: 0x%08x\n", exit_code);
     if(exit_code){ //in case an error occured it suggests to check docs
         printf("%s\n", ERROR_DESC[exit_code - 1]);
     }

@@ -105,13 +105,10 @@ int main(int argc, char** argv){
                     /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                 }
             }
-            for(size_t i = 0; i < program_variables.input.arr_size; ++i){
-                printf("%d ", program_variables.input.data_arr[i]);
-            }
-            printf("\nSyntax correct.\n");
+            printf("\nSyntax correct.\nProgram output:\n\n");
             while(!task_queue_empty(program_variables.queue)){
                 t_data = q_pop(program_variables.queue);
-                tasker(program_variables.ram_chip, t_data);
+                tasker(program_variables.ram_chip, t_data, program_variables.ram_heap, program_variables.ram_heap_copy, &program_variables.input);
                 free(t_data);
             }
         }

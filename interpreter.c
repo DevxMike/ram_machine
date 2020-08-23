@@ -8,6 +8,7 @@
 #include <string.h>
 
 bool has_loops = false; //if algo has loops, interpreter changes its value to true
+bool start_occured = false;
 
 const char DEBUG_STRING[][70] = { //debug string array
     "CANNOT ANALYZE DATA",
@@ -22,67 +23,121 @@ const char DEBUG_STRING[][70] = { //debug string array
     "COMMAND"
 };
 
-int ADD(ram_chip_t* chip, id_type cell_id){
+typedef enum{
+  direct = 0, indirect
+}addressing;
 
-}
-int DIV(ram_chip_t* chip, id_type cell_id){
+typedef enum{
+	read = 0, store,  write 
+}other_type;
 
-}
-int LOAD(ram_chip_t* chip, int val){
+typedef enum {
+	add = 0, sub, mult, divide, load
+}arithmetic_type;
 
-}
-int MULT(ram_chip_t* chip, id_type cell_id){
-
-}
-int READ(ram_chip_t* chip, id_type cell_id, addressing adr){
-
-}
-int STORE(ram_chip_t* chip, id_type cell_id, addressing adr){
-
-}
-int SUB(ram_chip_t* chip, id_type cell_id){
-
-}
-int WRITE(ram_chip_t* chip, id_type cell_id){
-	
+int other_ops(ram_chip_t* chip, int index, input_data_t* data, addressing adr, other_type op_type){
+	switch(op_type){
+		case read:
+		break;
+		case store:
+		break;
+		case write:
+		printf("R%llu value: %d\n", chip->arr[index].cell_id, chip->arr[index].value);
+		break;
+	}
+	return 1;
 }
 
+int arithmetic_ops(ram_chip_t* chip, int val, arithmetic_type t){
+	int zero_index;
+	if((zero_index = ram_search(0, chip, 0, chip->quantity/2))<0){
+		return -1;
+	}
+	else{
+		switch(t){
+			case add:
+			chip->arr[zero_index].value += val;
+			break;
+			case sub:
+			chip->arr[zero_index].value -= val;
+			break;
+			case mult:
+			chip->arr[zero_index].value *= val;
+			break;
+			case divide:
+			chip->arr[zero_index].value /= val;
+			break;
+			case load:
+			chip->arr[zero_index].value = val;
+			break;
+		}	
+		return 1;
+	}
+}
+int operation_type(int cmd){
+	switch(cmd){
+		case 0:
+		return add;
+		break;
+		case 1:
+		return divide;
+		break;
+		case 6:
+		return load;
+		break;
+		case 7:
+		return mult;
+		break;
+		case 13:
+		return sub;
+		break;
+		default:
+		return -1;
+		break;
+	}
+}
 int to_number(char number){ //converts char into a number
 	return number - '0';
 }
-
-int tasker(ram_chip_t* ram, task_queue_data_t* data){
-	switch(data->cmd_id){
-		case 0: //ADD operation
-		printf("ADD\n");
+bool id_cmd_type(int x){
+	switch(x){
+		case 8: case 9: case 11: case 12: case 14:
+		return true;
 		break;
-		
-		case 1: //DIV operation
-		break; 
+		default:
+		return false;
+		break;
+	}
+}
+int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, ram_heap_t* copy, input_data_t* data){
+	id_type ram_id;
+	ram_heap_data_t temp;
+	unsigned errno = 0;
+	int index = 0;
+	if(id_cmd_type(data->cmd_id)){
+		ram_id = string_to_id_type(data->operand_st);
+		if((index = ram_search(ram_id, ram, 0, ram->quantity/2)) < 0){
+			temp.cell_id = ram_id;
+			temp.value = 0;
+			ram_heap_push(copy, &temp, &errno);
+			if(errno){
+				exit_w_code(errno);
+			}
+			ram_heap_sort(heap, copy, ram);
+		}
+	}
+	switch(data->cmd_id){
+		case 0: case 13: case 1: case 6: case 7:
+		arithmetic_ops(ram, string_to_int(data->operand_st), operation_type(data->cmd_id));
+		break;
 		
 		case 3: //JGTZ operation
 		case 4: //JUMP operation
 		case 5: //JZERO operation
 		break;
-
-		case 6: //LOAD operation
-		break;
 		
-		case 7: //MULT operation
-		break;
-		
-		case 8: //READ operation
-		case 9:	//READ * operation
-		break;
+		case 8: case 9:	case 11: case 12: case 14:
 
-		case 11: //STORE operation
-		case 12: //STORE * operation
-		break;
-
-		case 13: //SUB operation
-		break;
-		
-		case 14: //write operation
 		break;
 	}
 }
@@ -95,7 +150,10 @@ int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_
 	if(split_string(data, &temp) == 2){
 		return 1;
 	}
-	else{
+	if(temp.cmd_id == 10){
+		start_occured = true;
+	}
+	if(start_occured){
 		if(temp.cmd_id != -1){
 			q_push(queue, &temp);
 			*status = 0;
@@ -234,6 +292,9 @@ int string_to_int(char* str){
 	}
 }
 id_type string_to_id_type(char* str){
+	while(*str && !is_num(*str++)){
+		continue;
+	}
 	return transform_to_id_type(str, 0);
 }
 int* input_data(char* string, unsigned* errno, size_t* size){
