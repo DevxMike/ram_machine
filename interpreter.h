@@ -5,7 +5,17 @@
 #include <stdbool.h>
 #include "ram.h"
 #include "ram_heap.h"
-#include "main.h"
+
+typedef struct{
+    int* data_arr;
+    size_t arr_size;
+    size_t element;
+}input_data_t;
+
+typedef struct{
+    char** task_arr;
+    size_t arr_size;
+}tasks_t;
 
 typedef struct{ //data structure that holds flags states
   int flag0, flag1, flag2, flag4;

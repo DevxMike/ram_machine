@@ -15,16 +15,6 @@
 #define main_h_
 
 typedef struct{
-    int* data_arr;
-    size_t arr_size;
-    size_t element;
-}input_data_t;
-
-typedef struct{
-    char** task_arr;
-    size_t arr_size;
-}tasks_t;
-typedef struct{
     unsigned EXIT_CODE;
     call_stack_t* stack;
     task_queue_t* queue;

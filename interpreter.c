@@ -6,6 +6,7 @@
 #include "errors.h"
 #include "syntax.h"
 #include <string.h>
+#include "main.h"
 
 bool has_loops = false; //if algo has loops, interpreter changes its value to true
 bool start_occured = false;
@@ -109,7 +110,7 @@ bool id_cmd_type(int x){
 		break;
 	}
 }
-int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, ram_heap_t* copy, input_data_t* data){
+int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, ram_heap_t* copy, input_data_t* input){
 	id_type ram_id;
 	ram_heap_data_t temp;
 	unsigned errno = 0;
