@@ -163,7 +163,6 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 		if(is_indirect_add(data->cmd_id)){ //if indirect addressing
 			if(ram->arr[index].value >= 0){ //check if value in register is positive
 				ram_id = (id_type)ram->arr[index].value;
-				printf("%llu\n", ram_id);
 				if((index = ram_search(ram_id, ram, 0, ram->quantity - 1)) < 0){ //then search for it in ram chip
 				temp.cell_id = ram_id;
 				temp.value = 0;
