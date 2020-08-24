@@ -31,7 +31,7 @@ int main(int argc, char** argv){
         printf("file to be read: %s\n", argv[1]);
 
         if((program_variables.task_arr.task_arr = read_file(argv[1], &program_variables.task_arr.arr_size, &program_variables.EXIT_CODE)) != NULL && program_variables.task_arr.arr_size > 0){
-            if(((program_variables.ram_heap = init_ram_heap()) == NULL) || ((program_variables.ram_heap_copy = init_ram_heap()) == NULL)){ //init heap used to heap-sort ram chip
+            if(((program_variables.ram_heap = init_ram_heap()) == NULL)){ //init heap used to heap-sort ram chip
                 exit_w_code(HEAP_INIT_ERR);
             }
             if((program_variables.ram_chip = init_ram()) == NULL){ //init ram chip
@@ -42,7 +42,6 @@ int main(int argc, char** argv){
             }
 
             ram_push(program_variables.ram_chip, &R0); //add special register to ram chip
-            ram_heap_push(program_variables.ram_heap_copy, &R0, &program_variables.EXIT_CODE); //only one register available, no need to sort 
 
             for(size_t i = 0; i < program_variables.task_arr.arr_size; ++i){
                 if(DataTypeAnalyzer(&program_variables.data, program_variables.task_arr.task_arr[i])){
@@ -68,8 +67,6 @@ int main(int argc, char** argv){
                         free(program_variables.task_arr.task_arr);
                         free(program_variables.ram_chip->arr);
                         free(program_variables.ram_chip);
-                        free(program_variables.ram_heap_copy->arr);
-                        free(program_variables.ram_heap_copy);
                         free(program_variables.ram_heap->arr);
                         free(program_variables.ram_heap);
                         free(program_variables.queue); 
@@ -96,8 +93,6 @@ int main(int argc, char** argv){
                         free(program_variables.task_arr.task_arr);
                         free(program_variables.ram_chip->arr);
                         free(program_variables.ram_chip);
-                        free(program_variables.ram_heap_copy->arr);
-                        free(program_variables.ram_heap_copy);
                         free(program_variables.ram_heap->arr);
                         free(program_variables.ram_heap);
                         free(program_variables.queue); 
@@ -108,7 +103,7 @@ int main(int argc, char** argv){
             printf("\nSyntax correct.\nProgram output:\n\n");
             while(!task_queue_empty(program_variables.queue)){
                 t_data = q_pop(program_variables.queue);
-                tasker(program_variables.ram_chip, t_data, program_variables.ram_heap, program_variables.ram_heap_copy, &program_variables.input);
+                tasker(program_variables.ram_chip, t_data, program_variables.ram_heap, &program_variables.input);
                 free(t_data);
             }
         }
@@ -132,8 +127,6 @@ int main(int argc, char** argv){
             free(program_variables.task_arr.task_arr);
             free(program_variables.ram_chip->arr);
             free(program_variables.ram_chip);
-            free(program_variables.ram_heap_copy->arr);
-            free(program_variables.ram_heap_copy);
             free(program_variables.ram_heap->arr);
             free(program_variables.ram_heap);
             free(program_variables.queue); 
@@ -161,8 +154,6 @@ int main(int argc, char** argv){
         free(program_variables.task_arr.task_arr);
         free(program_variables.ram_chip->arr);
         free(program_variables.ram_chip);
-        free(program_variables.ram_heap_copy->arr);
-        free(program_variables.ram_heap_copy);
         free(program_variables.ram_heap->arr);
         free(program_variables.ram_heap);
         free(program_variables.queue); 
@@ -176,7 +167,6 @@ void init_main(main_vars_t* vars){
     vars->queue = NULL;
     vars->ram_chip = NULL;
     vars->ram_heap = NULL;
-    vars->ram_heap_copy = NULL;
     vars->stack = NULL;
     vars->task_arr.task_arr = NULL;
     vars->input.arr_size = vars->input.element = vars->task_arr.arr_size = 0;   

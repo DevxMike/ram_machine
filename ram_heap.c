@@ -108,8 +108,15 @@ void copy_ram_heap(ram_heap_t* destination, const ram_heap_t* source){
     }
 }
 
-void ram_heap_sort(ram_heap_t* heap, const ram_heap_t* heap_copy, ram_chip_t* destination){
-    copy_ram_heap(heap, heap_copy); //copy heap
+void ram_heap_sort(ram_heap_t* heap, ram_chip_t* destination){
+    //copy_ram_heap(heap, heap_copy); //copy heap
+    unsigned errno = 0;
+    for(ram_cell_t* i = destination->arr; i < destination->arr + destination->quantity; ++i){
+        ram_heap_push(heap, i, &errno);
+        if(errno){
+            exit_w_code(errno);
+        }
+    }
     destination->quantity = 0; //reset ram
     while(!ram_heap_empty(heap)){ //set ram with sorted structs
         ram_heap_pop(heap, destination);

@@ -25,57 +25,90 @@ const char DEBUG_STRING[][70] = { //debug string array
 };
 
 typedef enum{
-  direct = 0, indirect
-}addressing;
-
-typedef enum{
 	read = 0, store,  write 
-}other_type;
+}other_type; //other operations types
 
 typedef enum {
-	add = 0, sub, mult, divide, load
+	add = 0, sub, mult, divide, load //arithmetic operations types
 }arithmetic_type;
 
-int other_ops(ram_chip_t* chip, int index, input_data_t* data, addressing adr, other_type op_type){
+int other_ops(ram_chip_t* chip, int index, input_data_t* data, other_type op_type){ //perform other type of operations
+	int zero_index;
 	switch(op_type){
 		case read:
+		if(data->element < data->arr_size){
+			chip->arr[index].value = data->data_arr[data->element++]; //store integer from input in ram cell
+			return 1; 
+		}
+		else{
+			printf("INPUT EMPTY\n");
+		}
 		break;
 		case store:
+		if((zero_index = ram_search(0, chip, 0, chip->quantity - 1)) < 0){
+			return -2; //could not find R0 index
+		}	
+		else{
+			chip->arr[index].value = chip->arr[zero_index].value; //copy R0 value to desired ram cell
+		}
 		break;
 		case write:
-		printf("R%llu value: %d\n", chip->arr[index].cell_id, chip->arr[index].value);
+		printf("R%llu value: %d\n", chip->arr[index].cell_id, chip->arr[index].value); //print Rx value
 		break;
 	}
 	return 1;
 }
 
-int arithmetic_ops(ram_chip_t* chip, int val, arithmetic_type t){
-	int zero_index;
-	if((zero_index = ram_search(0, chip, 0, chip->quantity/2))<0){
+int arithmetic_ops(ram_chip_t* chip, int val, arithmetic_type t){ //perform arithmetic operations
+	int zero_index = ram_search(0, chip, 0, chip->quantity - 1);
+	if(zero_index < 0){
 		return -1;
 	}
 	else{
 		switch(t){
 			case add:
-			chip->arr[zero_index].value += val;
+			chip->arr[zero_index].value += val; //add value to R0
 			break;
 			case sub:
-			chip->arr[zero_index].value -= val;
+			chip->arr[zero_index].value -= val; //substract value from R0
 			break;
 			case mult:
-			chip->arr[zero_index].value *= val;
+			chip->arr[zero_index].value *= val; //multiply R0 by value
 			break;
 			case divide:
-			chip->arr[zero_index].value /= val;
+			chip->arr[zero_index].value /= val; //divide R0 by value
 			break;
 			case load:
-			chip->arr[zero_index].value = val;
+			chip->arr[zero_index].value = val; //load value into R0
 			break;
 		}	
 		return 1;
 	}
 }
-int operation_type(int cmd){
+int other_ops_type(int cmd){ //return other operations type
+	switch(cmd){
+		case 8: case 9:
+		return read;
+		break;
+		case 11: case 12:
+		return store;
+		break;
+		case 14:
+		return write;
+		break;
+	}
+}
+int is_indirect_add(int cmd){
+	switch(cmd){
+		case 9: case 12:
+		return true;
+		break;
+		default:
+		return false;
+		break;
+	}
+}
+int arithmetic_ops_type(int cmd){ //return arithmetic operation type
 	switch(cmd){
 		case 0:
 		return add;
@@ -100,7 +133,7 @@ int operation_type(int cmd){
 int to_number(char number){ //converts char into a number
 	return number - '0';
 }
-bool id_cmd_type(int x){
+bool is_id_cmd_type(int x){ //if command requires register address return true
 	switch(x){
 		case 8: case 9: case 11: case 12: case 14:
 		return true;
@@ -110,26 +143,46 @@ bool id_cmd_type(int x){
 		break;
 	}
 }
-int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, ram_heap_t* copy, input_data_t* input){
+int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_data_t* input){
 	id_type ram_id;
 	ram_heap_data_t temp;
 	unsigned errno = 0;
 	int index = 0;
-	if(id_cmd_type(data->cmd_id)){
-		ram_id = string_to_id_type(data->operand_st);
-		if((index = ram_search(ram_id, ram, 0, ram->quantity/2)) < 0){
+
+	if(is_id_cmd_type(data->cmd_id)){ //check if command either requires integer or ram cell address
+		ram_id = string_to_id_type(data->operand_st); //convert string to unsigned long long
+		if((index = ram_search(ram_id, ram, 0, ram->quantity - 1)) < 0){ //search for struct with certain ram_id
 			temp.cell_id = ram_id;
 			temp.value = 0;
-			ram_heap_push(copy, &temp, &errno);
+			ram_heap_push(heap, &temp, &errno);  //if not found, add a new one
 			if(errno){
 				exit_w_code(errno);
 			}
-			ram_heap_sort(heap, copy, ram);
+			ram_heap_sort(heap, ram); //if successful, sort to be able to perform binary search
+		}
+		if(is_indirect_add(data->cmd_id)){ //if indirect addressing
+			if(ram->arr[index].value >= 0){ //check if value in register is positive
+				ram_id = (id_type)ram->arr[index].value;
+				printf("%llu\n", ram_id);
+				if((index = ram_search(ram_id, ram, 0, ram->quantity - 1)) < 0){ //then search for it in ram chip
+				temp.cell_id = ram_id;
+				temp.value = 0;
+				ram_heap_push(heap, &temp, &errno); //if not found, add a ram cell
+				if(errno){
+					exit_w_code(errno);
+				}
+				ram_heap_sort(heap, ram); //if successful, sort
+				}
+			}
+			else{
+				printf("Value in register R%llu is not positive!\n", ram_id);
+				return -1;
+			}
 		}
 	}
 	switch(data->cmd_id){
 		case 0: case 13: case 1: case 6: case 7:
-		arithmetic_ops(ram, string_to_int(data->operand_st), operation_type(data->cmd_id));
+		arithmetic_ops(ram, string_to_int(data->operand_st), arithmetic_ops_type(data->cmd_id));
 		break;
 		
 		case 3: //JGTZ operation
@@ -138,8 +191,15 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, ram_heap_
 		break;
 		
 		case 8: case 9:	case 11: case 12: case 14:
-
+		if((index = ram_search(ram_id, ram, 0, ram->quantity - 1)) < 0){
+			return -1;
+		}
+		other_ops(ram, index, input, other_ops_type(data->cmd_id));
 		break;
+	}
+	printf("\n");
+	for(size_t i = 0; i < ram->quantity; ++i){
+		printf("%llu => %d\n", ram->arr[i].cell_id, ram->arr[i].value);
 	}
 }
 
@@ -293,7 +353,8 @@ int string_to_int(char* str){
 	}
 }
 id_type string_to_id_type(char* str){
-	while(*str && !is_num(*str++)){
+	while(*str && !is_num(*str)){
+		++str;
 		continue;
 	}
 	return transform_to_id_type(str, 0);
@@ -340,7 +401,7 @@ int* input_data(char* string, unsigned* errno, size_t* size){
 	return temp_tab;
 }
 int search_command(const char* cmd, int left, int right){ //binary search, seeks for a string passed as a parameter
-	int middle = (left + right) / 2;
+	int middle = left + (right - left) / 2;
 	if(left > right || left < 0){
 		return -1;
 	}

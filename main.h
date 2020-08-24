@@ -22,7 +22,6 @@ typedef struct{
     input_data_t input;
     tasks_t task_arr;
     ram_heap_t* ram_heap;
-    ram_heap_t* ram_heap_copy;
     ram_chip_t* ram_chip;
 }main_vars_t;
 void init_main(main_vars_t*);

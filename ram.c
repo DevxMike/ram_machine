@@ -17,18 +17,20 @@ void swap_structs(ram_cell_t* r1, ram_cell_t* r2){
 }
 
 int ram_search(const id_type target, const ram_chip_t* chip, int left, int right){
-    if(left > right || left < 0){
+    if(left <= right){
+        int mid = left + ((right - left) / 2);
+        if(chip->arr[mid].cell_id == target){
+            return mid;
+        }
+        if(chip->arr[mid].cell_id > target){
+            return ram_search(target, chip, mid + 1, right);
+        }
+        else{
+            return ram_search(target, chip, left, mid - 1);
+        }
+    }
+    else{
         return -1;
-    }
-    int mid = (left+right)/2;
-    if(chip->arr[mid].cell_id == target){
-        return mid;
-    }
-    else if(chip->arr[mid].cell_id > target){
-        return ram_search(target, chip, mid+1, right);
-    }
-    else if(chip->arr[mid].cell_id < target){
-        return ram_search(target, chip, left, mid - 1);
     }
 }
 
