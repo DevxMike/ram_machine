@@ -197,10 +197,6 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 		other_ops(ram, index, input, other_ops_type(data->cmd_id));
 		break;
 	}
-	printf("\n");
-	for(size_t i = 0; i < ram->quantity; ++i){
-		printf("%llu => %d\n", ram->arr[i].cell_id, ram->arr[i].value);
-	}
 }
 
 
