@@ -147,5 +147,7 @@ void init_main(main_vars_t* vars){
     vars->ram_chip = NULL;
     vars->ram_heap = NULL;
     vars->task_arr.task_arr = NULL;
-    vars->input.arr_size = vars->input.element = vars->task_arr.arr_size = 0;   
+    vars->input.arr_size = vars->input.element = vars->task_arr.arr_size = 0;  
+    vars->list = (list_element_t*)malloc(sizeof(list_element_t));
+    vars->list = NULL; 
 }

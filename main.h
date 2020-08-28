@@ -9,6 +9,7 @@
 #include "syntax.h"
 #include "ram.h"
 #include "ram_heap.h"
+#include "loop_list.h"
 
 #ifndef main_h_
 #define main_h_
@@ -21,6 +22,7 @@ typedef struct{
     tasks_t task_arr;
     ram_heap_t* ram_heap;
     ram_chip_t* ram_chip;
+    list_element_t* list;
 }main_vars_t;
 void init_main(main_vars_t*);
 

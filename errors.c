@@ -12,7 +12,8 @@ const char ERROR_DESC[][70] = { //error descriptions
     "Mem alloc for input data failed.",
     "Could not allocate/reallocate memory for element.",
     "Could not init heap.",
-    "Could not init ram."
+    "Could not init ram.",
+    "Could not process loop."
 };
 
 void exit_w_code(unsigned exit_code){ //function that prints exit code
@@ -40,3 +41,4 @@ const unsigned INPUT_MEM_ALLOC_ERR = 0x0A; //if alloc for input integers failed
 const unsigned HEAP_EL_ERR = 0x0B; //if memory allocation of reallocation in heap failed
 const unsigned HEAP_INIT_ERR = 0x0C; //if heap init failed
 const unsigned RAM_INIT_ERR = 0x0D; //if ram init failed
+const unsigned LOOP_PROCESSING_ERR = 0x0E; //if failed to add to the list

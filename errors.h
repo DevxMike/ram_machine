@@ -22,4 +22,5 @@ extern const unsigned SYNTAX_ERR;
 extern const unsigned HEAP_EL_ERR;
 extern const unsigned HEAP_INIT_ERR;
 extern const unsigned RAM_INIT_ERR;
+extern const unsigned LOOP_PROCESSING_ERR;
 #endif
