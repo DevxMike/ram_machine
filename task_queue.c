@@ -2,6 +2,12 @@
 
 //FIFO queue
 
+void copy_data_struct(task_queue_data_t* destination, const task_queue_data_t* source){ //copies stack/queue data
+    strcpy(destination->command, source->command);
+    strcpy(destination->operand_st, source->operand_st);
+    destination->cmd_id = source->cmd_id;
+}
+
 task_queue_t* task_queue_init(size_t size){
     task_queue_t* temp = NULL;
     if((temp = (task_queue_t*)malloc(sizeof(task_queue_t))) != NULL){ //if alloc didnt fail

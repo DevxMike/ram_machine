@@ -23,11 +23,6 @@ int main(int argc, char** argv){
             exit_w_code(FILE_NAME_ERR);
         }
 
-        if(has_loops){ 
-            if((program_variables.stack = init_stack(50)) == NULL){
-                exit_w_code(STACK_INIT_ERR);
-            }
-        }
         printf("file to be read: %s\n", argv[1]);
 
         if((program_variables.task_arr.task_arr = read_file(argv[1], &program_variables.task_arr.arr_size, &program_variables.EXIT_CODE)) != NULL && program_variables.task_arr.arr_size > 0){
@@ -49,10 +44,6 @@ int main(int argc, char** argv){
                         program_variables.input.data_arr = input_data(program_variables.data.data, &program_variables.EXIT_CODE, &program_variables.input.arr_size);
                     } 
                     if(program_variables.EXIT_CODE){
-                        if(program_variables.stack != NULL){
-                        free(program_variables.stack->data);//free memory
-                        free(program_variables.stack);
-                        }
                         //free task queue
                         if(!task_queue_empty(program_variables.queue)){
                             while(program_variables.queue->head != NULL){
@@ -75,10 +66,6 @@ int main(int argc, char** argv){
                 }
                 else{
                     /*----------------------------------------------if failed free memory section -----------------------------------------------*/
-                    if(program_variables.stack != NULL){
-                        free(program_variables.stack->data);//free memory
-                        free(program_variables.stack);
-                        }
                         //free task queue
                         if(!task_queue_empty(program_variables.queue)){
                             while(program_variables.queue->head != NULL){
@@ -109,10 +96,6 @@ int main(int argc, char** argv){
         }
         else{
             /*----------------------------------------------if failed free memory section -----------------------------------------------*/
-            if(program_variables.stack != NULL){
-                free(program_variables.stack->data);//free memory
-                free(program_variables.stack);
-            }
             //free task queue
             if(!task_queue_empty(program_variables.queue)){
                 while(program_variables.queue->head != NULL){
@@ -136,10 +119,6 @@ int main(int argc, char** argv){
 
 
         /*----------------------------------------------------free memory section----------------------------------------------------------*/
-        if(program_variables.stack != NULL){
-            free(program_variables.stack->data);//free memory
-            free(program_variables.stack);
-        }
         //free task queue
         if(!task_queue_empty(program_variables.queue)){
             while(program_variables.queue->head != NULL){
@@ -167,7 +146,6 @@ void init_main(main_vars_t* vars){
     vars->queue = NULL;
     vars->ram_chip = NULL;
     vars->ram_heap = NULL;
-    vars->stack = NULL;
     vars->task_arr.task_arr = NULL;
     vars->input.arr_size = vars->input.element = vars->task_arr.arr_size = 0;   
 }

@@ -1,6 +1,5 @@
 #ifndef interpreter_h_
 #define interpreter_h_
-#include "stack.h"
 #include "task_queue.h"
 #include <stdbool.h>
 #include "ram.h"

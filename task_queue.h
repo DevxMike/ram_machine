@@ -1,10 +1,17 @@
 #ifndef task_queue_h
 #define task_queue_h
-#include "stack.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
+#define CMD_SIZE 10
+#define OP_SIZE 11
 
-typedef stack_data_t task_queue_data_t; //for calls stack_data_t struct can be reused
+typedef struct { //struct used to hold commands and operands
+    int cmd_id;
+    char command[CMD_SIZE];
+    char operand_st[OP_SIZE];
+}task_queue_data_t;
 
 typedef struct t{ //holds data and pointer to the next element
     task_queue_data_t data;
@@ -23,4 +30,5 @@ bool task_queue_empty(const task_queue_t* queue);
 bool q_push(task_queue_t* queue, const task_queue_data_t* data);
 void print_queue_status(task_queue_t* queue);
 task_queue_data_t* q_pop(task_queue_t* queue);
+void copy_data_struct(task_queue_data_t* destination, const task_queue_data_t* source);
 #endif

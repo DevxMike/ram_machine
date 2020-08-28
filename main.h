@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "interpreter.h"
-#include "stack.h"
 #include "task_queue.h"
 #include <string.h>
 #include "reader.h"
@@ -16,7 +15,6 @@
 
 typedef struct{
     unsigned EXIT_CODE;
-    call_stack_t* stack;
     task_queue_t* queue;
     AnalyzedData data;
     input_data_t input;
