@@ -33,6 +33,9 @@ void loop_heap_push(loop_heap_t* heap, const loop_t* el){
 
     }
 }
+void shift_down(loop_heap_t* heap, unsigned index, unsigned left, unsigned right){
+
+}
 loop_t* loop_heap_pop(loop_heap_t* heap){
     loop_t* tmp = NULL;
     if(!loop_heap_empty(heap)){
@@ -40,7 +43,10 @@ loop_t* loop_heap_pop(loop_heap_t* heap){
             return NULL;
         }
         else{
-
+            copy_list(&tmp->task_list, heap->arr[0].task_list);
+            strcpy(tmp->loop_et, heap->arr[0].loop_et);
+            copy_list(&heap->arr[0].task_list, heap->arr[--heap->quantity].task_list);
+            shift_down(heap, 0, 1, 2);
         }
     }
     return tmp;
