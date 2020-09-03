@@ -11,7 +11,7 @@ typedef struct{
 
 loop_heap_t* init_loop_heap(void);
 void loop_heap_push(loop_heap_t*, const loop_t*);
-void loop_heap_pop(loop_heap_t*, loop_container_t*);
+loop_t* loop_heap_pop(loop_heap_t*);
 int loop_heap_empty(const loop_heap_t*);
 int loop_heap_full(const loop_heap_t*);
 #endif

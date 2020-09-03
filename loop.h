@@ -2,9 +2,10 @@
 #define loop_h
 #include "loop_list.h"
 #include "errors.h"
+#include "task_queue.h"
 
 typedef struct{
-    char* loop_et;
+    char loop_et[OP_SIZE];
     list_element_t* task_list;
 }loop_t;
 

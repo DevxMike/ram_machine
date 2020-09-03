@@ -11,5 +11,5 @@ typedef struct list_element{
 
 void push_back(list_element_t**, const list_data_t*);
 void free_list(list_element_t**);
-
+void copy_list(list_element_t**, const list_element_t*);
 #endif

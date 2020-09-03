@@ -26,3 +26,9 @@ void free_list(list_element_t** head){
         free(temp);
     }
 }
+void copy_list(list_element_t** dst, const list_element_t* src){
+    if(src != NULL){
+        push_back(dst, &src->data);
+        copy_list(dst, src->next);
+    }
+}
