@@ -5,10 +5,11 @@
 loop_heap_t* init_loop_heap(){
     loop_heap_t* temp = NULL;
     if((temp = (loop_heap_t*)malloc(sizeof(loop_heap_t))) != NULL){
-        temp->size = temp->quantity = 0;
+        temp->quantity = 0;
         if((temp->arr = (loop_t*)malloc(sizeof(loop_t))) == NULL){
             return NULL;
         }
+        temp->size = 1;
     }
     return temp;
 }
@@ -20,6 +21,11 @@ void swap_strings(char* str1, char* str2, unsigned n){
         swap_strings(str1, str2, n - 1);
     }
 }
+
+int compare_loop(const loop_t* l1, const loop_t* l2){
+    return strcmp(l1->loop_et, l2->loop_et);
+}
+
 void swap_loops(loop_t* l1, loop_t* l2){
     list_element_t* tmp_list = NULL;
     
@@ -33,8 +39,27 @@ void loop_heap_push(loop_heap_t* heap, const loop_t* el){
 
     }
 }
-void shift_down(loop_heap_t* heap, unsigned index, unsigned left, unsigned right){
 
+void shift_down(loop_heap_t* heap, unsigned index, unsigned left, unsigned right){
+    if(left < heap->quantity && right < heap->quantity){
+        unsigned greater;
+        if(compare_loop(&heap->arr[left], &heap->arr[right]) > 0){
+            greater = left;
+        }
+        else{
+            greater = right;
+        }
+        if(compare_loop(&heap->arr[greater], &heap->arr[index]) > 0){
+            swap_loops(&heap->arr[greater], &heap->arr[index]);
+            shift_down(heap, greater, 2*greater + 1, 2*greater + 2);
+        }
+    }
+    else if(left < heap->quantity){
+        if(compare_loop(&heap->arr[left], &heap->arr[index]) > 0){
+            swap_loops(&heap->arr[left], &heap->arr[index]);
+            shift_down(heap, left, 2*left + 1, 2*left + 2);
+        }
+    }
 }
 loop_t* loop_heap_pop(loop_heap_t* heap){
     loop_t* tmp = NULL;
