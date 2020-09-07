@@ -41,7 +41,7 @@ void copy_loop(loop_t* dst, const loop_t* src){
 void loop_shift_up(loop_heap_t* heap, unsigned index){
     if(index > 0){
         unsigned temp = (index - 1)/2;
-        if(compare_loop(&heap->arr[index], &heap->arr[temp])){ //check whether the element with index "index" is greater than it`s parent
+        if(compare_loop(&heap->arr[index], &heap->arr[temp]) > 0){ //check whether the element with index "index" is greater than it`s parent
             swap_loops(&heap->arr[index], &heap->arr[temp]); //if so, swap them
             loop_shift_up(heap, temp); //continue the check
         }

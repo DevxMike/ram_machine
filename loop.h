@@ -3,6 +3,7 @@
 #include "loop_list.h"
 #include "errors.h"
 #include "task_queue.h"
+#include "loop_heap.h"
 
 typedef struct{
     char loop_et[OP_SIZE];
@@ -17,7 +18,7 @@ typedef struct{
 extern char** loops;
 
 void init_loop(loop_container_t**, unsigned*);
-void add_loop_element(loop_container_t*, const loop_t*, unsigned*);
+void add_loop_element(loop_container_t*, const loop_t*);
 const loop_t* search_loop(const loop_container_t*, const char*, unsigned, unsigned);
-
+void loop_sort(loop_container_t*, loop_heap_t*);
 #endif
