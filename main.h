@@ -10,6 +10,7 @@
 #include "ram.h"
 #include "ram_heap.h"
 #include "loop_list.h"
+#include "loop_heap.h"
 
 #ifndef main_h_
 #define main_h_
@@ -25,6 +26,6 @@ typedef struct{
     list_element_t* list;
 }main_vars_t;
 void init_main(main_vars_t*);
-
+void loop_sort(loop_container_t* container, loop_heap_t* heap);
 
 #endif

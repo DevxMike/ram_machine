@@ -20,19 +20,6 @@ loop_container_t* init_loop(){
     }
 }
 
-void loop_sort(loop_container_t* container, loop_heap_t* heap){
-    loop_t* temp = NULL;
-    while(!loop_heap_empty(heap)){ //continue while heap is not empty
-        temp = loop_heap_pop(heap);
-        if(temp == NULL){
-            exit_w_code(LOOP_PROCESSING_ERR); //if loop processing failed
-        }
-        else{
-            add_loop_element(container, temp); //else add an element to the container
-        }
-    }
-}
-
 int loop_full(const loop_container_t* container){
     return container->quantity == container->max_size;
 }

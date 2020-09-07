@@ -50,7 +50,7 @@ void loop_shift_up(loop_heap_t* heap, unsigned index){
 void loop_heap_push(loop_heap_t* heap, const loop_t* el){
     loop_t* temp = NULL;
 
-    if(!loop_heap_empty(heap)){
+    if(loop_heap_empty(heap)){
         copy_loop(&heap->arr[heap->quantity++], el); //copy loop
     }
     else{
