@@ -10,13 +10,14 @@ typedef struct{
 }loop_t;
 
 typedef struct{
-    size_t quantity;
     loop_t* arr;
+    size_t quantity;
+    size_t max_size;
 }loop_container_t;
-
-extern char** loops;
 
 loop_container_t* init_loop(void);
 void add_loop_element(loop_container_t*, const loop_t*);
 const loop_t* search_loop(const loop_container_t*, const char*, unsigned, unsigned);
+int loop_full(const loop_container_t*);
+int loop_empty(const loop_container_t*);
 #endif

@@ -14,6 +14,7 @@ loop_container_t* init_loop(){
         }
         else{ //and if memory allocation for an array of loops did not fail
             temp->quantity = 0;
+            temp->max_size = 1;
             return temp;
         }
     }
@@ -21,19 +22,38 @@ loop_container_t* init_loop(){
 
 void loop_sort(loop_container_t* container, loop_heap_t* heap){
     loop_t* temp = NULL;
-    while(!loop_heap_empty(heap)){
+    while(!loop_heap_empty(heap)){ //continue while heap is not empty
         temp = loop_heap_pop(heap);
         if(temp == NULL){
-            exit_w_code(LOOP_PROCESSING_ERR);
+            exit_w_code(LOOP_PROCESSING_ERR); //if loop processing failed
         }
         else{
-            add_loop_element(container, temp);
+            add_loop_element(container, temp); //else add an element to the container
         }
     }
 }
 
-void add_loop_element(loop_container_t* loop, const loop_t* el){
-    
+int loop_full(const loop_container_t* container){
+    return container->quantity == container->max_size;
+}
+int loop_empty(const loop_container_t* container){
+    return container->quantity == 0;
+}
+
+void add_loop_element(loop_container_t* container, const loop_t* el){
+    loop_t* temp = NULL;
+
+    if(loop_full(container)){ //if container is full, realloc memory
+        if((temp = (loop_t*)realloc(container->arr, ++container->max_size * sizeof(loop_t))) == NULL){
+            exit_w_code(LOOP_PROCESSING_ERR); //if memory reallocation failed
+        }
+        else{
+            container->arr = temp; 
+        }
+    }
+    temp = &container->arr[container->quantity++]; //and copy data
+    strcpy(temp->loop_et, el->loop_et);
+    copy_list(&temp->task_list, el->task_list);
 }
 
 const loop_t* search_loop(const loop_container_t* loop, const char* et, unsigned left, unsigned right){ //assuming structure is sorted by DESC
