@@ -1,12 +1,24 @@
 #include "loop.h"
 #include <string.h>
+#include "loop_heap.h"
 
-void init_loop(loop_container_t** loop, unsigned* errno){
+loop_container_t* init_loop(){
+    loop_container_t* temp = NULL;
 
+    if((temp = (loop_container_t*)malloc(sizeof(loop_container_t))) == NULL){
+        return NULL;
+    }
+    else{ //if memory allocation for loops` container did not fail
+        if((temp->arr = (loop_t*) malloc(sizeof(loop_t))) == NULL){
+            return NULL;
+        }
+        else{ //and if memory allocation for an array of loops did not fail
+            temp->quantity = 0;
+            return temp;
+        }
+    }
 }
-void add_loop_element(loop_container_t* loop, const loop_t* el){
-    
-}
+
 void loop_sort(loop_container_t* container, loop_heap_t* heap){
     loop_t* temp = NULL;
     while(!loop_heap_empty(heap)){
@@ -19,6 +31,11 @@ void loop_sort(loop_container_t* container, loop_heap_t* heap){
         }
     }
 }
+
+void add_loop_element(loop_container_t* loop, const loop_t* el){
+    
+}
+
 const loop_t* search_loop(const loop_container_t* loop, const char* et, unsigned left, unsigned right){ //assuming structure is sorted by DESC
     if(left <= right){
         unsigned mid = (left + right)/2;
