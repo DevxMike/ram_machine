@@ -34,9 +34,36 @@ void swap_loops(loop_t* l1, loop_t* l2){ //swaps two loops
     l1->task_list = l2->task_list;
     l2->task_list = tmp_list;
 }
+void copy_loop(loop_t* dst, const loop_t* src){
+    strcpy(dst->loop_et, src->loop_et); //copy loop`s name
+    copy_list(&(dst->task_list), src->task_list); //copy list
+}
+void loop_shift_up(loop_heap_t* heap, unsigned index){
+    if(index > 0){
+        unsigned temp = (index - 1)/2;
+        if(compare_loop(&heap->arr[index], &heap->arr[temp])){ //check whether the element with index "index" is greater than it`s parent
+            swap_loops(&heap->arr[index], &heap->arr[temp]); //if so, swap them
+            loop_shift_up(heap, temp); //continue the check
+        }
+    }
+}
 void loop_heap_push(loop_heap_t* heap, const loop_t* el){
-    if(loop_heap_empty(heap)){
-        //to do
+    loop_t* temp = NULL;
+
+    if(!loop_heap_empty(heap)){
+        copy_loop(&heap->arr[heap->quantity++], el); //copy loop
+    }
+    else{
+        if(loop_heap_full(heap)){ //if heap is full
+            if((temp = (loop_t*)realloc(heap->arr, ++heap->size * sizeof(loop_t))) == NULL){ //try to realloc memory
+                exit_w_code(LOOP_PROCESSING_ERR);
+            }
+            else{
+                heap->arr = temp;
+            }
+        }
+        copy_loop(&heap->arr[heap->quantity], el); //add new element to heap
+        loop_shift_up(heap, heap->quantity++); //bring the order back in the tree
     }
 }
 
