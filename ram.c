@@ -18,7 +18,7 @@ void swap_structs(ram_cell_t* r1, ram_cell_t* r2){
 
 int ram_search(const id_type target, const ram_chip_t* chip, int left, int right){
     if(left <= right){
-        int mid = left + ((right - left) / 2);
+        int mid = ((right + left) / 2);
         return(
             chip->arr[mid].cell_id == target? mid : (
                 chip->arr[mid].cell_id > target? ram_search(target, chip, mid + 1, right) : ram_search(target, chip, left, mid - 1)
