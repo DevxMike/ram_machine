@@ -5,44 +5,12 @@
 
 
 int main(int argc, char** argv){
-/*--------------------------------------------------------------test--------------------------------------------------------------*/
-    loop_container_t* container = init_loop();
-    loop_heap_t* loop_heap = init_loop_heap();
-    list_element_t* test_list = (list_element_t*)malloc(sizeof(list_element_t));
-    test_list = NULL;
-    loop_t loop_arr[4] = {
-        {"abs", test_list},
-        {"def", test_list},
-        {"ebc", test_list},
-        {"ghj", test_list}
-    };
-    for(size_t i = 0; i < 4; ++i){
-        add_to_loop_container(container, &loop_arr[i], loop_heap);
-    }
-    printf("Data in container after sort:\n");
-    for(size_t i = 0; i < 4; ++i){
-        printf("%s\n", container->arr[i].loop_et);
-    }
-/*--------------------------------------------------------------test--------------------------------------------------------------*/
-
-
-
-
-
-
-
-
-
-
-
     ram_cell_t R0 = {
         0, 0
     };
     main_vars_t program_variables;
-    task_queue_element_t* temp;
     task_queue_data_t* t_data = NULL;
-    
-    init_main(&program_variables);
+
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
         exit_w_code(NO_FILE_NAME_ERR);
@@ -182,6 +150,6 @@ void init_main(main_vars_t* vars){
     vars->ram_heap = NULL;
     vars->task_arr.task_arr = NULL;
     vars->input.arr_size = vars->input.element = vars->task_arr.arr_size = 0;  
-    vars->list = (list_element_t*)malloc(sizeof(list_element_t));
-    vars->list = NULL; 
+    vars->loops.heap = init_loop_heap();
+    vars->loops.loops_array = init_loop();
 }
