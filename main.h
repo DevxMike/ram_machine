@@ -26,6 +26,5 @@ typedef struct{
     list_element_t* list;
 }main_vars_t;
 void init_main(main_vars_t*);
-void loop_sort(loop_container_t* container, loop_heap_t* heap);
 
 #endif

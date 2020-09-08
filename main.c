@@ -2,25 +2,7 @@
 #include "loop.h"
 #include "loop_heap.h"
 
-void loop_sort(loop_container_t* container, loop_heap_t* heap){
-    loop_t* temp = NULL;
 
-    heap->quantity = 0;
-    for(loop_t* i = container->arr; i < (container->arr + container->quantity); ++i){
-        loop_heap_push(heap, i);
-    }
-    container->quantity = 0;
-
-    while(!loop_heap_empty(heap)){ //continue while heap is not empty
-        temp = loop_heap_pop(heap);
-        if(temp == NULL){
-            exit_w_code(LOOP_PROCESSING_ERR); //if loop processing failed
-        }
-        else{
-            add_loop_element(container, temp); //else add an element to the container
-        }
-    }
-}
 
 int main(int argc, char** argv){
 /*--------------------------------------------------------------test--------------------------------------------------------------*/
@@ -35,9 +17,8 @@ int main(int argc, char** argv){
         {"ghj", test_list}
     };
     for(size_t i = 0; i < 4; ++i){
-        add_loop_element(container, &loop_arr[i]);
+        add_to_loop_container(container, &loop_arr[i], loop_heap);
     }
-    loop_sort(container, loop_heap);
     printf("Data in container after sort:\n");
     for(size_t i = 0; i < 4; ++i){
         printf("%s\n", container->arr[i].loop_et);

@@ -110,3 +110,26 @@ int loop_heap_empty(const loop_heap_t* heap){
 int loop_heap_full(const loop_heap_t* heap){
     return heap->quantity == heap->size;
 }
+void loop_sort(loop_container_t* container, loop_heap_t* heap){
+    loop_t* temp = NULL;
+
+    heap->quantity = 0;
+    for(loop_t* i = container->arr; i < (container->arr + container->quantity); ++i){
+        loop_heap_push(heap, i);
+    }
+    container->quantity = 0;
+
+    while(!loop_heap_empty(heap)){ //continue while heap is not empty
+        temp = loop_heap_pop(heap);
+        if(temp == NULL){
+            exit_w_code(LOOP_PROCESSING_ERR); //if loop processing failed
+        }
+        else{
+            add_loop_element(container, temp); //else add an element to the container
+        }
+    }
+}
+void add_to_loop_container(loop_container_t* container, loop_t* el, loop_heap_t* heap){
+    add_loop_element(container, el);
+    loop_sort(container, heap);
+}
