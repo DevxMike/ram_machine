@@ -17,7 +17,7 @@ typedef struct{
 }tasks_t;
 
 typedef struct{ //data structure that holds flags states
-  int flag0, flag1, flag2, flag4;
+  int flag0, flag1, flag2, flag4, flag5;
     unsigned short flag3;
 }flags;
 

@@ -234,6 +234,7 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 	int flag2 = 0; //if >= 1 str contains letters
 	unsigned short flag3 = 0; //quantity of '*' chars (indirect addressing)
 	int flag4 = 0; //if == 1 contains ':', it`s a label of a loop
+	int flag5 = 0; //if == 1 contains '=' char
 	int state = 0; //value depends on the flag states
 	data->type = 0;
 	data->data = NULL;
@@ -244,29 +245,31 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 		if(*pt == '.') ++flag1;
 		if(isalpha(*pt)) ++flag2;
 		if(*pt == '*') ++flag3;
-		if(*pt++ == ':') ++flag4;
+		if(*pt == ':') ++flag4;
+		if(*pt++ == '=') ++flag5;
 		++i;
 	}
 
-	if(flag0 >= 1 && flag1 == 0 && flag2 == 0)
+	if(flag0 >= 1 && flag1 == 0 && flag2 == 0 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 1; //integer
-	if(flag0 >= 1 && flag1 == 1 && flag2 == 0)
+	if(flag0 >= 1 && flag1 == 1 && flag2 == 0 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 2; //double
-	if(flag0 == 0 && flag1 == 0 && flag2 == 1)
+	if(flag0 == 0 && flag1 == 0 && flag2 == 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 3; //single letter
-	if(flag0 == 0 && flag1 == 0 && flag2 > 1)
+	if(flag0 == 0 && flag1 == 0 && flag2 > 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 	        state = 4; //string of letters
-	if(flag0 >= 1 && flag1 > 1 && flag2 >= 1)
+	if(flag0 >= 1 && flag1 > 1 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 5; //string of letters numbers and "." or ","
-	if(flag0 >= 1 && flag1 == 0 && flag2 >= 1 && flag3 == 0)
+	if(flag0 >= 1 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 6; //string of letters and numbers
-	if(flag0 >= 1 && flag1 > 1 && flag2 == 0)
+	if(flag0 >= 1 && flag1 > 1 && flag2 == 0 && flag4 == 0 && flag5 == 0)
 		state = 7; //string of numbers and dots
-	if(flag0 >= 1 && flag1 == 0 && flag2 > 1 && flag3 == 1)
+	if(flag0 >= 1 && flag1 == 0 && flag2 > 1 && flag3 == 1 && flag4 == 0 && flag5 == 0)
 		state = 8; //contains letters, numbers and '*' char
-	if(flag0 == 0 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 1)
+	if(flag0 == 0 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 1 && flag5 == 0)
 		state = 9; //contains letter/letters and ':' char
-
+	if(flag0 >= 1 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 1)
+		state = 10;
 	data->type = state; //set type of input 
 	
 	data->information.flag0 = flag0; //copy flag info
@@ -274,9 +277,9 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 	data->information.flag2 = flag2;
 	data->information.flag3 = flag3;
 	data->information.flag4 = flag4;
-
+	data->information.flag5 = flag5;
 	
-	if(state >= 0 && state <= 9){ //if state is as expected
+	if(state >= 0 && state <= 10){ //if state is as expected
 		data->data = str;
 		return true;
 	}
@@ -454,6 +457,10 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 
 		case 8: //indirect addressing
 		*delim = '*';
+		break;
+		
+		case 10:
+		*delim = '=';
 		break;
 		
 		default: //syntax error
