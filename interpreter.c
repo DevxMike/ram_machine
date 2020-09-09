@@ -459,16 +459,13 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 		*delim = '*';
 		break;
 		
-		case 10:
-		*delim = '=';
-		break;
 		
 		default: //syntax error
 		return -1;
 	}
 	
 	cut_string(data->data, temp_src, has_operand); //slice string
-	if((index = search_command(temp_src->command, 0, COMMAND_ROW)) >= 0){ //check if command exists
+	if((index = search_command(temp_src->command, 0, COMMAND_ROW - 1)) >= 0){ //check if command exists
 		index = data->type == 8? index + 1 : index;
 		strcpy(temp_src->command, commands[index]); //copy the right command from syntax.c file (either direct or indirect addressing) 
 	}
@@ -476,5 +473,6 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 		return temp_src->cmd_id = index;
 	}
 	temp_src->cmd_id = index;
+	printf("%s\n", temp_src->command);
 	return has_operand? 1 : 0;
 }
