@@ -1,7 +1,7 @@
 #include "main.h"
 #include "loop.h"
 #include "loop_heap.h"
-
+#include <time.h>
 
 
 int main(int argc, char** argv){
@@ -9,8 +9,13 @@ int main(int argc, char** argv){
         0, 0
     };
     main_vars_t program_variables;
+    task_queue_element_t* temp;
     task_queue_data_t* t_data = NULL;
+    clock_t c1, c2;
 
+
+    init_main(&program_variables);
+    
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
         exit_w_code(NO_FILE_NAME_ERR);
@@ -39,7 +44,8 @@ int main(int argc, char** argv){
             }
 
             ram_push(program_variables.ram_chip, &R0); //add special register to ram chip
-
+            
+            c1 = clock();
             for(size_t i = 0; i < program_variables.task_arr.arr_size; ++i){
                 if(DataTypeAnalyzer(&program_variables.data, program_variables.task_arr.task_arr[i])){
                     if(Interpreter(&program_variables.data, program_variables.queue, &program_variables.EXIT_CODE, i) == 1){
@@ -89,12 +95,15 @@ int main(int argc, char** argv){
                     /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                 }
             }
-            printf("\nSyntax correct.\nProgram output:\n\n");
+            c2 = clock();
+            printf("\nSyntax correct.\nInterpretation time: %lfs\nProgram output:\n\n", (double)(c2 - c1)/CLOCKS_PER_SEC);
+            c1 = clock();
             while(!task_queue_empty(program_variables.queue)){
                 t_data = q_pop(program_variables.queue);
                 tasker(program_variables.ram_chip, t_data, program_variables.ram_heap, &program_variables.input);
                 free(t_data);
             }
+            c2 = clock();
         }
         else{
             /*----------------------------------------------if failed free memory section -----------------------------------------------*/
@@ -139,6 +148,7 @@ int main(int argc, char** argv){
         free(program_variables.ram_heap);
         free(program_variables.queue); 
         /*----------------------------------------------------free memory section----------------------------------------------------------*/
+        printf("\n\nProgram duration: %lfs", (double)(c2 - c1)/CLOCKS_PER_SEC);
         exit_w_code(program_variables.EXIT_CODE);
     }    
 }
