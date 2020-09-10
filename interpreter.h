@@ -41,5 +41,4 @@ void to_upper_case(char*);
 int tasker(ram_chip_t*, task_queue_data_t*, ram_heap_t*, input_data_t*);
 int string_to_int(char*);
 id_type string_to_id_type(char*);
-void print_command_id();
 #endif

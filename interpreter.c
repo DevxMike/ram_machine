@@ -34,7 +34,26 @@ typedef enum {
 
 int other_ops(ram_chip_t* chip, int index, input_data_t* data, register_type op_type){ //perform other type of operations
 	int zero_index;
+	if((zero_index = ram_search(0, chip, 0, chip->quantity - 1)) < 0){
+		return -2; //could not find R0 index
+	}
+
 	switch(op_type){
+		case add_reg:
+		chip->arr[zero_index].value += chip->arr[index].value;
+		break;
+		case sub_reg:
+		chip->arr[zero_index].value -= chip->arr[index].value;
+		break;
+		case mult_reg:
+		chip->arr[zero_index].value *= chip->arr[index].value;
+		break;
+		case divide_reg:
+		chip->arr[zero_index].value /= chip->arr[index].value;
+		break;
+		case load_reg:
+		chip->arr[zero_index].value = chip->arr[index].value;
+		break;
 		case read:
 		if(data->element < data->arr_size){
 			chip->arr[index].value = data->data_arr[data->element++]; //store integer from input in ram cell
@@ -45,12 +64,7 @@ int other_ops(ram_chip_t* chip, int index, input_data_t* data, register_type op_
 		}
 		break;
 		case store:
-		if((zero_index = ram_search(0, chip, 0, chip->quantity - 1)) < 0){
-			return -2; //could not find R0 index
-		}	
-		else{
-			chip->arr[index].value = chip->arr[zero_index].value; //copy R0 value to desired ram cell
-		}
+		chip->arr[index].value = chip->arr[zero_index].value; //copy R0 value to desired ram cell
 		break;
 		case write:
 		printf("R%llu value: %d\n", chip->arr[index].cell_id, chip->arr[index].value); //print Rx value
@@ -87,14 +101,39 @@ int arithmetic_ops(ram_chip_t* chip, int val, integer_type t){ //perform arithme
 }
 int define_reg_ops(int cmd){ //return other operations type
 	switch(cmd){
+		case 0: case 1:
+		return add_reg;
+		break;
+
+		case 3: case 4:
+		return divide_reg;
+		break;
+
+		case 10: case 11: 
+		return load_reg;
+		break;
+
+		case 13: case 14: 
+		return mult_reg;
+		break;
+
+		case 21: case 22: 
+		return sub_reg;
+		break;
+
 		case 16: case 17:
 		return read;
 		break;
+
 		case 19: case 20:
 		return store;
 		break;
+
 		case 24: case 25:
 		return write;
+		break;
+		default:
+		return -1;
 		break;
 	}
 }
@@ -180,13 +219,6 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 		}
 	}
 	switch(data->cmd_id){
-		case 0: case 1:
-		case 3: case 4:
-		case 10: case 11: 
-		case 13: case 14: 
-		case 21: case 22: 
-		break;
-
 		case 2:
 		case 5:
 		case 12:
@@ -194,7 +226,12 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 		case 23:
 		arithmetic_ops(ram, string_to_int(data->operand_st), define_int_ops(data->cmd_id));
 		break;
-		
+
+		case 0: case 1:
+		case 3: case 4:
+		case 10: case 11: 
+		case 13: case 14: 
+		case 21: case 22: 
 		case 16: case 17:
 		case 19: case 20:
 		case 24: case 25:
@@ -490,9 +527,4 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 	}
 	temp_src->cmd_id = index;
 	return has_operand? 1 : 0;
-}
-void print_command_id(){
-	for(const char** pt = commands; pt < commands + COMMAND_ROW; ++pt){
-		printf("%s id = %d\n", *pt, search_command(*pt, 0, COMMAND_ROW - 1));
-	}
 }
