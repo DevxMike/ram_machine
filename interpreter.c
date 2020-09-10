@@ -87,20 +87,20 @@ int arithmetic_ops(ram_chip_t* chip, int val, arithmetic_type t){ //perform arit
 }
 int other_ops_type(int cmd){ //return other operations type
 	switch(cmd){
-		case 8: case 9:
+		case 16: case 17:
 		return read;
 		break;
-		case 11: case 12:
+		case 19: case 20:
 		return store;
 		break;
-		case 14:
+		case 24: case 25:
 		return write;
 		break;
 	}
 }
 int is_indirect_add(int cmd){
 	switch(cmd){
-		case 9: case 12:
+		case 1: case 4: case 11: case 14: case 17: case 20: case 22: case 25:
 		return true;
 		break;
 		default:
@@ -110,19 +110,19 @@ int is_indirect_add(int cmd){
 }
 int arithmetic_ops_type(int cmd){ //return arithmetic operation type
 	switch(cmd){
-		case 0:
+		case 0: case 1: case 2:
 		return add;
 		break;
-		case 1:
+		case 3: case 4: case 5:
 		return divide;
 		break;
-		case 6:
+		case 10: case 11: case 12:
 		return load;
 		break;
-		case 7:
+		case 13: case 14: case 15:
 		return mult;
 		break;
-		case 13:
+		case 21: case 22: case 23:
 		return sub;
 		break;
 		default:
@@ -135,7 +135,8 @@ int to_number(char number){ //converts char into a number
 }
 bool is_id_cmd_type(int x){ //if command requires register address return true
 	switch(x){
-		case 8: case 9: case 11: case 12: case 14:
+		case 0: case 1: case 4: case 5: case 10: case 11: case 13: case 14:
+		case 16: case 17: case 19: case 20: case 21: case 22: case 24: case 25:
 		return true;
 		break;
 		default:
@@ -180,16 +181,18 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 		}
 	}
 	switch(data->cmd_id){
-		case 0: case 13: case 1: case 6: case 7:
+		case 0: case 1: case 2:
+		case 3: case 4: case 5:
+		case 10: case 11: case 12:
+		case 13: case 14: case 15:
+		case 21: case 22: case 23:
 		arithmetic_ops(ram, string_to_int(data->operand_st), arithmetic_ops_type(data->cmd_id));
 		break;
 		
-		case 3: //JGTZ operation
-		case 4: //JUMP operation
-		case 5: //JZERO operation
-		break;
 		
-		case 8: case 9:	case 11: case 12: case 14:
+		case 16: case 17:
+		case 19: case 20:
+		case 24: case 25:
 		if((index = ram_search(ram_id, ram, 0, ram->quantity - 1)) < 0){
 			return -1;
 		}
@@ -269,7 +272,7 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 	if(flag0 == 0 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 1 && flag5 == 0)
 		state = 9; //contains letter/letters and ':' char
 	if(flag0 >= 1 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 1)
-		state = 10;
+		state = 10; //contains letters, integers and '=' char
 	data->type = state; //set type of input 
 	
 	data->information.flag0 = flag0; //copy flag info
@@ -459,6 +462,9 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 		*delim = '*';
 		break;
 		
+		case 10:
+		*delim = '=';
+		break;
 		
 		default: //syntax error
 		return -1;
@@ -473,6 +479,10 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 		return temp_src->cmd_id = index;
 	}
 	temp_src->cmd_id = index;
-	printf("%s\n", temp_src->command);
 	return has_operand? 1 : 0;
+}
+void print_command_id(){
+	for(const char** pt = commands; pt < commands + COMMAND_ROW; ++pt){
+		printf("%s id = %d\n", *pt, search_command(*pt, 0, COMMAND_ROW - 1));
+	}
 }
