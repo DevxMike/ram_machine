@@ -25,14 +25,14 @@ const char DEBUG_STRING[][70] = { //debug string array
 };
 
 typedef enum{
-	read = 0, store,  write 
-}other_type; //other operations types
+	read = 0, store,  write, add_reg, sub_reg, mult_reg, divide_reg, load_reg
+}register_type; //other operations types
 
 typedef enum {
 	add = 0, sub, mult, divide, load //arithmetic operations types
-}arithmetic_type;
+}integer_type;
 
-int other_ops(ram_chip_t* chip, int index, input_data_t* data, other_type op_type){ //perform other type of operations
+int other_ops(ram_chip_t* chip, int index, input_data_t* data, register_type op_type){ //perform other type of operations
 	int zero_index;
 	switch(op_type){
 		case read:
@@ -59,7 +59,7 @@ int other_ops(ram_chip_t* chip, int index, input_data_t* data, other_type op_typ
 	return 1;
 }
 
-int arithmetic_ops(ram_chip_t* chip, int val, arithmetic_type t){ //perform arithmetic operations
+int arithmetic_ops(ram_chip_t* chip, int val, integer_type t){ //perform arithmetic operations
 	int zero_index = ram_search(0, chip, 0, chip->quantity - 1);
 	if(zero_index < 0){
 		return -1;
@@ -85,7 +85,7 @@ int arithmetic_ops(ram_chip_t* chip, int val, arithmetic_type t){ //perform arit
 		return 1;
 	}
 }
-int other_ops_type(int cmd){ //return other operations type
+int define_reg_ops(int cmd){ //return other operations type
 	switch(cmd){
 		case 16: case 17:
 		return read;
@@ -108,21 +108,21 @@ int is_indirect_add(int cmd){
 		break;
 	}
 }
-int arithmetic_ops_type(int cmd){ //return arithmetic operation type
+int define_int_ops(int cmd){ //return arithmetic operation type
 	switch(cmd){
-		case 0: case 1: case 2:
+		case 2:
 		return add;
 		break;
-		case 3: case 4: case 5:
+		case 5:
 		return divide;
 		break;
-		case 10: case 11: case 12:
+		case 12:
 		return load;
 		break;
-		case 13: case 14: case 15:
+		case 15:
 		return mult;
 		break;
-		case 21: case 22: case 23:
+		case 23:
 		return sub;
 		break;
 		default:
@@ -149,7 +149,6 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 	ram_heap_data_t temp;
 	unsigned errno = 0;
 	int index = 0;
-
 	if(is_id_cmd_type(data->cmd_id)){ //check if command either requires integer or ram cell address
 		ram_id = string_to_id_type(data->operand_st); //convert string to unsigned long long
 		if((index = ram_search(ram_id, ram, 0, ram->quantity - 1)) < 0){ //search for struct with certain ram_id
@@ -181,14 +180,20 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 		}
 	}
 	switch(data->cmd_id){
-		case 0: case 1: case 2:
-		case 3: case 4: case 5:
-		case 10: case 11: case 12:
-		case 13: case 14: case 15:
-		case 21: case 22: case 23:
-		arithmetic_ops(ram, string_to_int(data->operand_st), arithmetic_ops_type(data->cmd_id));
+		case 0: case 1:
+		case 3: case 4:
+		case 10: case 11: 
+		case 13: case 14: 
+		case 21: case 22: 
 		break;
-		
+
+		case 2:
+		case 5:
+		case 12:
+		case 15:
+		case 23:
+		arithmetic_ops(ram, string_to_int(data->operand_st), define_int_ops(data->cmd_id));
+		break;
 		
 		case 16: case 17:
 		case 19: case 20:
@@ -196,7 +201,7 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 		if((index = ram_search(ram_id, ram, 0, ram->quantity - 1)) < 0){
 			return -1;
 		}
-		other_ops(ram, index, input, other_ops_type(data->cmd_id));
+		other_ops(ram, index, input, define_reg_ops(data->cmd_id));
 		break;
 	}
 }
@@ -209,7 +214,7 @@ int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_
 	if(split_string(data, &temp) == 2){
 		return 1;
 	}
-	if(temp.cmd_id == 10){
+	if(temp.cmd_id == 18){
 		start_occured = true;
 	}
 	if(start_occured){
@@ -472,7 +477,12 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 	
 	cut_string(data->data, temp_src, has_operand); //slice string
 	if((index = search_command(temp_src->command, 0, COMMAND_ROW - 1)) >= 0){ //check if command exists
-		index = data->type == 8? index + 1 : index;
+		if(data->type == 8){
+			index += 1;
+		}
+		else if(data->type == 10){
+			index += 2;
+		}
 		strcpy(temp_src->command, commands[index]); //copy the right command from syntax.c file (either direct or indirect addressing) 
 	}
 	else{

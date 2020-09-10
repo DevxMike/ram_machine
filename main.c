@@ -12,8 +12,6 @@ int main(int argc, char** argv){
     task_queue_element_t* temp;
     task_queue_data_t* t_data = NULL;
     clock_t c1, c2;
-
-    print_command_id();
     
     init_main(&program_variables);
     
