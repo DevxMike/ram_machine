@@ -150,7 +150,7 @@ int main(int argc, char** argv){
         free(program_variables.ram_heap);
         free(program_variables.queue); 
         /*----------------------------------------------------free memory section----------------------------------------------------------*/
-        printf("\n\nProgram duration: %lfs", (double)(c2 - c1)/CLOCKS_PER_SEC);
+        printf("\nProgram duration: %lfs", (double)(c2 - c1)/CLOCKS_PER_SEC);
         exit_w_code(program_variables.EXIT_CODE);
     }    
 }

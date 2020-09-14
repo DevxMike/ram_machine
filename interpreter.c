@@ -353,7 +353,7 @@ char* UserInputToString(FILE* stream, unsigned* errno){ //get user input by scan
 		uits = temp;
 		++uits_pt;
 	}
-	//clear_stream(stream); //clear stream from chars 
+	clear_stream(stream); //clear stream from chars 
 	*uits_pt = '\0'; //end the string with '\0' char
 	*errno = 0;
 	return uits;
@@ -388,11 +388,17 @@ id_type transform_to_id_type(char* str, id_type initial){ //both operations assu
 	}
 }
 int string_to_int(char* str){
-	if(is_num(*str)){
-		return transform_to_int(str, 0);
+	int sign = 1;
+	while(!is_num(*str) && *str != '-'){
+		++str;
 	}
-	else if(*str == '-'){
-		return transform_to_int(++str, 0) * -1;
+	if(*str){
+		if(*str == '-'){
+			return transform_to_int(++str, 0) * -1;
+		}
+		else{
+			return transform_to_int(str, 0);
+		}
 	}
 }
 id_type string_to_id_type(char* str){
@@ -458,6 +464,14 @@ int search_command(const char* cmd, int left, int right){ //binary search, seeks
 		return search_command(cmd, middle + 1, right);
 	}
 }
+int is_white(int x){
+	if(x >= 0x00 && x <= 0x20){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
 void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){ //slices string into two parts
 	char* str_pt = string;
 	char* src_pt = temp_src->command;
@@ -470,9 +484,12 @@ void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){ //slice
 	*src_pt = '\0'; //end string with '\0' char
 	to_upper_case(temp_src->command); //transform string to upper case 
 	if(has_op){ //if has operand (command is neither a loop nor START nor HALT command)
-		src_pt = temp_src->operand_st;  
+		src_pt = temp_src->operand_st; 
+		while(*str_pt != ' ' && *str_pt != '*' && *str_pt++ != '='){
+			continue;
+		}
 		while(*str_pt && ctrl++ < OP_SIZE - 1){ //while *str_pt is not a '\0' char
-			if(is_num(*str_pt)){ 
+			if(!is_white(*str_pt)){ 
 				(*src_pt++ = *str_pt++);
 			} 
 			else{ 
@@ -482,34 +499,35 @@ void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){ //slice
 		*src_pt = '\0';//end string with '\0' char
 	}
 }
+int cmd_is_correct(int x, bool* op){
+	switch(x){
+		case 1: 
+		return 2;
+		break;
+
+		case 6: case 8: case 9: case 10:
+		return 0;
+		break;
+
+		case 4:
+		*op = false;
+		return 0;
+		break;
+
+		default:
+		return -1;
+		break;
+	}
+}
 int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits string "ADD* 5" into two strings <cmd>"ADD" <operand>"5";
-	char delim[2];
-	int index;
+	int index, tmp;
 	bool has_operand = true;
 
-	switch(data->type){ 
-		case 1:
-		return 2; //string of integers
-		break;
-
-		case 4: //START, HALT, some kind of loop etc
-		has_operand = false;
-		break;
-
-		case 6: //ADD 5, DIV 2 etc
-		*delim = ' ';
-		break;
-
-		case 8: //indirect addressing
-		*delim = '*';
-		break;
-		
-		case 10:
-		*delim = '=';
-		break;
-		
-		default: //syntax error
+	if((tmp = cmd_is_correct(data->type, &has_operand)) < 0){
 		return -1;
+	}
+	else if(tmp > 0){
+		return tmp;
 	}
 	
 	cut_string(data->data, temp_src, has_operand); //slice string

@@ -8,7 +8,7 @@
 
 void clear_stream(FILE* stream){
     char c;
-    while((c = getc(stream)) && (c != '\n' && c != ';' && c != EOF)){
+    while((c = getc(stream)) != EOF && c != '\n'){
         continue;
     }
 }
