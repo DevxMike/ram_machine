@@ -99,6 +99,9 @@ int main(int argc, char** argv){
             c1 = clock();
             while(!task_queue_empty(program_variables.queue)){
                 t_data = q_pop(program_variables.queue);
+                if(strcmp(t_data->command, "HALT") == 0){
+                    break;
+                }
                 tasker(program_variables.ram_chip, t_data, program_variables.ram_heap, &program_variables.input);
                 free(t_data);
             }
