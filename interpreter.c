@@ -7,20 +7,10 @@
 #include "syntax.h"
 #include <string.h>
 #include "main.h"
+#define exprintf(exp) printf(#exp " = %s\n", exp? "true" : "false") //for debug
 
-
-const char DEBUG_STRING[][70] = { //debug string array
-    "CANNOT ANALYZE DATA",
-    "int",
-    "double",
-    "single letter",
-    "string of letters",
-    "string of letters numbers and dots",
-    "string of letters and numbers",
-    "string of numbers and dots",
-    "string of letters, '*' char and int (indirect addressing)",
-    "COMMAND"
-};
+bool label_has_occured = false;
+bool label_end = true;
 
 typedef enum{
 	read = 0, store,  write, add_reg, sub_reg, mult_reg, divide_reg, load_reg
@@ -251,11 +241,13 @@ int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_
 	
 	if(temp.cmd_id != -1){
 		q_push(queue, &temp);
+		if(!strcmp(temp.command, "JUMP")) {
+			printf("%s %s\n", temp.command, temp.operand_st);
+			exprintf(label_has_occured);
+			label_has_occured = false;
+		}
 		*status = 0;
 		return 0;
-	}
-	else if(data->type == 9){
-
 	}
 	else{
 		printf("line %ld: %s - not a command.\n", line + 1, temp.command);
@@ -484,8 +476,10 @@ void cut_string(char* string, task_queue_data_t* temp_src, bool has_op, int type
 	char* src_pt = temp_src->command;
 	size_t ctrl = 0;
 	if(type == 9 && !contains_white(string)){
-		strcpy(temp_src->command, "_LBL_");
+		strcpy(temp_src->command, "JUMP");
 		strcpy(temp_src->operand_st, string);
+		label_has_occured = true;
+		label_end = false;
 	}
 	else{
 		while(!is_white(*str_pt) && (ctrl++ < CMD_SIZE - 1)){		
@@ -509,9 +503,6 @@ void cut_string(char* string, task_queue_data_t* temp_src, bool has_op, int type
 			}
 			*src_pt = '\0';//end string with '\0' char
 		}
-	}
-	if(type == 9){
-		printf("%s %s\n", temp_src->command, temp_src->operand_st);
 	}
 }
 int cmd_is_correct(int x, bool* op){
