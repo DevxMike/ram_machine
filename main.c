@@ -14,7 +14,6 @@ int main(int argc, char** argv){
     clock_t c1, c2;
     
     init_main(&program_variables);
-    
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
         exit_w_code(NO_FILE_NAME_ERR);

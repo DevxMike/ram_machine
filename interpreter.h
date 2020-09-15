@@ -28,7 +28,6 @@ int type;
 flags information;
 }AnalyzedData;
 
-extern bool has_loops;
 void PrintString(char*);
 char* UserInputToString(FILE*, unsigned*);
 bool DataTypeAnalyzer(AnalyzedData*, char*);
@@ -41,4 +40,5 @@ void to_upper_case(char*);
 int tasker(ram_chip_t*, task_queue_data_t*, ram_heap_t*, input_data_t*);
 int string_to_int(char*);
 id_type string_to_id_type(char*);
+
 #endif

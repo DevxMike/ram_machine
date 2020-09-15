@@ -8,8 +8,6 @@
 #include <string.h>
 #include "main.h"
 
-bool has_loops = false; //if algo has loops, interpreter changes its value to true
-bool start_occured = false;
 
 const char DEBUG_STRING[][70] = { //debug string array
     "CANNOT ANALYZE DATA",
@@ -125,11 +123,11 @@ int define_reg_ops(int cmd){ //return other operations type
 		return read;
 		break;
 
-		case 19: case 20:
+		case 18: case 19:
 		return store;
 		break;
 
-		case 24: case 25:
+		case 23: case 24:
 		return write;
 		break;
 		default:
@@ -139,7 +137,7 @@ int define_reg_ops(int cmd){ //return other operations type
 }
 int is_indirect_add(int cmd){
 	switch(cmd){
-		case 1: case 4: case 11: case 14: case 17: case 20: case 22: case 25:
+		case 1: case 4: case 11: case 14: case 17: case 19: case 21: case 24:
 		return true;
 		break;
 		default:
@@ -161,7 +159,7 @@ int define_int_ops(int cmd){ //return arithmetic operation type
 		case 15:
 		return mult;
 		break;
-		case 23:
+		case 22:
 		return sub;
 		break;
 		default:
@@ -175,7 +173,7 @@ int to_number(char number){ //converts char into a number
 bool is_id_cmd_type(int x){ //if command requires register address return true
 	switch(x){
 		case 0: case 1: case 4: case 5: case 10: case 11: case 13: case 14:
-		case 16: case 17: case 19: case 20: case 21: case 22: case 24: case 25:
+		case 16: case 17: case 18: case 19: case 20: case 21: case 23: case 24:
 		return true;
 		break;
 		default:
@@ -223,7 +221,7 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 		case 5:
 		case 12:
 		case 15:
-		case 23:
+		case 22:
 		arithmetic_ops(ram, string_to_int(data->operand_st), define_int_ops(data->cmd_id));
 		break;
 
@@ -231,10 +229,10 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 		case 3: case 4:
 		case 10: case 11: 
 		case 13: case 14: 
-		case 21: case 22: 
+		case 20: case 21: 
 		case 16: case 17:
-		case 19: case 20:
-		case 24: case 25:
+		case 18: case 19:
+		case 23: case 24:
 		if((index = ram_search(ram_id, ram, 0, ram->quantity - 1)) < 0){
 			return -1;
 		}
@@ -251,10 +249,6 @@ int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_
 	if(split_string(data, &temp) == 2){
 		return 1;
 	}
-	if(temp.cmd_id == 18){
-		start_occured = true;
-	}
-	if(start_occured){
 		if(temp.cmd_id != -1){
 			q_push(queue, &temp);
 			*status = 0;
@@ -265,7 +259,6 @@ int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_
 			*status = WRONG_SYNTAX_ERR;
 			return -1;
 		}
-	}
 }
 
 int is_num(char number){ //determines if char is a number
@@ -472,17 +465,19 @@ int is_white(int x){
 		return 0;
 	}
 }
-void cut_string(char* string, task_queue_data_t* temp_src, bool has_op){ //slices string into two parts
+void cut_string(char* string, task_queue_data_t* temp_src, bool has_op, int type){ //slices string into two parts
 	char* str_pt = string;
 	char* src_pt = temp_src->command;
 	size_t ctrl = 0;
 
-	while(isalpha(*str_pt) && ctrl++ < CMD_SIZE - 1){
+	while(!is_white(*str_pt) && ctrl++ < CMD_SIZE - 1){
 		*src_pt++ = *str_pt++; //while command, copy to the memory where commands are hold
 	}
 	ctrl = 0;
 	*src_pt = '\0'; //end string with '\0' char
-	to_upper_case(temp_src->command); //transform string to upper case 
+	if(type != 9){
+		to_upper_case(temp_src->command); //transform string to upper case 
+	}
 	if(has_op){ //if has operand (command is neither a loop nor START nor HALT command)
 		src_pt = temp_src->operand_st; 
 		while(*str_pt != ' ' && *str_pt != '*' && *str_pt++ != '='){
@@ -530,7 +525,7 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 		return tmp;
 	}
 	
-	cut_string(data->data, temp_src, has_operand); //slice string
+	cut_string(data->data, temp_src, has_operand, data->type); //slice string
 	if((index = search_command(temp_src->command, 0, COMMAND_ROW - 1)) >= 0){ //check if command exists
 		if(data->type == 8){
 			index += 1;

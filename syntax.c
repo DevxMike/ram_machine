@@ -19,7 +19,6 @@ const char* commands[COMMAND_ROW] = { //could be used as compare val to the inpu
     "MULT =",
     "READ",
     "READ *", 
-    "START",
     "STORE",
     "STORE *",
     "SUB",
@@ -47,7 +46,6 @@ const char* ex_operands[COMMAND_ROW] = {
     "x //multiply R0 by x",
     "x //read from input to Rx",
     "x //get y from Rx and read from input to Ry",
-    "<none> //indicates start of algorithm",
     "x //copies R0 value into Rx",
     "x //get y from Rx and store R0`s val in Ry",
     "x //substract Rx`s val from R0 value",
@@ -64,9 +62,12 @@ void print_help(const char* program_str, size_t rows_com, const char* com[], siz
         "i.e. \"%s <file_name>\"\n\n"
         "Syntax:\n"
         "1 2 3 4 5 6 7 8 9 10 //integer input, not obligatory\n"
-        "START - entry point\n"
+        "label:; optional"
         "<COMMANDS> <OPERANDS> - operations\n"
         "HALT - end of algorithm\n\n"
+        "loops:\n\n"
+        "comments in code:\n"
+        "example: \"ADD =5; add 5 to R0`s value\"\n\n"
         "Available commands:\n",
         program_str
     );
