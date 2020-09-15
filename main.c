@@ -10,7 +10,6 @@ int main(int argc, char** argv){
     };
     main_vars_t program_variables;
     task_queue_element_t* temp;
-    task_queue_data_t* t_data = NULL;
     clock_t c1, c2;
     
     init_main(&program_variables);
@@ -96,13 +95,10 @@ int main(int argc, char** argv){
             c2 = clock();
             printf("\nSyntax correct.\nInterpretation time: %lfs\nProgram output:\n\n", (double)(c2 - c1)/CLOCKS_PER_SEC);
             c1 = clock();
-            while(!task_queue_empty(program_variables.queue)){
-                t_data = q_pop(program_variables.queue);
-                if(strcmp(t_data->command, "HALT") == 0){
-                    break;
-                }
-                tasker(program_variables.ram_chip, t_data, program_variables.ram_heap, &program_variables.input);
-                free(t_data);
+            temp = program_variables.queue->head;
+            while(temp && strcmp(temp->data.command, "HALT")){
+                tasker(program_variables.ram_chip, &temp->data, program_variables.ram_heap, &program_variables.input);
+                temp = temp->next;
             }
             c2 = clock();
         }
