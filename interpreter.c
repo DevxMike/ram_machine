@@ -244,21 +244,24 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 
 int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_t line){ //interprets tasks
 	task_queue_data_t temp;
-	int* arr = NULL;
 
 	if(split_string(data, &temp) == 2){
 		return 1;
 	}
-		if(temp.cmd_id != -1){
-			q_push(queue, &temp);
-			*status = 0;
-			return 0;
-		}
-		else{
-			printf("line %ld: %s - not a command.\n", line + 1, temp.command);
-			*status = WRONG_SYNTAX_ERR;
-			return -1;
-		}
+	
+	if(temp.cmd_id != -1){
+		q_push(queue, &temp);
+		*status = 0;
+		return 0;
+	}
+	else if(data->type == 9){
+
+	}
+	else{
+		printf("line %ld: %s - not a command.\n", line + 1, temp.command);
+		*status = WRONG_SYNTAX_ERR;
+		return -1;
+	}
 }
 
 int is_num(char number){ //determines if char is a number
@@ -290,23 +293,23 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 
 	if(flag0 >= 1 && flag1 == 0 && flag2 == 0 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 1; //integer
-	if(flag0 >= 1 && flag1 == 1 && flag2 == 0 && flag3 == 0 && flag4 == 0 && flag5 == 0)
+	else if(flag0 >= 1 && flag1 == 1 && flag2 == 0 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 2; //double
-	if(flag0 == 0 && flag1 == 0 && flag2 == 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
+	else if(flag0 == 0 && flag1 == 0 && flag2 == 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 3; //single letter
-	if(flag0 == 0 && flag1 == 0 && flag2 > 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
-	        state = 4; //string of letters
-	if(flag0 >= 1 && flag1 > 1 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
+	else if(flag0 == 0 && flag1 == 0 && flag2 > 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
+	    state = 4; //string of letters
+	else if(flag0 >= 1 && flag1 > 1 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 5; //string of letters numbers and "." or ","
-	if(flag0 >= 1 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
+	else if(flag0 >= 1 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 0)
 		state = 6; //string of letters and numbers
-	if(flag0 >= 1 && flag1 > 1 && flag2 == 0 && flag4 == 0 && flag5 == 0)
+	else if(flag0 >= 1 && flag1 > 1 && flag2 == 0 && flag4 == 0 && flag5 == 0)
 		state = 7; //string of numbers and dots
-	if(flag0 >= 1 && flag1 == 0 && flag2 > 1 && flag3 == 1 && flag4 == 0 && flag5 == 0)
+	else if(flag0 >= 1 && flag1 == 0 && flag2 > 1 && flag3 == 1 && flag4 == 0 && flag5 == 0)
 		state = 8; //contains letters, numbers and '*' char
-	if(flag0 == 0 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 1 && flag5 == 0)
+	else if(flag0 >= 0 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 1 && flag5 == 0)
 		state = 9; //contains letter/letters and ':' char
-	if(flag0 >= 1 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 1)
+	else if(flag0 >= 1 && flag1 == 0 && flag2 >= 1 && flag3 == 0 && flag4 == 0 && flag5 == 1)
 		state = 10; //contains letters, integers and '=' char
 	data->type = state; //set type of input 
 	
@@ -457,7 +460,7 @@ int search_command(const char* cmd, int left, int right){ //binary search, seeks
 		return search_command(cmd, middle + 1, right);
 	}
 }
-int is_white(int x){
+int is_white(int x){ //check if x is a white sign
 	if(x >= 0x00 && x <= 0x20){
 		return 1;
 	}
@@ -465,33 +468,50 @@ int is_white(int x){
 		return 0;
 	}
 }
+int contains_white(char* str){ //check if string contains white signs
+	if(*str){
+		if(is_white(*str)){
+			return 1;
+		}
+		else{
+			return contains_white(++str);
+		}
+	}
+	return 0;
+}
 void cut_string(char* string, task_queue_data_t* temp_src, bool has_op, int type){ //slices string into two parts
 	char* str_pt = string;
 	char* src_pt = temp_src->command;
 	size_t ctrl = 0;
-
-	while(!is_white(*str_pt) && ctrl++ < CMD_SIZE - 1){
+	if(type == 9 && !contains_white(string)){
+		strcpy(temp_src->command, "_LBL_");
+		strcpy(temp_src->operand_st, string);
+	}
+	else{
+		while(!is_white(*str_pt) && (ctrl++ < CMD_SIZE - 1)){		
 		*src_pt++ = *str_pt++; //while command, copy to the memory where commands are hold
 	}
-	ctrl = 0;
-	*src_pt = '\0'; //end string with '\0' char
-	if(type != 9){
+		ctrl = 0;
+		*src_pt = '\0'; //end string with '\0' char
 		to_upper_case(temp_src->command); //transform string to upper case 
+		if(has_op){ //if has operand (command is neither a loop nor START nor HALT command)
+			src_pt = temp_src->operand_st; 
+			while(*str_pt != ' ' && *str_pt != '*' && *str_pt++ != '='){
+				continue;
+			}
+			while(*str_pt && ctrl++ < OP_SIZE - 1){ //while *str_pt is not a '\0' char
+				if(!is_white(*str_pt)){ 
+					(*src_pt++ = *str_pt++);
+				} 
+				else{ 
+					(++str_pt);
+				} 
+			}
+			*src_pt = '\0';//end string with '\0' char
+		}
 	}
-	if(has_op){ //if has operand (command is neither a loop nor START nor HALT command)
-		src_pt = temp_src->operand_st; 
-		while(*str_pt != ' ' && *str_pt != '*' && *str_pt++ != '='){
-			continue;
-		}
-		while(*str_pt && ctrl++ < OP_SIZE - 1){ //while *str_pt is not a '\0' char
-			if(!is_white(*str_pt)){ 
-				(*src_pt++ = *str_pt++);
-			} 
-			else{ 
-				(++str_pt);
-			} 
-		}
-		*src_pt = '\0';//end string with '\0' char
+	if(type == 9){
+		printf("%s %s\n", temp_src->command, temp_src->operand_st);
 	}
 }
 int cmd_is_correct(int x, bool* op){
