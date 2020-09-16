@@ -38,7 +38,7 @@ void add_loop_element(loop_container_t* container, const loop_t* el){
             container->arr = temp; 
         }
     }
-    temp = &container->arr[container->quantity++]; //and copy data
+    temp = &(container->arr[container->quantity++]); //and copy data
     strcpy(temp->loop_et, el->loop_et);
     copy_list(&temp->task_list, el->task_list);
 }

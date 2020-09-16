@@ -44,6 +44,7 @@ bool q_push(task_queue_t* queue, const task_queue_data_t* data){ //pushes an ele
             queue->tail->next = temp; //else add item to the end of the queue
             queue->tail = queue->tail->next;
         }   
+        queue->tail->next = NULL;
         ++queue->quantity; 
         return true;
     }

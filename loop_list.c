@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include "errors.h"
 void push_back(list_element_t** head, const list_data_t* data){
-    list_element_t* iter = NULL; //temp iterator
-        if(*head == NULL){ //if list is empty
-            *head = (list_element_t*)malloc(sizeof(list_element_t));
-            copy_data_struct(&(*head)->data, data); //add an element
-            (*head)->next = NULL; //head is first and last element
+    list_element_t* iter = (list_element_t*)malloc(sizeof(list_element_t));
+        if((*head) == NULL){ //if list is empty
+            copy_data_struct(&iter->data, data); //add an element
+            iter->next = NULL; //head is first and last element
+            *head = iter;
         }
         else{
             iter = *head; 

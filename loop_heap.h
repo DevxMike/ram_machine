@@ -12,6 +12,7 @@ typedef struct{
 typedef struct{
     loop_heap_t* heap;
     loop_container_t* loops_array;
+    loop_t* temp_loop;
 }main_loop_type_t;
 
 loop_heap_t* init_loop_heap(void);

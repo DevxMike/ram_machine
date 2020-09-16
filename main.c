@@ -93,14 +93,41 @@ int main(int argc, char** argv){
                 }
             }
             c2 = clock();
+            //for(temp = main_vars.queue->head; temp != NULL; temp = temp->next){
+            //    printf("%s %s\n", temp->data.command, temp->data.operand_st);
+            //}
             printf("\nSyntax correct.\nInterpretation time: %lfs\nProgram output:\n\n", (double)(c2 - c1)/CLOCKS_PER_SEC);
+            if(main_vars.loops.temp_loop != NULL){
+                add_loop_element(main_vars.loops.loops_array, main_vars.loops.temp_loop);
+            }
+            /*
+                list_element_t* tmp;
+                for(size_t i = 0; i < main_vars.loops.loops_array->quantity; ++i){
+                tmp = main_vars.loops.loops_array->arr[i].task_list;
+                printf("\n\n%s\n\n", main_vars.loops.loops_array->arr[i].loop_et);
+                while(tmp){
+                    printf("%s %s\n", tmp->data.command, tmp->data.operand_st);
+                    tmp = tmp->next;
+                }
+                printf("\n");
+            }
+            */
             c1 = clock();
             temp = main_vars.queue->head;
+            //for(list_element_t* i = main_vars.loops.temp_loop->task_list; i != NULL; i = i->next){
+            //    printf("%s %s\n", i->data.command, i->data.operand_st);
+            //}
+
+            
             while(temp && strcmp(temp->data.command, "HALT")){
                 tasker(main_vars.ram_chip, &temp->data, main_vars.ram_heap, &main_vars.input);
                 temp = temp->next;
             }
             c2 = clock();
+            /*for(ram_cell_t* i = main_vars.ram_chip->arr; i < main_vars.ram_chip->arr + main_vars.ram_chip->quantity; ++i){
+                printf("R%llu -> %d\n", i->cell_id, i->value);
+            }*/
+            
         }
         else{
             /*----------------------------------------------if failed free memory section -----------------------------------------------*/
@@ -159,4 +186,5 @@ void init_main(main_vars_t* vars){
     vars->input.arr_size = vars->input.element = vars->task_arr.arr_size = 0;  
     vars->loops.heap = init_loop_heap();
     vars->loops.loops_array = init_loop();
+    vars->loops.temp_loop = (loop_t*) malloc(sizeof(loop_t));
 }

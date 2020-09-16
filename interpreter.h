@@ -36,7 +36,7 @@ int Interpreter(AnalyzedData*, task_queue_t*, main_loop_type_t*, unsigned*, size
 bool CheckCommand(char*, const char*, int);
 int search_command(const char*, int, int);
 int* input_data(char*, unsigned*, size_t*);
-int split_string(AnalyzedData*, task_queue_data_t*);
+int split_string(AnalyzedData*, task_queue_data_t*, main_loop_type_t*);
 void to_upper_case(char*);
 int tasker(ram_chip_t*, task_queue_data_t*, ram_heap_t*, input_data_t*);
 int string_to_int(char*);

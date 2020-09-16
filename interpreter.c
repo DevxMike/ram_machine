@@ -9,6 +9,9 @@
 
 #define exprintf(exp) printf(#exp " = %s\n", exp? "true" : "false") //for debug
 
+bool label_occured = false;
+bool label_end = true;
+
 typedef enum{
 	read = 0, store,  write, add_reg, sub_reg, mult_reg, divide_reg, load_reg
 }register_type; //other operations types
@@ -231,21 +234,34 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 int Interpreter(AnalyzedData* data, task_queue_t* queue, main_loop_type_t* container, unsigned* status, size_t line){ //interprets tasks
 	task_queue_data_t temp;
 
-	if(split_string(data, &temp) == 2){
+	if(split_string(data, &temp, container) == 2){
 		return 1;
 	}
-
-	if(temp.cmd_id != -1){
+	
+	
+	if((temp.cmd_id != -1 && label_end) || (label_occured && !label_end)){
 		q_push(queue, &temp);
+		
+		if(label_occured){
+			label_occured = label_end = false;
+			strcpy(container->temp_loop->loop_et, temp.operand_st);
+			if((container->temp_loop->task_list = (list_element_t*)malloc(sizeof(list_element_t))) == NULL){
+				exit_w_code(LOOP_PROCESSING_ERR);
+			}
+			container->temp_loop->task_list = NULL;
+		}
 		*status = 0;
 		return 0;
 	}
-	else{
+	else if(temp.cmd_id < 0){
 		printf("line %ld: %s - not a command.\n", line + 1, temp.command);
 		*status = WRONG_SYNTAX_ERR;
 		return -1;
 	}
-	
+	if(!label_occured && !label_end){
+		push_back(&(container->temp_loop->task_list), &temp);
+		return 0;
+	}
 }
 
 int is_num(char number){ //determines if char is a number
@@ -428,9 +444,10 @@ int* input_data(char* string, unsigned* errno, size_t* size){
 	return temp_tab;
 }
 int search_command(const char* cmd, int left, int right){ //binary search, seeks for a string passed as a parameter
-	int middle = (left + right) / 2;
-	int result;
+	int middle, result;
+
 	if(left <= right){
+		middle = (left + right) / 2;
 		result = strcmp(cmd, commands[middle]);
 		return(
 			result == 0? middle : (
@@ -459,18 +476,29 @@ int contains_white(char* str){ //check if string contains white signs
 	}
 	return 0;
 }
-void cut_string(char* string, task_queue_data_t* temp_src, bool has_op, int type){ //slices string into two parts
+void cut_string(char* string, task_queue_data_t* temp_src, main_loop_type_t* loop, bool has_op, int type){ //slices string into two parts
 	char* str_pt = string;
 	char* src_pt = temp_src->command;
 	size_t ctrl = 0;
 	if(type == 9 && !contains_white(string)){
 		strcpy(temp_src->command, "JUMP");
 		strcpy(temp_src->operand_st, string);
+		if(loop->temp_loop->task_list != NULL){
+			add_loop_element(loop->loops_array, loop->temp_loop);
+			loop->temp_loop->task_list = NULL;
+		}
+		label_occured = true;
+		label_end = true;
 	}
 	else{
+		if(type == 9){
+			label_end = true;
+			add_loop_element(loop->loops_array, loop->temp_loop);
+			loop->temp_loop->task_list = NULL;
+		}
 		while(!is_white(*str_pt) && (ctrl++ < CMD_SIZE - 1)){		
 		*src_pt++ = *str_pt++; //while command, copy to the memory where commands are hold
-	}
+		}
 		ctrl = 0;
 		*src_pt = '\0'; //end string with '\0' char
 		to_upper_case(temp_src->command); //transform string to upper case 
@@ -511,7 +539,7 @@ int cmd_is_correct(int x, bool* op){
 		break;
 	}
 }
-int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits string "ADD* 5" into two strings <cmd>"ADD" <operand>"5";
+int split_string(AnalyzedData* data, task_queue_data_t* temp_src, main_loop_type_t* loops){ //splits string "ADD* 5" into two strings <cmd>"ADD" <operand>"5";
 	int index, tmp;
 	bool has_operand = true;
 
@@ -522,7 +550,7 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src){ //splits stri
 		return tmp;
 	}
 	
-	cut_string(data->data, temp_src, has_operand, data->type); //slice string
+	cut_string(data->data, temp_src, loops, has_operand, data->type); //slice string
 	if((index = search_command(temp_src->command, 0, COMMAND_ROW - 1)) >= 0){ //check if command exists
 		if(data->type == 8){
 			index += 1;
