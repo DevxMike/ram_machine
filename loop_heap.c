@@ -9,6 +9,10 @@ loop_heap_t* init_loop_heap(){
         if((temp->arr = (loop_t*)malloc(sizeof(loop_t))) == NULL){ //if allocation for loop data didnt fail
             return NULL;
         }
+        if((temp->arr->task_list = (list_element_t*)malloc(sizeof(list_element_t))) == NULL){
+            return NULL;
+        }
+        temp->arr->task_list = NULL;
         temp->size = 1;
     }
     return temp;
@@ -54,12 +58,16 @@ void loop_heap_push(loop_heap_t* heap, const loop_t* el){
         copy_loop(&heap->arr[heap->quantity++], el); //copy loop
     }
     else{
+        printf("El n\n");
         if(loop_heap_full(heap)){ //if heap is full
             if((temp = (loop_t*)realloc(heap->arr, ++heap->size * sizeof(loop_t))) == NULL){ //try to realloc memory
                 exit_w_code(LOOP_PROCESSING_ERR);
             }
             else{
                 heap->arr = temp;
+                if((heap->arr[heap->quantity].task_list = (list_element_t*)malloc(sizeof(list_element_t))) == NULL){
+                    exit_w_code(LOOP_PROCESSING_ERR);
+                }
             }
         }
         copy_loop(&heap->arr[heap->quantity], el); //add new element to heap
@@ -91,10 +99,11 @@ void shift_down(loop_heap_t* heap, unsigned index, unsigned left, unsigned right
 loop_t* loop_heap_pop(loop_heap_t* heap){
     loop_t* tmp = NULL;
     if(!loop_heap_empty(heap)){
-        if((tmp = (loop_t*)malloc(sizeof(loop_t))) == NULL){ 
+        if(((tmp = (loop_t*)malloc(sizeof(loop_t))) == NULL) || (tmp->task_list = (list_element_t*)malloc(sizeof(list_element_t))) == NULL){ 
             return NULL;
         }
         else{ //if memory allocation didn`t fail
+            tmp->task_list = NULL;
             copy_list(&tmp->task_list, heap->arr[0].task_list); //copy data to newly allocated memory
             strcpy(tmp->loop_et, heap->arr[0].loop_et);
             copy_list(&heap->arr[0].task_list, heap->arr[--heap->quantity].task_list); //last element as new root
@@ -131,5 +140,5 @@ void loop_sort(loop_container_t* container, loop_heap_t* heap){
 }
 void add_to_loop_container(loop_container_t* container, loop_t* el, loop_heap_t* heap){
     add_loop_element(container, el);
-    loop_sort(container, heap);
+    //loop_sort(container, heap);
 }

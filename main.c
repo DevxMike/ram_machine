@@ -98,9 +98,11 @@ int main(int argc, char** argv){
             //}
             printf("\nSyntax correct.\nInterpretation time: %lfs\nProgram output:\n\n", (double)(c2 - c1)/CLOCKS_PER_SEC);
             if(main_vars.loops.temp_loop != NULL){
-                add_loop_element(main_vars.loops.loops_array, main_vars.loops.temp_loop);
+                //add_loop_element(main_vars.loops.loops_array, main_vars.loops.temp_loop);
+    			add_to_loop_container(main_vars.loops.loops_array, main_vars.loops.temp_loop, main_vars.loops.heap);
+
             }
-            /*
+            
                 list_element_t* tmp;
                 for(size_t i = 0; i < main_vars.loops.loops_array->quantity; ++i){
                 tmp = main_vars.loops.loops_array->arr[i].task_list;
@@ -110,8 +112,8 @@ int main(int argc, char** argv){
                     tmp = tmp->next;
                 }
                 printf("\n");
-            }
-            */
+                }
+            
             c1 = clock();
             temp = main_vars.queue->head;
             //for(list_element_t* i = main_vars.loops.temp_loop->task_list; i != NULL; i = i->next){
@@ -121,6 +123,8 @@ int main(int argc, char** argv){
             
             while(temp && strcmp(temp->data.command, "HALT")){
                 tasker(main_vars.ram_chip, &temp->data, main_vars.ram_heap, &main_vars.input);
+                printf("%s %s\n", temp->data.command, temp->data.operand_st);
+
                 temp = temp->next;
             }
             c2 = clock();

@@ -484,18 +484,14 @@ void cut_string(char* string, task_queue_data_t* temp_src, main_loop_type_t* loo
 		strcpy(temp_src->command, "JUMP");
 		strcpy(temp_src->operand_st, string);
 		if(loop->temp_loop->task_list != NULL){
-			add_loop_element(loop->loops_array, loop->temp_loop);
+			//add_loop_element(loop->loops_array, loop->temp_loop);
+			add_to_loop_container(loop->loops_array, loop->temp_loop, loop->heap);
 			loop->temp_loop->task_list = NULL;
 		}
 		label_occured = true;
 		label_end = true;
 	}
 	else{
-		if(type == 9){
-			label_end = true;
-			add_loop_element(loop->loops_array, loop->temp_loop);
-			loop->temp_loop->task_list = NULL;
-		}
 		while(!is_white(*str_pt) && (ctrl++ < CMD_SIZE - 1)){		
 		*src_pt++ = *str_pt++; //while command, copy to the memory where commands are hold
 		}
