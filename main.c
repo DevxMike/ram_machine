@@ -8,11 +8,11 @@ int main(int argc, char** argv){
     ram_cell_t R0 = {
         0, 0
     };
-    main_vars_t program_variables;
+    main_vars_t main_vars;
     task_queue_element_t* temp;
     clock_t c1, c2;
     
-    init_main(&program_variables);
+    init_main(&main_vars);
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
         exit_w_code(NO_FILE_NAME_ERR);
@@ -21,7 +21,7 @@ int main(int argc, char** argv){
         
         if(strcmp(argv[1], "-h") == 0){ //if argv contains program name and "-h" string 
             print_help(argv[0], COMMAND_ROW, commands, COMMAND_ROW, ex_operands);
-            exit_w_code(program_variables.EXIT_CODE);
+            exit_w_code(main_vars.EXIT_CODE);
         } 
         else if(has_invalid_chars(argv[1], "txt")){ //if <file_name> string has forbidden chars
             exit_w_code(FILE_NAME_ERR);
@@ -29,65 +29,65 @@ int main(int argc, char** argv){
 
         printf("file to be read: %s\n", argv[1]);
 
-        if((program_variables.task_arr.task_arr = read_file(argv[1], &program_variables.task_arr.arr_size, &program_variables.EXIT_CODE)) != NULL && program_variables.task_arr.arr_size > 0){
-            if(((program_variables.ram_heap = init_ram_heap()) == NULL)){ //init heap used to heap-sort ram chip
+        if((main_vars.task_arr.task_arr = read_file(argv[1], &main_vars.task_arr.arr_size, &main_vars.EXIT_CODE)) != NULL && main_vars.task_arr.arr_size > 0){
+            if(((main_vars.ram_heap = init_ram_heap()) == NULL)){ //init heap used to heap-sort ram chip
                 exit_w_code(HEAP_INIT_ERR);
             }
-            if((program_variables.ram_chip = init_ram()) == NULL){ //init ram chip
+            if((main_vars.ram_chip = init_ram()) == NULL){ //init ram chip
                 exit_w_code(RAM_INIT_ERR);
             }
-            if((program_variables.queue = task_queue_init(program_variables.task_arr.arr_size)) == NULL){ //safety, it`s better to have more "place", can be easilly changed 
+            if((main_vars.queue = task_queue_init(main_vars.task_arr.arr_size)) == NULL){ //safety, it`s better to have more "place", can be easilly changed 
                 exit_w_code(TASK_QUEUE_INIT_ERR);
             }
 
-            ram_push(program_variables.ram_chip, &R0); //add special register to ram chip
-            
+            ram_push(main_vars.ram_chip, &R0); //add special register to ram chip
+
             c1 = clock();
-            for(size_t i = 0; i < program_variables.task_arr.arr_size; ++i){
-                if(DataTypeAnalyzer(&program_variables.data, program_variables.task_arr.task_arr[i])){
-                    if(Interpreter(&program_variables.data, program_variables.queue, &program_variables.EXIT_CODE, i) == 1){
-                        program_variables.input.data_arr = input_data(program_variables.data.data, &program_variables.EXIT_CODE, &program_variables.input.arr_size);
+            for(size_t i = 0; i < main_vars.task_arr.arr_size; ++i){
+                if(DataTypeAnalyzer(&main_vars.data, main_vars.task_arr.task_arr[i])){
+                    if(Interpreter(&main_vars.data, main_vars.queue, &main_vars.loops, &main_vars.EXIT_CODE, i) == 1){
+                        main_vars.input.data_arr = input_data(main_vars.data.data, &main_vars.EXIT_CODE, &main_vars.input.arr_size);
                     } 
-                    if(program_variables.EXIT_CODE){
+                    if(main_vars.EXIT_CODE){
                         //free task queue
-                        if(!task_queue_empty(program_variables.queue)){
-                            while(program_variables.queue->head != NULL){
-                                temp = program_variables.queue->head;
-                                program_variables.queue->head = program_variables.queue->head->next;
+                        if(!task_queue_empty(main_vars.queue)){
+                            while(main_vars.queue->head != NULL){
+                                temp = main_vars.queue->head;
+                                main_vars.queue->head = main_vars.queue->head->next;
                                 free(temp);
                             }
                         }  
-                       for(size_t i = 0; i < program_variables.task_arr.arr_size; ++i){
-                            free(program_variables.task_arr.task_arr[i]);
+                       for(size_t i = 0; i < main_vars.task_arr.arr_size; ++i){
+                            free(main_vars.task_arr.task_arr[i]);
                         }
-                        free(program_variables.task_arr.task_arr);
-                        free(program_variables.ram_chip->arr);
-                        free(program_variables.ram_chip);
-                        free(program_variables.ram_heap->arr);
-                        free(program_variables.ram_heap);
-                        free(program_variables.queue); 
-                        exit_w_code(program_variables.EXIT_CODE); //syntax err
+                        free(main_vars.task_arr.task_arr);
+                        free(main_vars.ram_chip->arr);
+                        free(main_vars.ram_chip);
+                        free(main_vars.ram_heap->arr);
+                        free(main_vars.ram_heap);
+                        free(main_vars.queue); 
+                        exit_w_code(main_vars.EXIT_CODE); //syntax err
                     }
                 }
                 else{
                     /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                         //free task queue
-                        if(!task_queue_empty(program_variables.queue)){
-                            while(program_variables.queue->head != NULL){
-                                temp = program_variables.queue->head;
-                                program_variables.queue->head = program_variables.queue->head->next;
+                        if(!task_queue_empty(main_vars.queue)){
+                            while(main_vars.queue->head != NULL){
+                                temp = main_vars.queue->head;
+                                main_vars.queue->head = main_vars.queue->head->next;
                                 free(temp);
                             }
                         }  
-                       for(size_t i = 0; i < program_variables.task_arr.arr_size; ++i){
-                            free(program_variables.task_arr.task_arr[i]);
+                       for(size_t i = 0; i < main_vars.task_arr.arr_size; ++i){
+                            free(main_vars.task_arr.task_arr[i]);
                         }
-                        free(program_variables.task_arr.task_arr);
-                        free(program_variables.ram_chip->arr);
-                        free(program_variables.ram_chip);
-                        free(program_variables.ram_heap->arr);
-                        free(program_variables.ram_heap);
-                        free(program_variables.queue); 
+                        free(main_vars.task_arr.task_arr);
+                        free(main_vars.ram_chip->arr);
+                        free(main_vars.ram_chip);
+                        free(main_vars.ram_heap->arr);
+                        free(main_vars.ram_heap);
+                        free(main_vars.queue); 
                     exit_w_code(WRONG_SYNTAX_ERR);
                     /*----------------------------------------------if failed free memory section -----------------------------------------------*/
                 }
@@ -95,9 +95,9 @@ int main(int argc, char** argv){
             c2 = clock();
             printf("\nSyntax correct.\nInterpretation time: %lfs\nProgram output:\n\n", (double)(c2 - c1)/CLOCKS_PER_SEC);
             c1 = clock();
-            temp = program_variables.queue->head;
+            temp = main_vars.queue->head;
             while(temp && strcmp(temp->data.command, "HALT")){
-                tasker(program_variables.ram_chip, &temp->data, program_variables.ram_heap, &program_variables.input);
+                tasker(main_vars.ram_chip, &temp->data, main_vars.ram_heap, &main_vars.input);
                 temp = temp->next;
             }
             c2 = clock();
@@ -105,48 +105,48 @@ int main(int argc, char** argv){
         else{
             /*----------------------------------------------if failed free memory section -----------------------------------------------*/
             //free task queue
-            if(!task_queue_empty(program_variables.queue)){
-                while(program_variables.queue->head != NULL){
-                    temp = program_variables.queue->head;
-                    program_variables.queue->head = program_variables.queue->head->next;
+            if(!task_queue_empty(main_vars.queue)){
+                while(main_vars.queue->head != NULL){
+                    temp = main_vars.queue->head;
+                    main_vars.queue->head = main_vars.queue->head->next;
                     free(temp);
                 }
             }  
-            for(size_t i = 0; i < program_variables.task_arr.arr_size; ++i){
-                free(program_variables.task_arr.task_arr[i]);
+            for(size_t i = 0; i < main_vars.task_arr.arr_size; ++i){
+                free(main_vars.task_arr.task_arr[i]);
             }
-            free(program_variables.task_arr.task_arr);
-            free(program_variables.ram_chip->arr);
-            free(program_variables.ram_chip);
-            free(program_variables.ram_heap->arr);
-            free(program_variables.ram_heap);
-            free(program_variables.queue); 
+            free(main_vars.task_arr.task_arr);
+            free(main_vars.ram_chip->arr);
+            free(main_vars.ram_chip);
+            free(main_vars.ram_heap->arr);
+            free(main_vars.ram_heap);
+            free(main_vars.queue); 
             /*----------------------------------------------if failed free memory section -----------------------------------------------*/
-            exit_w_code(program_variables.EXIT_CODE);
+            exit_w_code(main_vars.EXIT_CODE);
         }
 
 
         /*----------------------------------------------------free memory section----------------------------------------------------------*/
         //free task queue
-        if(!task_queue_empty(program_variables.queue)){
-            while(program_variables.queue->head != NULL){
-                temp = program_variables.queue->head;
-                program_variables.queue->head = program_variables.queue->head->next;
+        if(!task_queue_empty(main_vars.queue)){
+            while(main_vars.queue->head != NULL){
+                temp = main_vars.queue->head;
+                main_vars.queue->head = main_vars.queue->head->next;
                 free(temp);
             }
         }  
-        for(size_t i = 0; i < program_variables.task_arr.arr_size; ++i){
-            free(program_variables.task_arr.task_arr[i]);
+        for(size_t i = 0; i < main_vars.task_arr.arr_size; ++i){
+            free(main_vars.task_arr.task_arr[i]);
         }
-        free(program_variables.task_arr.task_arr);
-        free(program_variables.ram_chip->arr);
-        free(program_variables.ram_chip);
-        free(program_variables.ram_heap->arr);
-        free(program_variables.ram_heap);
-        free(program_variables.queue); 
+        free(main_vars.task_arr.task_arr);
+        free(main_vars.ram_chip->arr);
+        free(main_vars.ram_chip);
+        free(main_vars.ram_heap->arr);
+        free(main_vars.ram_heap);
+        free(main_vars.queue); 
         /*----------------------------------------------------free memory section----------------------------------------------------------*/
         printf("\nProgram duration: %lfs", (double)(c2 - c1)/CLOCKS_PER_SEC);
-        exit_w_code(program_variables.EXIT_CODE);
+        exit_w_code(main_vars.EXIT_CODE);
     }    
 }
 void init_main(main_vars_t* vars){

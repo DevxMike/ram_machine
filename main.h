@@ -16,11 +16,6 @@
 #define main_h_
 
 typedef struct{
-    loop_heap_t* heap;
-    loop_container_t* loops_array;
-}main_loop_type_t;
-
-typedef struct{
     unsigned EXIT_CODE;
     task_queue_t* queue;
     AnalyzedData data;

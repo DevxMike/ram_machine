@@ -6,11 +6,8 @@
 #include "errors.h"
 #include "syntax.h"
 #include <string.h>
-#include "main.h"
-#define exprintf(exp) printf(#exp " = %s\n", exp? "true" : "false") //for debug
 
-bool label_has_occured = false;
-bool label_end = true;
+#define exprintf(exp) printf(#exp " = %s\n", exp? "true" : "false") //for debug
 
 typedef enum{
 	read = 0, store,  write, add_reg, sub_reg, mult_reg, divide_reg, load_reg
@@ -18,7 +15,7 @@ typedef enum{
 
 typedef enum {
 	add = 0, sub, mult, divide, load //arithmetic operations types
-}integer_type;
+}integer_type; 
 
 int other_ops(ram_chip_t* chip, int index, input_data_t* data, register_type op_type){ //perform other type of operations
 	int zero_index;
@@ -231,21 +228,15 @@ int tasker(ram_chip_t* ram, task_queue_data_t* data, ram_heap_t* heap, input_dat
 	}
 }
 
-
-int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_t line){ //interprets tasks
+int Interpreter(AnalyzedData* data, task_queue_t* queue, main_loop_type_t* container, unsigned* status, size_t line){ //interprets tasks
 	task_queue_data_t temp;
 
 	if(split_string(data, &temp) == 2){
 		return 1;
 	}
-	
+
 	if(temp.cmd_id != -1){
 		q_push(queue, &temp);
-		if(!strcmp(temp.command, "JUMP")) {
-			printf("%s %s\n", temp.command, temp.operand_st);
-			exprintf(label_has_occured);
-			label_has_occured = false;
-		}
 		*status = 0;
 		return 0;
 	}
@@ -254,6 +245,7 @@ int Interpreter(AnalyzedData* data, task_queue_t* queue, unsigned* status, size_
 		*status = WRONG_SYNTAX_ERR;
 		return -1;
 	}
+	
 }
 
 int is_num(char number){ //determines if char is a number
@@ -261,7 +253,6 @@ int is_num(char number){ //determines if char is a number
 }
 
 bool DataTypeAnalyzer(AnalyzedData* data, char* str){
-	int i = 0;
 	int flag0 = 0; //if >= 1 str contains numbers
 	int flag1 = 0; //if >= 1 str contains "." or ","
 	int flag2 = 0; //if >= 1 str contains letters
@@ -280,7 +271,6 @@ bool DataTypeAnalyzer(AnalyzedData* data, char* str){
 		if(*pt == '*') ++flag3;
 		if(*pt == ':') ++flag4;
 		if(*pt++ == '=') ++flag5;
-		++i;
 	}
 
 	if(flag0 >= 1 && flag1 == 0 && flag2 == 0 && flag3 == 0 && flag4 == 0 && flag5 == 0)
@@ -438,19 +428,17 @@ int* input_data(char* string, unsigned* errno, size_t* size){
 	return temp_tab;
 }
 int search_command(const char* cmd, int left, int right){ //binary search, seeks for a string passed as a parameter
-	int middle = left + (right - left) / 2;
-	if(left > right || left < 0){
-		return -1;
+	int middle = (left + right) / 2;
+	int result;
+	if(left <= right){
+		result = strcmp(cmd, commands[middle]);
+		return(
+			result == 0? middle : (
+				result < 0? search_command(cmd, left, middle - 1) : search_command(cmd, middle + 1, right) 
+			)
+		);
 	}
-	if(strcmp(cmd, commands[middle]) == 0){
-		return middle;
-	}
-	else if(strcmp(cmd, commands[middle]) < 0){
-		return search_command(cmd, left, middle - 1);
-	}
-	else if(strcmp(cmd, commands[middle]) > 0){
-		return search_command(cmd, middle + 1, right);
-	}
+	return -1;
 }
 int is_white(int x){ //check if x is a white sign
 	if(x >= 0x00 && x <= 0x20){
@@ -478,8 +466,6 @@ void cut_string(char* string, task_queue_data_t* temp_src, bool has_op, int type
 	if(type == 9 && !contains_white(string)){
 		strcpy(temp_src->command, "JUMP");
 		strcpy(temp_src->operand_st, string);
-		label_has_occured = true;
-		label_end = false;
 	}
 	else{
 		while(!is_white(*str_pt) && (ctrl++ < CMD_SIZE - 1)){		

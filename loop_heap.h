@@ -9,6 +9,11 @@ typedef struct{
     size_t quantity;
 }loop_heap_t;
 
+typedef struct{
+    loop_heap_t* heap;
+    loop_container_t* loops_array;
+}main_loop_type_t;
+
 loop_heap_t* init_loop_heap(void);
 void loop_heap_push(loop_heap_t*, const loop_t*);
 loop_t* loop_heap_pop(loop_heap_t*);

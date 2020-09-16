@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "ram.h"
 #include "ram_heap.h"
+#include "loop_heap.h"
 
 typedef struct{
     int* data_arr;
@@ -31,7 +32,7 @@ flags information;
 void PrintString(char*);
 char* UserInputToString(FILE*, unsigned*);
 bool DataTypeAnalyzer(AnalyzedData*, char*);
-int Interpreter(AnalyzedData*, task_queue_t*, unsigned*, size_t);
+int Interpreter(AnalyzedData*, task_queue_t*, main_loop_type_t*, unsigned*, size_t);
 bool CheckCommand(char*, const char*, int);
 int search_command(const char*, int, int);
 int* input_data(char*, unsigned*, size_t*);
