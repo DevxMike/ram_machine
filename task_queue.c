@@ -26,7 +26,10 @@ bool task_queue_full(const task_queue_t* queue){ //returns bool val if queue is 
 }
 
 bool task_queue_empty(const task_queue_t* queue){ //returns bool val if queue is empty
-    return queue->quantity == 0;
+    if(queue){
+        return queue->quantity == 0;
+    }
+    else return 1;
 }
 
 bool q_push(task_queue_t* queue, const task_queue_data_t* data){ //pushes an element to the end of the queue

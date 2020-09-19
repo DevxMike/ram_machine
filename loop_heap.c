@@ -51,14 +51,13 @@ void loop_shift_up(loop_heap_t* heap, unsigned index){
         }
     }
 }
-void loop_heap_push(loop_heap_t* heap, const loop_t* el){
+void loop_heap_push(loop_heap_t* heap, const loop_t* const el){
     loop_t* temp = NULL;
 
     if(loop_heap_empty(heap)){
         copy_loop(&heap->arr[heap->quantity++], el); //copy loop
     }
     else{
-        printf("El n\n");
         if(loop_heap_full(heap)){ //if heap is full
             if((temp = (loop_t*)realloc(heap->arr, ++heap->size * sizeof(loop_t))) == NULL){ //try to realloc memory
                 exit_w_code(LOOP_PROCESSING_ERR);
@@ -106,7 +105,8 @@ loop_t* loop_heap_pop(loop_heap_t* heap){
             tmp->task_list = NULL;
             copy_list(&tmp->task_list, heap->arr[0].task_list); //copy data to newly allocated memory
             strcpy(tmp->loop_et, heap->arr[0].loop_et);
-            copy_list(&heap->arr[0].task_list, heap->arr[--heap->quantity].task_list); //last element as new root
+            heap->arr[0].task_list = NULL;
+            copy_list(&(heap->arr[0].task_list), heap->arr[--heap->quantity].task_list); //last element as new root
             strcpy(heap->arr[0].loop_et, heap->arr[heap->quantity].loop_et);
             shift_down(heap, 0, 1, 2); //bring the order in the tree
         }
@@ -119,12 +119,13 @@ int loop_heap_empty(const loop_heap_t* heap){
 int loop_heap_full(const loop_heap_t* heap){
     return heap->quantity == heap->size;
 }
-void loop_sort(loop_container_t* container, loop_heap_t* heap){
+void loop_heap_sort(loop_container_t* container, loop_heap_t* heap){
     loop_t* temp = NULL;
 
     heap->quantity = 0;
     for(loop_t* i = container->arr; i < (container->arr + container->quantity); ++i){
         loop_heap_push(heap, i);
+        i->task_list = NULL;   
     }
     container->quantity = 0;
 
@@ -140,5 +141,5 @@ void loop_sort(loop_container_t* container, loop_heap_t* heap){
 }
 void add_to_loop_container(loop_container_t* container, loop_t* el, loop_heap_t* heap){
     add_loop_element(container, el);
-    //loop_sort(container, heap);
+    loop_heap_sort(container, heap);
 }

@@ -11,7 +11,6 @@ int main(int argc, char** argv){
     main_vars_t main_vars;
     task_queue_element_t* temp;
     clock_t c1, c2;
-    
     init_main(&main_vars);
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
@@ -123,7 +122,7 @@ int main(int argc, char** argv){
             
             while(temp && strcmp(temp->data.command, "HALT")){
                 tasker(main_vars.ram_chip, &temp->data, main_vars.ram_heap, &main_vars.input);
-                printf("%s %s\n", temp->data.command, temp->data.operand_st);
+                //printf("%s %s\n", temp->data.command, temp->data.operand_st);
 
                 temp = temp->next;
             }
@@ -147,9 +146,7 @@ int main(int argc, char** argv){
                 free(main_vars.task_arr.task_arr[i]);
             }
             free(main_vars.task_arr.task_arr);
-            free(main_vars.ram_chip->arr);
             free(main_vars.ram_chip);
-            free(main_vars.ram_heap->arr);
             free(main_vars.ram_heap);
             free(main_vars.queue); 
             /*----------------------------------------------if failed free memory section -----------------------------------------------*/
