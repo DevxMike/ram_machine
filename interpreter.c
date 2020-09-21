@@ -50,8 +50,18 @@ int is_loop_condition_met(const ram_chip_t* chip, int cmd){
 		break;
 	}
 }
-int loop_manager(ram_chip_t* chip, ram_heap_t* heap, loop_t* loop, input_data_t* input){
-	
+int loop_manager(ram_chip_t* chip, ram_heap_t* heap, const loop_t* loop, input_data_t* input){
+	if(loop == NULL){
+		exit_w_code(LOOP_PROCESSING_ERR);
+	}
+	else{
+		printf("\nLOOP LABEL: %s\n", loop->loop_et);
+		list_element_t* temp = loop->task_list;
+		while(temp){
+			printf("%s %s\n", temp->data.command, temp->data.operand_st);
+			temp = temp->next;
+		}
+	}
 }
 int other_ops(ram_chip_t* chip, int index, input_data_t* data, register_type op_type){ //perform other type of operations
 	int zero_index;

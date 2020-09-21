@@ -141,5 +141,4 @@ void loop_heap_sort(loop_container_t* container, loop_heap_t* heap){
 }
 void add_to_loop_container(loop_container_t* container, loop_t* el, loop_heap_t* heap){
     add_loop_element(container, el);
-    loop_heap_sort(container, heap);
 }

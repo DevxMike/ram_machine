@@ -11,6 +11,8 @@ int main(int argc, char** argv){
     main_vars_t main_vars;
     task_queue_element_t* temp;
     clock_t c1, c2;
+    int index;
+
     init_main(&main_vars);
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
@@ -96,8 +98,10 @@ int main(int argc, char** argv){
             if(main_vars.loops.temp_loop != NULL){
     			add_to_loop_container(main_vars.loops.loops_array, main_vars.loops.temp_loop, main_vars.loops.heap);
             }
+            loop_heap_sort(main_vars.loops.loops_array, main_vars.loops.heap);
             
-                /*list_element_t* tmp;
+                /*
+                list_element_t* tmp;
                 for(size_t i = 0; i < main_vars.loops.loops_array->quantity; ++i){
                 tmp = main_vars.loops.loops_array->arr[i].task_list;
                 printf("\n\n%s\n\n", main_vars.loops.loops_array->arr[i].loop_et);
@@ -106,14 +110,20 @@ int main(int argc, char** argv){
                     tmp = tmp->next;
                 }
                 printf("\n");
-                }debug purposes*/
+                }*/
             
             c1 = clock();
             temp = main_vars.queue->head;
 
             while(temp && strcmp(temp->data.command, "HALT")){
                 if(is_loop(temp->data.cmd_id) && is_loop_condition_met(main_vars.ram_chip, temp->data.cmd_id)){ //if cmd is a jump to label and condition is met
-                    loop_manager(main_vars.ram_chip, main_vars.ram_heap, NULL, &main_vars.input); //perform loop
+                    loop_manager(
+                        main_vars.ram_chip, 
+                        main_vars.ram_heap, 
+                        search_loop(main_vars.loops.loops_array, 
+                        temp->data.operand_st, 0, main_vars.loops.loops_array->quantity - 1), 
+                        &main_vars.input
+                    ); //perform loop
                     temp = temp->next;
                     continue;
                 }

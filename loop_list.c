@@ -3,7 +3,7 @@
 #include "errors.h"
 void push_back(list_element_t** head, const list_data_t* data){
     list_element_t* iter;
-    if(data != NULL){
+    if(data != NULL && strlen(data->command) && strlen(data->operand_st)){
         iter = (list_element_t*)malloc(sizeof(list_element_t));
         if((*head) == NULL){ //if list is empty
             copy_data_struct(&iter->data, data); //add an element
