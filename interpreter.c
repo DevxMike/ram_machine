@@ -535,6 +535,9 @@ void cut_string(char* string, task_queue_data_t* temp_src, main_loop_type_t* loo
 		label_end = true;
 	}
 	else{
+		if(type == 9){
+			label_end = true;
+		}
 		while(!is_white(*str_pt) && (ctrl++ < CMD_SIZE - 1)){		
 		*src_pt++ = *str_pt++; //while command, copy to the memory where commands are hold
 		}
