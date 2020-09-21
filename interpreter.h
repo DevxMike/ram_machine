@@ -38,8 +38,11 @@ int search_command(const char*, int, int);
 int* input_data(char*, unsigned*, size_t*);
 int split_string(AnalyzedData*, task_queue_data_t*, main_loop_type_t*);
 void to_upper_case(char*);
+int loop_manager(ram_chip_t*, ram_heap_t*, loop_t*, input_data_t*);
+int is_loop_condition_met(const ram_chip_t*, int);
 int tasker(ram_chip_t*, task_queue_data_t*, ram_heap_t*, input_data_t*);
 int string_to_int(char*);
 id_type string_to_id_type(char*);
-
+int is_loop(int);
+void write_cmd_id(void);
 #endif

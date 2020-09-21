@@ -20,6 +20,39 @@ typedef enum {
 	add = 0, sub, mult, divide, load //arithmetic operations types
 }integer_type; 
 
+int is_loop(int cmd){
+	switch(cmd){
+		case 7: case 8: case 9:
+		return 1;
+		break;
+		default:
+		return 0;
+		break;
+	}
+}
+int is_loop_condition_met(const ram_chip_t* chip, int cmd){
+	int zero_index;
+	if((zero_index = ram_search(0, chip, 0, chip->quantity - 1)) < 0){
+		exit_w_code(LOOP_PROCESSING_ERR);
+	}
+	switch(cmd){
+		case 8:
+		return 1;
+		break;
+		case 7:
+		return(chip->arr[zero_index].value > 0);
+		break;
+		case 9:
+		return(chip->arr[zero_index].value == 0);
+		break;
+		default:
+		return 0;
+		break;
+	}
+}
+int loop_manager(ram_chip_t* chip, ram_heap_t* heap, loop_t* loop, input_data_t* input){
+	
+}
 int other_ops(ram_chip_t* chip, int index, input_data_t* data, register_type op_type){ //perform other type of operations
 	int zero_index;
 	if((zero_index = ram_search(0, chip, 0, chip->quantity - 1)) < 0){
@@ -561,4 +594,9 @@ int split_string(AnalyzedData* data, task_queue_data_t* temp_src, main_loop_type
 	}
 	temp_src->cmd_id = index;
 	return has_operand? 1 : 0;
+}
+void write_cmd_id(void){
+	for(size_t i = 0; i < COMMAND_ROW; ++i){
+		printf("%s %ld\n", commands[i], i);
+	}
 }
