@@ -4,7 +4,7 @@
 
 pointers_container_t* init_pointers(void);
 void add_pointer(pointers_container_t*, loop_t*, task_queue_element_t*);
-const loop_pointer_t* get_pointer(pointers_container_t*, char*);
+loop_pointer_t* get_pointer(pointers_container_t*, char*);
 void sort_pointers(pointers_container_t*, pointers_container_t*);
 
 #endif
