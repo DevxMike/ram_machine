@@ -12,7 +12,7 @@ int main(int argc, char** argv){
     task_queue_element_t* temp;
     clock_t c1, c2;
     int index;
-    write_cmd_id();
+
     init_main(&main_vars);
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
@@ -100,24 +100,6 @@ int main(int argc, char** argv){
             }
             loop_heap_sort(main_vars.loops.loops_array, main_vars.loops.heap);
             
-                /*
-                list_element_t* tmp;
-                for(size_t i = 0; i < main_vars.loops.loops_array->quantity; ++i){
-                tmp = main_vars.loops.loops_array->arr[i].task_list;
-                printf("\n\n%s\n\n", main_vars.loops.loops_array->arr[i].loop_et);
-                while(tmp){
-                    printf("%s %s\n", tmp->data.command, tmp->data.operand_st);
-                    tmp = tmp->next;
-                }
-                printf("\n");
-                }*/
-            
-            temp = main_vars.queue->head;
-            while(temp){
-                printf("%s %s\n", temp->data.command, temp->data.operand_st);
-                temp = temp->next;
-            }
-
             c1 = clock();
             temp = main_vars.queue->head;
 

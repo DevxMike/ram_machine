@@ -10,12 +10,12 @@ typedef struct{
 }loop_heap_t;
 
 typedef struct{
-    loop_t** pointer;
+    loop_t* pointer;
     task_queue_element_t* next_cmd;
 }loop_pointer_t;
 
 typedef struct{
-    loop_pointer_t* arr;
+    loop_pointer_t** arr;
     size_t max, quantity;
 }pointers_container_t;
 
