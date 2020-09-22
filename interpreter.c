@@ -58,10 +58,14 @@ int loop_manager(ram_chip_t* chip, ram_heap_t* heap, const loop_t* loop, input_d
 		printf("\nLOOP LABEL: %s\n", loop->loop_et);
 		list_element_t* temp = loop->task_list;
 		while(temp){
-			printf("%s %s\n", temp->data.command, temp->data.operand_st);
+			if(temp->data.cmd_id == 6){
+				exit_w_code(0);
+			}
+			printf("%s %s, %d\n", temp->data.command, temp->data.operand_st, temp->data.cmd_id);
 			temp = temp->next;
 		}
 	}
+	return 0;
 }
 int other_ops(ram_chip_t* chip, int index, input_data_t* data, register_type op_type){ //perform other type of operations
 	int zero_index;
@@ -280,7 +284,9 @@ int Interpreter(AnalyzedData* data, task_queue_t* queue, main_loop_type_t* conta
 	if(split_string(data, &temp, container) == 2){
 		return 1;
 	}
-	
+	if(temp.cmd_id == 6){
+		label_end == true;
+	}
 	
 	if((temp.cmd_id != -1 && label_end) || (label_occured && !label_end)){
 		q_push(queue, &temp);
@@ -535,15 +541,15 @@ void cut_string(char* string, task_queue_data_t* temp_src, main_loop_type_t* loo
 		label_end = true;
 	}
 	else{
-		if(type == 9){
-			label_end = true;
-		}
 		while(!is_white(*str_pt) && (ctrl++ < CMD_SIZE - 1)){		
 		*src_pt++ = *str_pt++; //while command, copy to the memory where commands are hold
 		}
 		ctrl = 0;
 		*src_pt = '\0'; //end string with '\0' char
 		to_upper_case(temp_src->command); //transform string to upper case 
+		if(type == 9 || (!strcmp(temp_src->command, "HALT"))){
+			label_end = true;
+		}
 		if(has_op){ //if has operand (command is neither a loop nor START nor HALT command)
 			src_pt = temp_src->operand_st; 
 			while(*str_pt != ' ' && *str_pt != '*' && *str_pt++ != '='){

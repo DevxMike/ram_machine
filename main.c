@@ -12,7 +12,7 @@ int main(int argc, char** argv){
     task_queue_element_t* temp;
     clock_t c1, c2;
     int index;
-
+    write_cmd_id();
     init_main(&main_vars);
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
@@ -112,6 +112,12 @@ int main(int argc, char** argv){
                 printf("\n");
                 }*/
             
+            temp = main_vars.queue->head;
+            while(temp){
+                printf("%s %s\n", temp->data.command, temp->data.operand_st);
+                temp = temp->next;
+            }
+
             c1 = clock();
             temp = main_vars.queue->head;
 
