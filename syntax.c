@@ -57,7 +57,7 @@ const char* ex_operands[COMMAND_ROW] = {
 
 
 void print_help(const char* program_str, size_t rows_com, const char* com[], size_t rows_ex, const char* ex[]){
-    printf(
+    printf( //print help and available commands
         "This program needs an existing file to work properly.\n"
         "i.e. \"%s <file_name>\"\n\n"
         "Syntax:\n"
@@ -71,7 +71,7 @@ void print_help(const char* program_str, size_t rows_com, const char* com[], siz
         "Available commands:\n",
         program_str
     );
-    if(commands != NULL){ //debug
+    if(commands != NULL){ //print commands
        for(const char** i = commands, **j = ex_operands; i < commands + rows_com, j < ex_operands + rows_ex; ++i, ++j){
            printf("%s %s\n", *i, *j);
        }
