@@ -94,17 +94,33 @@ void pt_shift_down(pointers_container_t* heap, unsigned index, unsigned left, un
         }
     }
 }
-loop_pointer_t* pop_pointer_heap(pointers_container_t* heap){
-    loop_pointer_t* temp = NULL;
+loop_pointer_t pop_pointer_heap(pointers_container_t* heap){
+    loop_pointer_t temp;
     if(!pointers_empty(heap)){ //if heap is not empty
-        temp = heap->arr[0]; //return value will be the first element in tree
-        heap->arr[0] = heap->arr[--heap->quantity]; //replace the first with the last one
+        temp.pointer = heap->arr[0]->pointer; //return value will be the first element in tree
+        temp.next_cmd = heap->arr[0]->next_cmd;
+        heap->arr[0]->pointer = heap->arr[--heap->quantity]->pointer; //replace the first with the last one
+        heap->arr[0]->next_cmd = heap->arr[heap->quantity]->next_cmd;
         heap->arr[heap->quantity]->pointer = NULL;
         heap->arr[heap->quantity]->next_cmd = NULL; 
         pt_shift_down(heap, 0, 1, 2); //bring the order back in the tree
     }
     return temp;
 }
+void fill_heap(pointers_container_t* container, pointers_container_t* heap, unsigned n){
+    if(n > 0){
+        push_pointer_heap(heap, container->arr[n - 1]->pointer, container->arr[n - 1]->next_cmd);
+        fill_heap(container, heap, n - 1);
+    }
+}
 void sort_pointers(pointers_container_t* container, pointers_container_t* heap){
-    //to do
+    loop_pointer_t temp;
+
+    fill_heap(container, heap, container->quantity); // fill heap
+    container->quantity = 0;
+
+    while(!pointers_empty(heap)){ //while heap is not empty
+        temp = pop_pointer_heap(heap); //pop a struct containing pointers
+        add_pointer(container, temp.pointer, temp.next_cmd); //add pointers to sorted array
+    }
 }
