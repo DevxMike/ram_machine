@@ -43,7 +43,7 @@ void add_loop_element(loop_container_t* container, const loop_t* el){
     copy_list(&temp->task_list, el->task_list);
 }
 
-const loop_t* search_loop(const loop_container_t* loop, const char* et, unsigned left, unsigned right){ //assuming structure is sorted by DESC
+loop_t* search_loop(const loop_container_t* loop, const char* et, unsigned left, unsigned right){ //assuming structure is sorted by DESC
     if(left <= right){ //search loop by it`s label (binary search)
         unsigned mid = (left + right)/2;
         int result = strcmp(et, loop->arr[mid].loop_et);

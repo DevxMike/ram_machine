@@ -1,42 +1,57 @@
-Whole project is about creating a simple RAM machine simulator.
-Me and Mark are making this just for fun, and after this we will create a simple operating system.
+Executable needs a text file <file_name>.txt to execute your algorithm.
 
-Documentation of app will appear below:
+i.e
 
--stack file
-Simple data structure which consists of two structs:
-data struct and call stack struct with availability to 
-carry out operations on this abstract data structure.
-Data struct holds pseudo assembly code command and operands of a single call.
-Call stack struct hold informations such as size of call stack, 
-quantity of elements being holded on a call stack and data struct 
-pointer to an array with data.
-Data should be allocated dynamically in main function 
-(size of call stack must be defined by developer using this code).
+>RAM my_algo.txt
 
-- task queue file
-Simple data structure which consists of three structs:
-task queue element: element that holds the data (same as call stack) and pointer to the next element in queue
-task queue: holds info about queue and stuff
+Available operations:
 
--errors file
-Definition of errors that may occur during the program runtime
+ADD x //add Rx`s val to R0 value
+ADD * x //get y from Rx and add Ry`s val to R0 value
+ADD = x //add x val to R0 value
+DIV x //div R0 val by Rx value
+DIV * x //get y from Rx and div R0 by Ry
+DIV = x //div R0 by x
+HALT <none> //end the algorithm
+JGTZ <name_of_loop> //if R0 contains a positive integer jump to loop
+JUMP <name_of_loop> //jumps to <name_of_loop>
+JZERO <name_of_loop> //if R0 val equals to 0 jump to loop
+LOAD x //stores Rx in R0
+LOAD * x //get y from Rx and store Ry in R0
+LOAD = x //stores x in R0
+MULT x //multiply R0 val by Rx value
+MULT * x //get y from Rx and multiply R0 by Ry
+MULT = x //multiply R0 by x
+READ x //read from input to Rx
+READ * x //get y from Rx and read from input to Ry
+STORE x //copies R0 value into Rx
+STORE * x //get y from Rx and store R0`s val in Ry
+SUB x //substract Rx`s val from R0 value
+SUB * x //get y from Rx and substract Ry`s val from R0 value
+SUB = x //substract x val from R0 value
+WRITE x //write Rx to output
+WRITE * x //get y from Rx and write Ry to output
 
-0x0001: failed to allocate memory for call stack, try to run the program again or 
-decrease stack size
-0x0002: failed to allocate memory for task queue, do the same as above
+code with comments:
 
-rest of errors will appear below
+11 -20 -30; input line
+start:; first label
+    load =3; load 3 to R0
+subst:; substract label
+    sub =1; substract 1 from R0
+    jump wr:; jump to write label
+wr:; write label
+    write 0; write R0 value
+    jgtz subst:; if not R0 contains a positive integer, jump to subst
 
--interpreter file
-Two structures defined inside this file:
-    - flags: holds some information about user input after it`s analysis
-    - AnalyzedData: holds information such as flags, user input address and input type
+code without comments:
 
-void DEBUG_end(void); - prints information about end of debugging
-void PrintString(char*); - prints a string 
-char* UserInputToString(void); - gets user input from stdin and allocs enough memory to store it and return it`s address
-bool DataTypeAnalyzer(AnalyzedData*, char*); - analyzes user`s input, returns either true if it`s valid or false in other case
-                                             function sets AnalyzedData struct fields according to analysis
-void Interpreter(const AnalyzedData*) - interprets the data passed to stdin and prints it`s result, more functionality avaliable soon
-
+11 -20 -30
+start:
+    load =3
+subst:
+    sub =1
+    jump wr:
+wr:
+    write 0
+    jgtz subst:

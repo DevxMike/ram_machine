@@ -23,7 +23,7 @@ typedef struct{
     loop_heap_t* heap;
     loop_container_t* loops_array;
     loop_t* temp_loop;
-    pointers_container_t* loop_pointers;
+    pointers_container_t* loop_pointers, * pointers_heap;
 }main_loop_type_t;
 
 loop_heap_t* init_loop_heap(void);

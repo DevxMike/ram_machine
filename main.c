@@ -2,7 +2,7 @@
 #include "loop.h"
 #include "loop_heap.h"
 #include <time.h>
-
+#include "loop_pointers.h"
 
 int main(int argc, char** argv){
     ram_cell_t R0 = {
@@ -12,7 +12,6 @@ int main(int argc, char** argv){
     task_queue_element_t* temp;
     clock_t c1, c2;
     int index;
-
     init_main(&main_vars);
     if(argc == 1){ //if argv contains program name only
         printf("Wrong usage. Try %s <file_name>.txt or %s -h for help\n", argv[0], argv[0]);
@@ -99,7 +98,22 @@ int main(int argc, char** argv){
     			add_to_loop_container(main_vars.loops.loops_array, main_vars.loops.temp_loop, main_vars.loops.heap);
             }
             loop_heap_sort(main_vars.loops.loops_array, main_vars.loops.heap);
+            /*temp = main_vars.queue->head;
+            while(temp){
+                printf("%s %s\n", temp->data.command, temp->data.operand_st);
+                temp = temp->next;
+            }*/
+
+            for(size_t i = 0; i < main_vars.loops.loop_pointers->quantity; ++i){
+                loop_pointer_t* temp = main_vars.loops.loop_pointers->arr[i];
+                temp->pointer = search_loop(
+                    main_vars.loops.loops_array, temp->next_cmd->data.operand_st, 0, main_vars.loops.loops_array->quantity - 1
+                );
+                temp->next_cmd = temp->next_cmd->next;
+            }
             
+            sort_pointers(main_vars.loops.loop_pointers, main_vars.loops.pointers_heap);
+
             c1 = clock();
             temp = main_vars.queue->head;
 
@@ -112,7 +126,7 @@ int main(int argc, char** argv){
                         temp->data.operand_st, 0, main_vars.loops.loops_array->quantity - 1), 
                         &main_vars.input
                     ); //perform loop
-                    temp = temp->next;
+                    temp = get_pointer(main_vars.loops.loop_pointers, temp->data.operand_st)->next_cmd;
                     continue;
                 }
                 tasker(main_vars.ram_chip, &temp->data, main_vars.ram_heap, &main_vars.input);
@@ -176,4 +190,6 @@ void init_main(main_vars_t* vars){
     vars->loops.heap = init_loop_heap();
     vars->loops.loops_array = init_loop();
     vars->loops.temp_loop = (loop_t*) malloc(sizeof(loop_t));
+    vars->loops.loop_pointers = init_pointers();
+    vars->loops.pointers_heap = init_pointers();
 }

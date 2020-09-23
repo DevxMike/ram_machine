@@ -17,7 +17,7 @@ typedef struct{
 
 loop_container_t* init_loop(void);
 void add_loop_element(loop_container_t*, const loop_t*);
-const loop_t* search_loop(const loop_container_t*, const char*, unsigned, unsigned);
+loop_t* search_loop(const loop_container_t*, const char*, unsigned, unsigned);
 int loop_full(const loop_container_t*);
 int loop_empty(const loop_container_t*);
 

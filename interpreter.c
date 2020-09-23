@@ -6,6 +6,7 @@
 #include "errors.h"
 #include "syntax.h"
 #include <string.h>
+#include "loop_pointers.h"
 
 #define exprintf(exp) printf(#exp " = %s\n", exp? "true" : "false") //for debug
 
@@ -55,13 +56,13 @@ int loop_manager(ram_chip_t* chip, ram_heap_t* heap, const loop_t* loop, input_d
 		exit_w_code(LOOP_PROCESSING_ERR);
 	}
 	else{
-		printf("\nLOOP LABEL: %s\n", loop->loop_et);
+		//printf("\nLOOP LABEL: %s\n", loop->loop_et);
 		list_element_t* temp = loop->task_list;
 		while(temp){
 			if(temp->data.cmd_id == 6){
 				exit_w_code(0);
 			}
-			printf("%s %s, %d\n", temp->data.command, temp->data.operand_st, temp->data.cmd_id);
+			tasker(chip, &temp->data, heap, input);
 			temp = temp->next;
 		}
 	}
@@ -297,6 +298,7 @@ int Interpreter(AnalyzedData* data, task_queue_t* queue, main_loop_type_t* conta
 			if((container->temp_loop->task_list = (list_element_t*)malloc(sizeof(list_element_t))) == NULL){
 				exit_w_code(LOOP_PROCESSING_ERR);
 			}
+			add_pointer(container->loop_pointers, NULL, queue->tail);
 			container->temp_loop->task_list = NULL;
 		}
 		*status = 0;
