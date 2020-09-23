@@ -55,19 +55,56 @@ loop_pointer_t* search_pointer(pointers_container_t* container,
 loop_pointer_t* get_pointer(pointers_container_t* container, char* label){
     return search_pointer(container, label, 0, container->quantity - 1);
 }
-
 //heap ops
-
-int cmp_pointers(const loop_pointer_t* p1, const loop_pointer_t* p2){
+void swap_data(loop_pointer_t** p1, loop_pointer_t** p2){
+    loop_pointer_t* temp = *p1; //swap pointers to data (much faster than swapping the data)
+    *p1 = *p2;
+    *p2 = temp;   
+}
+int cmp_pointers(const loop_pointer_t* p1, const loop_pointer_t* p2){ //compare pointers by labels
     return strcmp(p1->pointer->loop_et, p2->pointer->loop_et);
 }   
-void push_pointer_heap(pointers_container_t* heap, loop_pointer_t* pt){
-    //to do
+void pt_shift_up(pointers_container_t* heap, unsigned index){ //helpful with bringing back the order in tree right after inserting new element
+    if(index > 0){
+        unsigned temp = (index-1)/2;
+        if(cmp_pointers(heap->arr[index], heap->arr[temp]) > 0){
+            swap_data(&heap->arr[index], &heap->arr[temp]); //if new element is bigger than the old one in tree, swap their pointers
+            pt_shift_up(heap, temp); //and continue the check
+        }
+    }
+}
+void push_pointer_heap(pointers_container_t* heap, loop_t* label, task_queue_element_t* next){
+    add_pointer(heap, label, next); //add new element
+    pt_shift_up(heap, heap->quantity - 1); //bring the order back in tree
+}
+void pt_shift_down(pointers_container_t* heap, unsigned index, unsigned left, unsigned right){
+    if(left < heap->quantity && right < heap->quantity){
+        unsigned greater = (
+            cmp_pointers(heap->arr[left], heap->arr[right]) > 0? left : right
+        );
+        if(cmp_pointers(heap->arr[greater], heap->arr[index]) > 0){
+            swap_data(&heap->arr[greater], &heap->arr[index]);
+            pt_shift_down(heap, greater, 2*greater + 1, 2*greater + 2);
+        }
+    }
+    else if(left < heap->quantity){
+        if(cmp_pointers(heap->arr[left], heap->arr[index]) > 0){
+            swap_data(&heap->arr[left], &heap->arr[index]);
+            pt_shift_down(heap, left, 2*left + 1, 2*left + 2);
+        }
+    }
 }
 loop_pointer_t* pop_pointer_heap(pointers_container_t* heap){
-    //to do
-    return NULL;
+    loop_pointer_t* temp = NULL;
+    if(!pointers_empty(heap)){ //if heap is not empty
+        temp = heap->arr[0]; //return value will be the first element in tree
+        heap->arr[0] = heap->arr[--heap->quantity]; //replace the first with the last one
+        heap->arr[heap->quantity]->pointer = NULL;
+        heap->arr[heap->quantity]->next_cmd = NULL; 
+        pt_shift_down(heap, 0, 1, 2); //bring the order back in the tree
+    }
+    return temp;
 }
 void sort_pointers(pointers_container_t* container, pointers_container_t* heap){
-
+    //to do
 }
