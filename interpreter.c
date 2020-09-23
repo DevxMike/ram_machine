@@ -490,6 +490,9 @@ int* input_data(char* string, unsigned* errno, size_t* size){
 			temp_tab[len - 1] += to_number(*pt);
 		}
 	}
+	if(minus){
+		temp_tab[len - 1] *= -1;
+	}
 	*size = len;
 	*errno = 0;
 	return temp_tab;
